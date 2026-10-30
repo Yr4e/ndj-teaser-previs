@@ -57,26 +57,22 @@ monkcol=mat('Monkey',(.40,.20,.08)); capred=mat('Red cap',(.9,.08,.08)); white=m
 bone=mat('Skeleton',(.93,.91,.82)); pink=mat('Pink cap',(.98,.25,.55)); skate=mat('Skateboard',(.10,.40,.95)); teal=mat('Wheels',(.05,.75,.70))
 
 # ---------------- CAMERA PATH (follows the top/side schematic) ----------------
-# 0-5 s slow drift in the sky looking at the rift; 5-7 s pull back + dive; 7-15 s fast backward snake
-# between four fights, low near heroes, rising over mounds between them; skeleton at the end.
+# One continuous cinematic move: slow drift in the sky (0-5 s), easing into a long backward dive (5-7.5 s),
+# then constant speed through the field. The route is a soft snake; fights simply pass on alternating sides.
 RIFT=Vector((0,85,40))
-K=[(5,(0,18,13.5)),(7,(0,0,2.0)),(7.8,(2.6,-7,1.3)),(8.6,(.5,-14,2.6)),(9.4,(-3.2,-21,1.3)),(10.2,(-.8,-28,2.7)),
-   (11.0,(3.2,-35,1.3)),(11.8,(.8,-42,2.5)),(12.6,(-2.8,-49,1.3)),(13.5,(-.5,-56,2.2)),(14.4,(.3,-61.5,2.1)),(15.0,(.25,-63.2,2.15))]
-K=[(t,Vector(p)) for t,p in K]
-TAN={5:Vector((0,-.8,-.4)),7:Vector((1.5,-9,-1.2))}
-def tangent(i):
- t,p=K[i]
- if t in TAN: return TAN[t]
- j0,j1=max(0,i-1),min(len(K)-1,i+1)
- return (K[j1][1]-K[j0][1])/(K[j1][0]-K[j0][0])
+def speed(t): return .8+9.2*ss(5,7.6,t)-6.4*ss(13.7,15.2,t)
+TRAVEL=[0.]  # distance flown since t=5, sampled at 240 Hz
+for i in range(1,2401): TRAVEL.append(TRAVEL[-1]+speed(5+i/240)/240)
+def travel(t):
+ i=min(2399,max(0,int((t-5)*240)));u=(t-5)*240-i
+ return TRAVEL[i]+(TRAVEL[i+1]-TRAVEL[i])*u
 def flight_pos(t):
  if t<5: return Vector((0,22-.8*t,15.5-.4*t))
- for i in range(len(K)-1):
-  (t0,p0),(t1,p1)=K[i],K[i+1]
-  if t<=t1:
-   d=t1-t0;u=(t-t0)/d;m0,m1=tangent(i)*d,tangent(i+1)*d
-   return (2*u**3-3*u*u+1)*p0+(u**3-2*u*u+u)*m0+(-2*u**3+3*u*u)*p1+(u**3-u*u)*m1
- return K[-1][1].copy()
+ y=18-travel(t)
+ snake=3*math.cos(math.pi*(y+7)/14)*ss(6,-4,y)*(1-ss(-50,-60,y))
+ x=snake+.3*ss(-50,-60,y)
+ z=1.5+.45*math.sin(math.pi*(y+7)/14)**2*(1-ss(-52,-58,y))+.6*ss(-54,-62,y)
+ return Vector((x,y,z+12*(1-ss(5,7.4,t))))
 PATH2D=[flight_pos(7+i*.05) for i in range(161)]
 def path_dist(x,y): return min((Vector((x,y))-p.xy).length for p in PATH2D)
 def pass_time(y):
@@ -86,11 +82,11 @@ def pass_time(y):
 
 # ---------------- FIELD ----------------
 box('Ground',(0,-25,-.25),(700,700,.5),grass)
-for t in [8.6,10.2,11.8,13.5]:
- p=flight_pos(t); part('ball','Low mound under camera',(p.x,p.y,-.3),(9,6,2.2),hillmat)
+for y in [-14,-28,-42]:
+ p=flight_pos(pass_time(y)); part('ball','Low mound under camera',(p.x,p.y,-.4),(9,6,2.0),hillmat)
 random.seed(5)
 FIGHTS=[Vector((6.6,-7)),Vector((-6.8,-21)),Vector((6.8,-35)),Vector((-6.4,-49))]
-def clear(x,y,r): return path_dist(x,y)>r and all((Vector((x,y))-c).length>7 for c in FIGHTS) and (Vector((x,y))-Vector((1.6,-62))).length>6
+def clear(x,y,r): return path_dist(x,y)>r and all((Vector((x,y))-c).length>7 for c in FIGHTS) and (Vector((x,y))-flight_pos(14.4).xy).length>6
 n=0
 while n<170:
  x,y=random.uniform(-40,40),random.uniform(-85,20)
@@ -255,7 +251,7 @@ for k,th in enumerate(punches):
 animate_mobs(mobs);heroes.append(('MONKEY',c,tp))
 
 # ---------------- SKELETON (catch + headbutt) ----------------
-SK=Vector((1.6,-63.5,0))
+SK=Vector((1.6,flight_pos(14.4).y-2.0,0))  # reaches the camera's line just as it flies past
 def sk_pos(t):
  # Rolls toward the incoming camera, spins around as it passes, then leans in to grab.
  y=SK.y+2.0*(1-math.cos(min(1,max(0,(t-13.4)/1.0))*math.pi/2))-.6*ss(14.4,15.0,t)
@@ -285,17 +281,16 @@ cam.data.clip_start=.01;cam.data.clip_end=400;cam.rotation_mode='QUATERNION'
 def look(d,roll=0):
  return d.to_track_quat('-Z','Y')@Quaternion((0,0,1),roll)
 def look_dir(t):
- # Looks back along the route toward the Mainframe, and swings toward each hero as it is passed.
- v=(flight_pos(t+.04)-flight_pos(t-.04))/.08
- back=Vector((-v.x,-v.y)).normalized() if v.xy.length>.5 else Vector((0,1))
- d=back.lerp(Vector((0,1)),.45).normalized()
- for _,c,tp in heroes:
-  w=.6*ss(tp-.45,tp+.05,t)*(1-ss(tp+.55,tp+1.0,t))
-  if w>0: d=d.lerp((c-flight_pos(t).xy).normalized(),w).normalized()
- return d
+ # Looks back toward the Mainframe; heading is the route direction averaged over a second, so it never snaps.
+ acc=Vector((0,0))
+ for k in range(-6,7):
+  tt=t+k*.08;v=(flight_pos(tt+.04)-flight_pos(tt-.04))/.08
+  if v.xy.length>.5: acc+=Vector((-v.x,-v.y)).normalized()
+ back=acc.normalized() if acc.length>.1 else Vector((0,1))
+ return back.lerp(Vector((0,1)),.6).normalized()
 def flight_quat(t):
  d=look_dir(t);h0=math.atan2(d.x,d.y);d2=look_dir(t+.1);h1=math.atan2(d2.x,d2.y)
- return look(Vector((d.x,d.y,.09)),max(-.06,min(.06,(h1-h0)*.8)))
+ return look(Vector((d.x,d.y,.09)),max(-.04,min(.04,(h1-h0)*.6)))
 GRAB=15.0
 grab_pos=flight_pos(GRAB);grab_q=flight_quat(GRAB)
 def head_world(t):
@@ -320,7 +315,7 @@ for f,t in frames():
  if lastq is not None and q.dot(lastq)<0: q.negate()
  lastq=q;cam.location=p;cam.rotation_quaternion=q
  cam.keyframe_insert('location',frame=f);cam.keyframe_insert('rotation_quaternion',frame=f)
- cam.data.lens=32-10*ss(5,7,t);cam.data.keyframe_insert('lens',frame=f)
+ cam.data.lens=32-10*ss(4.5,7.5,t);cam.data.keyframe_insert('lens',frame=f)
  if t<=GRAB: route.append(p)
  # skeleton
  key(sk,f,loc=sk_pos(t),rot=(0,0,sk_yaw(t)));key(body,f,rot=(sk_lean(t),0,0));key(skull,f,loc=(0,skull_off(t),1.85))
@@ -357,7 +352,7 @@ routeob.hide_render=True;scene.camera=cam;scene.frame_set(1)
 with open(os.path.join(OUT,'scene-metrics.json'),'w') as fh:
  json.dump({'duration_s':18,'fps':FPS,'heroes':[{'name':n,'pos':[round(c.x,2),round(c.y,2)],'camera_passes_at_s':round(tp,2)} for n,c,tp in heroes],
   'skeleton_start':[SK.x,SK.y],'catch_s':GRAB,'headbutt_s':16.4,'rift':list(RIFT),
-  'camera_keys':[{'t':t,'pos':[round(v,2) for v in p]} for t,p in K]},fh,indent=1)
+  'camera_samples':[{'t':t,'pos':[round(v,2) for v in flight_pos(t)]} for t in range(0,16)]},fh,indent=1)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT,'camera_previs_18s_v5.blend'))
 scene.render.image_settings.file_format='PNG';scene.render.filepath=os.path.join(OUT,'preview','frame_')
 if os.environ.get('CHECK_FRAMES'):  # quick check: CHECK_FRAMES="1,49,169" renders only these

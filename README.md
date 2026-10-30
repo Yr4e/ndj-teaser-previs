@@ -6,7 +6,26 @@
 
 ![Общий визуальный кадр](assets/teaser/blender-blockout/revision-04/master-overview.png)
 
-## Актуальная версия — revision-04
+## Актуальная версия — revision-05 (превиз для Seedance)
+
+Простые цветные блоки без детализации: задача — показать Seedance, где кто стоит и как летит камера. Пролёт построен по схеме «вид сверху / вид сбоку».
+
+- [Видео-превиз — 18 с, 24 кадра/с, 960 × 540](assets/teaser/blender-blockout/revision-05/camera_previs_18s_v5.mp4)
+- [Сцена Blender](assets/teaser/blender-blockout/revision-05/camera_previs_18s_v5.blend) · [вид сверху с траекторией](assets/teaser/blender-blockout/revision-05/layout-top.png) · [общий вид](assets/teaser/blender-blockout/revision-05/layout-overview.png) · [раскадровка по секундам](assets/teaser/blender-blockout/revision-05/contact-sheet.jpg) · [метрики](assets/teaser/blender-blockout/revision-05/scene-metrics.json)
+
+| Время | Что в кадре |
+| --- | --- |
+| 0–2 с | Небо, облака, молнии. Камера смотрит вверх. |
+| 2–3 с | Сквозь облака проступает красный глаз. |
+| 3–5 с | Разрыв раскрывается, Майнфрейм вылезает: голова, затем руки (голубая слева, розовая стрелка справа). Он остаётся в небе. |
+| 5–7 с | Камера отдаляется, разгоняется назад и опускается к полю. |
+| 7–13 с | Быстрый пролёт назад змейкой. Низко у героев, подъём над холмиками между боями. По очереди: мечник (справа, удар мечом), робот (слева, бежит, ракеты со спины), маг (справа, магические сферы), обезьяна (слева, удары). |
+| 13–15 с | Скелет на скейте едет навстречу, разворачивается, хватает камеру — полёт обрывается рывком. |
+| 15–18 с | Камера в руке перед черепом, удар лбом на 16,4 с, трещины на стекле до конца. |
+
+Сборка (Blender 5.2 или модуль `bpy`): `python3 assets/teaser/blender-blockout/build_scene.py`, затем ffmpeg из `revision-05/preview/frame_%04d.png`.
+
+## Предыдущая версия — revision-04
 
 - [Видео-превиз — 18 секунд, 24 кадра/с, 960 × 540](assets/teaser/blender-blockout/revision-04/camera_blockout_18s_v4.mp4)
 - [Скачать сцену Blender](assets/teaser/blender-blockout/revision-04/camera_blockout_18s_v4.blend)

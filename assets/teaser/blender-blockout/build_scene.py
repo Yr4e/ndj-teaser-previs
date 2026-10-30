@@ -1,274 +1,366 @@
-import bpy, math, os
-from mathutils import Vector
+import bpy, bmesh, math, os, random, json, subprocess
+from mathutils import Vector, Quaternion
+# revision-05: simple colour-block previs for Seedance. Shapes stay primitive on purpose;
+# the point is the camera move, timing and who-is-where.
 ROOT=os.path.dirname(os.path.abspath(__file__))
-OUT=os.path.join(ROOT,'revision-04'); os.makedirs(OUT,exist_ok=True)
-bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
+OUT=os.path.join(ROOT,'revision-05'); os.makedirs(os.path.join(OUT,'preview'),exist_ok=True)
+bpy.ops.wm.read_factory_settings(use_empty=True)
 scene=bpy.context.scene
-scene.render.engine='BLENDER_WORKBENCH'
+FPS=24; END=432
+scene.render.engine='BLENDER_WORKBENCH'; scene.render.fps=FPS; scene.frame_start=1; scene.frame_end=END
 scene.render.resolution_x=960; scene.render.resolution_y=540; scene.render.resolution_percentage=100
-scene.render.fps=24; scene.frame_start=1; scene.frame_end=432
-scene.world.color=(.22,.40,.58)
-shade=scene.display.shading
-shade.light='STUDIO'; shade.color_type='MATERIAL'; shade.show_shadows=True; shade.show_cavity=True
-shade.background_type='WORLD'
+scene.view_settings.view_transform='Standard'
+scene.world=bpy.data.worlds.new('Sky'); scene.world.color=(.42,.64,.86)
+shade=scene.display.shading; shade.light='STUDIO'; shade.color_type='MATERIAL'; shade.show_shadows=True; shade.shadow_intensity=.35
+scene.display.light_direction=(.45,-.35,.82)
+def F(t): return round(t*FPS)+1
+def ss(a,b,x):
+ u=max(0.,min(1.,(x-a)/(b-a))); return u*u*(3-2*u)
 def mat(name,c):
  m=bpy.data.materials.new(name); m.diffuse_color=(*c,1); return m
-ground=mat('Ground',(.26,.52,.075)); blue=mat('Camera route',(.08,.4,.9)); mobmat=mat('Enemies',(.35,.43,.35))
-red=mat('Mainframe eye',(.95,.04,.05)); bossmat=mat('Mainframe static',(.16,.22,.26)); bone=mat('Skeleton',(.85,.8,.65))
-def cube(name,loc,scale,ma):
- bpy.ops.mesh.primitive_cube_add(size=1,location=loc); o=bpy.context.object; o.name=name; o.dimensions=scale; bpy.ops.object.transform_apply(location=False,rotation=False,scale=True); o.data.materials.append(ma); return o
-def label(txt,loc,size=.42):
- bpy.ops.object.text_add(location=loc,rotation=(math.pi/2,0,0)); o=bpy.context.object; o.name=txt; o.data.body=txt; o.data.size=size; o.data.align_x='CENTER'; o.data.materials.append(bone); o.hide_render=True
-cube('Ground',(0,-16,-.2),(52,104,.4),ground)
-boss=cube('MAINFRAME — STATIC',(0,25,21),(10,3,10),bossmat)
-cube('Red eye',(0,23.42,23),(3,.12,1.2),red)
-for x in [-7,7]: cube('Static arm',(x,25,21),(3,3,8),bossmat)
-label('MAINFRAME / STATIC',(0,23,28),.9)
-# Readable primitive silhouettes, original identity colors only.
-cream=mat('Cream shell',(.78,.76,.61)); teal=mat('Turquoise',(.05,.55,.55)); dark=mat('Screen / shoes',(.025,.04,.06)); pink=mat('Pink cap',(.95,.15,.4)); white=mat('White vest',(.9,.9,.82)); brown=mat('Gorilla fur',(.28,.13,.065)); orange=mat('Ginger beard',(.7,.19,.04)); skin=mat('Warrior skin',(.75,.40,.20)); yellow=mat('Yellow display',(.95,.75,.03))
-names=['WARRIOR','MONKEY','GLITCH','CAT ROBOT']
-positions=[(2,1),(-9,-11),(-2.5,-23),(4,-35)]
-windows=[(7,8.7),(8.7,10.5),(10.5,12.3),(12.3,14)]
-hero_groups=[]
-for i,((x,y),name) in enumerate(zip(positions,names)):
- start=set(bpy.data.objects)
- def part(n,dx,dy,z,w,d,h,ma): return cube(name+' '+n,(x+dx,y+dy,z),(w,d,h),ma)
- if i==0:
-  part('torso',0,0,1.35,1.15,.55,1,skin); part('head',0,0,2.15,.55,.5,.6,skin)
-  part('beard',0,-.29,1.99,.46,.17,.45,orange); part('mohawk',0,0,2.55,.12,.46,.3,orange)
-  part('blue face paint',0,-.26,2.23,.55,.03,.08,blue); part('silver shoulder',.64,0,1.85,.45,.65,.3,cream)
-  part('red loincloth',0,-.33,.66,.4,.07,.7,red)
-  for dx in [-.32,.32]: part('leg',dx,0,.45,.35,.4,.85,dark)
-  for dx in [-.77,.77]: part('arm',dx,0,1.28,.4,.4,.85,skin)
- elif i==1:
-  part('gorilla body',0,0,1.15,1.25,.75,1.3,brown); part('white vest',0,-.4,1.3,.9,.06,.8,white)
-  part('banana emblem',0,-.44,1.35,.28,.03,.14,yellow); part('head',0,-.05,2.1,.75,.65,.65,brown)
-  part('red cap',0,-.04,2.47,.8,.75,.14,red); part('cap brim',0,-.5,2.43,.7,.4,.08,red)
-  part('red shorts',0,0,.62,1,.8,.45,red); part('basket',0,.6,1.4,.9,.5,.9,orange)
-  for dx in [-.82,.82]: part('long arm',dx,0,.95,.45,.55,1.45,brown)
-  for dx in [-.35,.35]: part('leg',dx,0,.28,.45,.6,.5,brown)
- elif i==2:
-  part('slim torso',0,0,1.27,.52,.38,.8,cream); part('CRT head',0,0,2.03,.85,.55,.6,cream)
-  part('blue CRT face',0,-.29,2.03,.72,.025,.45,blue)
-  for dx in [-.28,.28]:
-   part('antenna',dx,0,2.57,.04,.04,.48,cream)
-   part('leg',dx*.65,0,.52,.14,.18,.85,cream)
-   part('arm',dx*1.45,0,1.25,.13,.17,.85,cream)
-  # Intentionally no invented combat mechanics for Glitch.
- else:
-  part('wide chassis',0,0,.95,1.7,.9,.65,cream); part('wide CRT',0,-.05,1.7,1.8,.85,.95,teal)
-  part('screen',0,-.49,1.7,1.5,.025,.7,dark)
-  for dx in [-.4,.4]: part('happy eye',dx,-.51,1.83,.22,.025,.1,yellow)
-  part('smile',0,-.51,1.5,.35,.025,.08,yellow)
-  for dx in [-.68,.68]:
-   part('front broad leg',dx,-.36,.38,.42,.4,.65,cream)
-   for toe in [-.12,0,.12]: part('front toe',dx+toe,-.65,.12,.09,.35,.15,teal)
-   part('rear thin leg',dx,.48,.4,.12,.12,.7,teal)
-   part('rear round foot placeholder',dx,.48,.1,.37,.37,.12,dark)
-  part('black cat body',0,.02,2.43,.45,.4,.55,dark); part('cat head',0,-.05,2.85,.48,.4,.4,dark)
-  for dx in [-.17,.17]: part('cat ear',dx,-.03,3.12,.13,.23,.2,dark)
- # Group heroes for orientation and weapon rigs; always exist in the world.
- objects=set(bpy.data.objects)-start
- root=bpy.data.objects.new(name+' ROOT',None);scene.collection.objects.link(root);root.location=(x,y,0);bpy.context.view_layer.update()
- for o in objects:
-  o.parent=root;o.matrix_parent_inverse=root.matrix_world.inverted()
- hero_groups.append(root)
- if i==0:
-  pivot=bpy.data.objects.new('Warrior sword wrist',None);scene.collection.objects.link(pivot);pivot.location=(x-.9,y-.25,1.0);bpy.context.view_layer.update()
-  swordparts=[cube('Sword grip',(x-.9,y-.25,1.0),(.12,.14,.42),brown),cube('Sword guard',(x-.9,y-.25,1.25),(.5,.2,.1),yellow),cube('Sword silver blade',(x-.9,y-.25,2.05),(.19,.08,1.55),cream)]
-  for o in swordparts:o.parent=pivot;o.matrix_parent_inverse=pivot.matrix_world.inverted()
-  for t,a in [(0,0),(7,0),(7.35,-1.1),(7.65,.8),(8,0),(8.3,-1.1),(8.65,.8),(9,0)]:
-   pivot.rotation_euler.y=a;pivot.keyframe_insert(data_path='rotation_euler',frame=round(t*24)+1)
- if i==3:
-  # Robot's front points toward +Y, away from the backward-facing camera.
-  root.rotation_euler.z=math.pi
-  # Weapon is fixed in the world-facing forward direction, held by the right arm.
-  cube('Robot blaster grip',(x+.95,y+.25,1.25),(.2,.25,.45),dark)
-  cube('Robot blaster body',(x+.95,y+.62,1.53),(.45,.9,.4),cream)
-  cube('Robot blaster barrel',(x+.95,y+1.2,1.53),(.25,.6,.24),teal)
-  cube('Robot blaster muzzle',(x+.95,y+1.52,1.53),(.28,.04,.27),dark)
-  for k in range(5):
-   bolt=cube('Blaster pulse',(x+.95,y+1.65,1.53),(.08,.6,.08),blue)
-   for t,dy,sc in [(12.1+k*.28,1.65,0),(12.12+k*.28,1.65,1),(12.30+k*.28,5.5,1),(12.32+k*.28,5.5,0)]:
-    bolt.location.y=y+dy;bolt.scale=(sc,sc,sc);bolt.keyframe_insert(data_path='location',frame=round(t*24)+1);bolt.keyframe_insert(data_path='scale',frame=round(t*24)+1)
- label(name,(x,y-.7,3.55),.32)
-# Open field, low polygon hills and sparse trees, no room-like barriers.
-leaf=mat('Angular foliage',(.18,.42,.07)); stone=mat('Weathered stone',(.34,.4,.28)); bark=mat('Wood',(.26,.13,.045)); pathmat=mat('Earth path',(.32,.25,.10))
-def ico(name,loc,scale,ma,sub=1):
- bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=sub,radius=1,location=loc);o=bpy.context.object;o.name=name;o.scale=scale;o.data.materials.append(ma);return o
-for x,y,sz in [(-18,5,1),(18,-5,1),(-18,-17,1),(18,-29,1),(-18,-41,.8),(19,16,1.7),(-21,17,1.9)]:
- ico('Grassy rolling hill',(x,y,-.45),(6*sz,4.5*sz,3.3*sz),ground,2)
- for dx,dy in [(-2,1),(2,-1)]:
-  ico('Low angular rock',(x+dx,y+dy,.6),(1.6,1.2,1.3),stone)
- for dx,dy in [(-1,0),(3,2)]:
-  tx,ty=x+dx,y+dy
-  cube('Sparse tree trunk',(tx,ty,2.5),(.35,.4,5),bark)
-  ico('Angular tree crown',(tx,ty,4.8),(2.2,1.5,.9),leaf)
-  ico('Offset tree crown',(tx+1,ty,5.5),(1.6,1.2,.7),leaf)
-for x,y in [(-14,-8),(13,-17),(-15,-29)]:
- for dx in [0,2.2]: cube('Broken ruin column',(x+dx,y,1.2),(.65,.7,2.4),stone)
- cube('Ruin fallen stone',(x+.8,y-.7,.3),(1.3,.8,.6),stone)
-for x,y,ma in [(12,-11,pink),(-13,-21,teal),(14,-30,yellow)]:
- cube('Giant mushroom stem',(x,y,1.4),(.3,.3,2.8),cream)
- ico('Giant mushroom cap',(x,y,2.8),(1.5,1.5,.5),ma,2)
-for x,y,rx,ry,h in [(3,-6,3.7,3.1,4.2),(-.5,-19,5,3.1,4.2),(-1,-31,4,3.0,4.2)]:
- ico('Sightline grassy hill',(x,y,-.5),(rx,ry,h),ground,2)
- ico('Sightline rock',(x,y+.5,1.8),(.9,.8,1.0),stone)
-# Grounded crowds, exact anatomy: 2 arms, 2 legs, 2 cross-shaped eyes.
-# Each group is a permanent part of the field, never toggled for the shot.
-mob_roots=[]
-for stage,(hx,hy) in enumerate(positions):
- # Robot fires forward (+Y) into a crowd 4.5-8m away; other groups surround the hero.
- if stage==3:
-  offsets=[(-2,4.5),(0,5),(2,5.5),(-3,6.3),(-1,6.8),(1,7),(3,7.8),(-2.5,8),(0,8.5),(2,8.8)]
- else:
-  side=1 if hx>0 else -1
-  offsets=[(-2.3,-1),(2.3,-.8),(side*2.8,.6),(side*3,2.5),(side*1.4,3.3),(-.5,3.4),(side*4,4.5),(side*2,5.2),(side*4.5,1.3),(side*.3,5.8)]
- for j,(dx,dy) in enumerate(offsets):
-  x,y=hx+dx,hy+dy
-  # Keep the central camera corridor clear.
-  route_x=7*math.sin((y+3)*math.pi/24)
-  if abs(x-route_x)<2.0:x=route_x+(2.0 if hx>=route_x else -2.0)
-  start=set(bpy.data.objects);kind=(stage+j)%3
-  cloak=[teal,red,leaf][kind];h=[1.5,1.65,.95][kind];w=[.36,.58,.48][kind]
-  ico('Mob hood',(x,y,h*.74),(w,.34,h*.4),cloak,1)
-  cube('Mob wooden face',(x,y-.32,h*.86),(w*1.25,.07,.32),bark)
-  for side in [-1,1]:
-   ex=x+side*w*.35;eyeMat=blue if kind==0 else yellow
-   cube('Mob eye vertical',(ex,y-.365,h*.89),(.04,.025,.13),eyeMat)
-   cube('Mob eye horizontal',(ex,y-.367,h*.89),(.11,.025,.04),eyeMat)
-   horn=cube('Mob branch horn',(x+side*w*.7,y,h*1.2),(.07,.08,.3),bark);horn.rotation_euler.y=side*.4
-   cube('Mob leg',(x+side*w*.42,y,.22),(.13,.18,.44),bark)
-   cube('Mob foot',(x+side*w*.42,y-.06,.08),(.16,.28,.16),bark)
-   cube('Mob arm',(x+side*(w+.09),y,.56),(.15,.18,.55),bark)
-  if kind==1:cube('Mob wooden backpack',(x,y+.35,1.05),(.65,.35,.85),bark)
-  root=bpy.data.objects.new('MOB_%s_%02d'%(names[stage],j),None);scene.collection.objects.link(root);root.location=(x,y,0);bpy.context.view_layer.update()
-  for o in set(bpy.data.objects)-start:
-   if o==root:continue
-   o.parent=root;o.matrix_parent_inverse=root.matrix_world.inverted()
-  mob_roots.append(root)
-  # A small ground-level recoil. No flying bodies or airborne crowd placement.
-  if stage!=2 and j<3:
-   for t,offset in [(0,0),(windows[stage][0]+.3,0),(windows[stage][0]+.6,.6),(windows[stage][0]+1,.8),(18,.8)]:
-    root.location=(x+(1 if dx>0 else -1)*offset,y+offset*.3,0);root.keyframe_insert(data_path='location',frame=min(432,round(t*24)+1))
-# Simple punch beats only for warrior and monkey; Glitch remains neutral.
-for o in list(bpy.data.objects):
- if o.name.startswith('MONKEY long arm'):
-  stage=0 if o.name.startswith('WARRIOR') else 1
-  for dt,angle in [(0,0),(.3,-.55),(.5,.8),(.8,0),(1.1,-.55),(1.3,.8),(1.5,0)]:
-   o.rotation_euler.x=angle;o.keyframe_insert(data_path='rotation_euler',frame=round((windows[stage][0]+dt)*24)+1)
-# Skeleton placeholder faces camera at negative Y.
-sx,sy=0,-47
-cube('Skateboard',(sx,sy,.12),(1.3,.65,.15),blue)
-skel=cube('Skeleton torso',(sx,sy,1.3),(.65,.35,.8),bone)
-head=cube('Skeleton head',(sx,sy,2.05),(.65,.55,.65),bone)
-for dx in [-.16,.16]:
- eye=cube('Skeleton eye socket',(dx,sy-.285,2.12),(.15,.025,.14),bossmat)
- eye.parent=head; eye.matrix_parent_inverse=head.matrix_world.inverted()
-for dx in [-.22,.22]: cube('Skeleton legs',(sx+dx,sy,.65),(.15,.17,.8),bone)
-hand=cube('Skeleton camera-grabbing hand',(.8,sy-.2,1.5),(.3,.25,.3),bone)
-reach=cube('Skeleton reaching arm',(.55,sy-.3,1.7),(.16,.8,.16),bone)
-for t,pos in [(0,(.55,sy-.3,1.7)),(13,(.55,sy-.3,1.7)),(15,(.48,sy-.65,1.9)),(18,(.48,sy-.65,1.9))]:
- reach.location=pos; reach.keyframe_insert(data_path='location',frame=round(t*24)+1)
-cube('Pink skeleton cap',(0,sy,2.41),(.73,.65,.14),pink)
-cube('Cap brim',(0,sy-.37,2.38),(.7,.36,.06),pink)
-for dx in [-.23,.23]:
- cube('Black sneakers',(dx,sy-.12,.29),(.27,.48,.2),dark)
- for dy in [-.25,.25]: cube('Turquoise skate wheel',(dx*2,sy+dy,.07),(.17,.17,.17),teal)
-for dx in [-.16,.16]: cube('Blue skeleton pupil',(dx,sy-.305,2.12),(.065,.025,.08),blue)
-label('SKELETON / CAMERA CATCH',(0,-47,3.2))
-def frame(t): return round(t*24)+1
-for t,loc in [(0,(.8,sy-.2,1.5)),(13,(.8,sy-.2,1.5)),(15,(.48,-48.2,2.1)),(18,(.48,-48.2,2.1))]:
- hand.location=loc; hand.keyframe_insert(data_path='location',frame=min(432,frame(t)))
-for t,y in [(0,sy),(15.8,sy),(16.4,sy-.65),(16.8,sy),(18,sy)]:
- head.location.y=y; head.keyframe_insert(data_path='location',frame=min(432,frame(t)))
-bpy.ops.object.camera_add(); cam=bpy.context.object; cam.name='Camera — backward waist-height flight'; scene.camera=cam; cam.data.lens=29; cam.data.clip_end=200
-# Smooth time-parametrized flight: no hero look-at targets, no camera stops.
-def smooth(u):
- u=max(0,min(1,u));return u*u*u*(u*(u*6-15)+10)
-def hermite(a,b,va,vb,u,duration):
- return (2*u**3-3*u*u+1)*a+(u**3-2*u*u+u)*duration*va+(-2*u**3+3*u*u)*b+(u**3-u*u)*duration*vb
-keys=[]
-lastq=None
-cam.rotation_mode='QUATERNION';cam.data.lens=21
-for f in range(1,433):
- t=(f-1)/24
- if t<5:
-  u=smooth(t/5);pos=Vector((0,12-4*u,23-5*u));target=Vector((0,25,23-2*u))
- elif t<7:
-  u=(t-5)/2;y=hermite(8,-3,-1,-6.5,u,2);z=18+(1.2-18)*smooth(u)
-  pos=Vector((0,y,z));tilt=smooth(u);target=pos+Vector((0,15,3*(1-tilt)+.10*tilt))
- elif t<13.65:
-  y=-3-6.5*(t-7);x=7*math.sin((y+3)*math.pi/24)*smooth((t-7)/.7);z=1.2+.035*math.sin(t*1.2)
-  pos=Vector((x,y,z))
-  # Small, slowly changing yaw follows the route with an intentionally long look-back.
-  target=pos+Vector((1.5*math.sin((y+10)*math.pi/32)*smooth((t-7)/.7),16,.12))
- elif t<15:
-  u=(t-13.65)/1.35;y=hermite(-46.225,-48.4,-6.5,0,u,1.35)
-  x0=7*math.sin((-46.225+3)*math.pi/24);vx0=-6.5*7*math.pi/24*math.cos((-46.225+3)*math.pi/24)
-  x=hermite(x0,0,vx0,0,u,1.35)
-  z=1.2+(2.65-1.2)*smooth(u/.55) if u<.55 else 2.65+(2.1-2.65)*smooth((u-.55)/.45)
-  pos=Vector((x,y,z))
-  # Blend smoothly from the flight direction to the skeleton only at the catch.
-  direction=Vector((1.5*math.sin((-46.225+10)*math.pi/32),16,.12)).lerp(Vector((0,-47,2.05))-pos,smooth(u));target=pos+direction
- else:
-  u=t-15;pos=Vector((.02*math.sin(u*1.1),-48.4,2.1));target=Vector((0,-47,2.05))
-  if 16.25<t<16.65:pos.y-=.09*math.sin((t-16.25)/.4*math.pi)
- cam.location=pos;q=(target-pos).to_track_quat('-Z','Y')
- if lastq is not None and q.dot(lastq)<0:q.negate()
- cam.rotation_quaternion=q;lastq=q.copy();cam.keyframe_insert(data_path='location',frame=f);cam.keyframe_insert(data_path='rotation_quaternion',frame=f)
- if f%12==1:keys.append((t,tuple(pos),tuple(target)))
-# Linear between dense samples reproduces the analytic smooth path without Bezier overshoot.
-for action in bpy.data.actions:
- for layer in action.layers:
-  for strip in layer.strips:
-   for bag in strip.channelbags:
-    for fc in bag.fcurves:
-     if action==cam.animation_data.action:
-      for k in fc.keyframe_points:k.interpolation='LINEAR'
-for t,txt in [(0,'SKY / LIGHTNING PLACEHOLDER'),(2,'EYE / RIFT — STATIC BOSS'),(5,'PULL BACK / ACCELERATE'),(7,'WAIST HEIGHT / BACKWARD'),(13,'ONE RISE TO SKELETON'),(15,'HAND CATCH'),(16.4,'HEAD IMPACT / CRACKS')]: scene.timeline_markers.new(txt,frame=frame(t))
-# A wrist rig takes control after the grab; camera inherits its sway.
-grip=bpy.data.objects.new('Skeleton wrist camera driver',None);scene.collection.objects.link(grip)
-for t,loc,roll in [(0,(0,0,0),0),(15,(0,0,0),0),(15.35,(.04,-.025,.025),.035),(15.8,(-.02,.015,-.015),-.025),(16.4,(.02,0,0),.015),(16.55,(.09,-.1,.03),.09),(18,(.02,0,0),.025)]:
- grip.location=loc;grip.rotation_euler.y=roll;grip.keyframe_insert(data_path='location',frame=min(432,frame(t)));grip.keyframe_insert(data_path='rotation_euler',frame=min(432,frame(t)))
-con=cam.constraints.new('CHILD_OF');con.name='Caught by skeleton wrist';con.target=grip
-con.influence=0;con.keyframe_insert(data_path='influence',frame=frame(14.9));con.influence=1;con.keyframe_insert(data_path='influence',frame=frame(15))
-# Knuckles and curled fingers wrap the lens border rather than filling its center.
-for i,(x,y,rz) in enumerate([(.19,.095,.2),(.185,.04,.1),(.185,-.025,-.15),(.13,.115,1.2)]):
- for j in range(2):
-  o=cube('Lens gripping bone finger', (0,0,0),(.045,.025,.025),bone);o.parent=cam;o.location=(x-.024*j,y,-.32-.015*j);o.rotation_euler.z=rz
-  o.scale=(0,0,0);o.keyframe_insert(data_path='scale',frame=frame(14.65));o.scale=(1,1,1);o.keyframe_insert(data_path='scale',frame=frame(15))
-# Route curve is a viewport guide; hidden from camera renders.
-cu=bpy.data.curves.new('Camera path guide','CURVE'); cu.dimensions='3D'; cu.bevel_depth=.035
-sp=cu.splines.new('POLY'); sp.points.add(len(keys)-1)
-for point,(_,pos,_) in zip(sp.points,keys): point.co=(*pos,1)
-route=bpy.data.objects.new('Camera path — viewport only',cu); scene.collection.objects.link(route); route.data.materials.append(blue); route.hide_render=True
-scene['mob_count']=len(mob_roots)
-scene['camera_motion']='Continuous analytical backward path; no hero targeting; all crowds grounded.'
-scene['notes']='18s blockout. Boss static. Camera travels backward at waist height with minimal vertical variation, one rise at skeleton. Cubes are motion placeholders; no final visuals.'
-# Cracked glass stays attached to the camera after head impact.
-crackmat=mat('Cracked lens dark',(.025,.025,.025))
-for i,pts in enumerate([[(0,0),(-.05,.03),(-.09,.025),(-.14,.07)],[(0,0),(.04,.025),(.08,.07)],[(0,0),(.04,-.025),(.1,-.04),(.16,-.08)],[(0,0),(-.025,-.04),(-.06,-.075)],[(.04,.025),(.075,.015),(.13,.03)]]):
- c=bpy.data.curves.new('Lens crack','CURVE'); c.dimensions='3D'; c.bevel_depth=.0007; s=c.splines.new('POLY'); s.points.add(len(pts)-1)
- for p,(x,y) in zip(s.points,pts): p.co=(x,y,-.3,1)
- o=bpy.data.objects.new('Crack '+str(i),c); scene.collection.objects.link(o); o.parent=cam; c.materials.append(crackmat)
- o.scale=(0,0,0); o.keyframe_insert(data_path='scale',frame=394)
- o.scale=(1,1,1); o.keyframe_insert(data_path='scale',frame=395)
-# Review the real scene from above before generating an overall visual reference.
-scene.frame_set(300)
-bpy.ops.object.camera_add(location=(35,-63,45));overview=bpy.context.object;overview.name='Overview actual layout';overview.data.type='ORTHO';overview.data.ortho_scale=76;overview.rotation_euler=(Vector((0,-17,0))-overview.location).to_track_quat('-Z','Y').to_euler()
-scene.camera=overview
-scene.render.image_settings.file_format='PNG';scene.render.filepath=os.path.join(OUT,'layout-overview.png');bpy.ops.render.render(write_still=True)
-# Top plan includes the actual route, shown only for this diagnostic render.
-bpy.ops.object.camera_add(location=(0,-16,80));top=bpy.context.object;top.name='Top plan';top.data.type='ORTHO';top.data.ortho_scale=81;top.rotation_euler=(0,0,0)
-route.hide_render=False;scene.camera=top;top.rotation_euler=(Vector((0,-16,0))-top.location).to_track_quat('-Z','Y').to_euler();scene.render.filepath=os.path.join(OUT,'layout-top.png');bpy.ops.render.render(write_still=True);route.hide_render=True
-scene.camera=cam;scene.frame_set(1)
-import json
-with open(os.path.join(OUT,'scene-metrics.json'),'w') as file:json.dump({'ground_width_m':52,'ground_length_m':104,'hero_positions':positions,'mobs_per_group':10,'total_mobs':len(mob_roots),'camera_lens_mm':cam.data.lens,'ground_flight_height_m':1.2,'skeleton_position':[sx,sy],'robot_facing':'+Y, away from camera; mobs 4.5-8.8m ahead','duration_seconds':18},file,indent=2)
-scene.frame_set(1)
-for area in bpy.context.screen.areas:
- if area.type=='VIEW_3D': area.spaces.active.region_3d.view_perspective='CAMERA'
-bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT,'camera_blockout_18s_v4.blend'))
-scene.render.image_settings.file_format='PNG'; scene.render.filepath=os.path.join(OUT,'preview','frame_'); os.makedirs(os.path.join(OUT,'preview'),exist_ok=True)
-bpy.ops.render.render(animation=True)
+# Shared unit meshes (size 2), colour assigned per object.
+def unit(kind):
+ me=bpy.data.meshes.new('unit '+kind); bm=bmesh.new()
+ if kind=='cube': bmesh.ops.create_cube(bm,size=2)
+ elif kind=='ball': bmesh.ops.create_icosphere(bm,subdivisions=1,radius=1)
+ elif kind=='cone': bmesh.ops.create_cone(bm,cap_ends=True,cap_tris=False,segments=6,radius1=1,radius2=0,depth=2)
+ else: bmesh.ops.create_cone(bm,cap_ends=True,cap_tris=False,segments=16,radius1=1,radius2=1,depth=2)
+ bm.to_mesh(me); bm.free(); me.materials.append(None); return me
+UNIT={k:unit(k) for k in ['cube','ball','cone','disc']}
+def part(kind,name,loc,dims,ma,parent=None,rot=(0,0,0)):
+ o=bpy.data.objects.new(name,UNIT[kind]); scene.collection.objects.link(o)
+ o.material_slots[0].link='OBJECT'; o.material_slots[0].material=ma
+ o.parent=parent; o.location=loc; o.rotation_euler=rot; o.scale=[d/2 for d in dims]; return o
+def box(*a,**k): return part('cube',*a,**k)
+def empty(name,loc=(0,0,0),parent=None):
+ o=bpy.data.objects.new(name,None); scene.collection.objects.link(o); o.parent=parent; o.location=loc; return o
+def key(o,f,loc=None,rot=None,scale=None):
+ if loc is not None: o.location=loc; o.keyframe_insert('location',frame=f)
+ if rot is not None: o.rotation_euler=rot; o.keyframe_insert('rotation_euler',frame=f)
+ if scale is not None: o.scale=scale; o.keyframe_insert('scale',frame=f)
+def show_between(o,t0,t1):
+ for f,h in [(1,True),(F(t0),False),(F(t1),True)]:
+  o.hide_render=h; o.keyframe_insert('hide_render',frame=f)
+def yaw_to(d): return math.atan2(d.x,-d.y)  # characters are built facing -Y
+def frames(t0=0,t1=18,step=1):
+ for f in range(max(1,F(t0)),min(END,F(t1))+1,step): yield f,(f-1)/FPS
 
+grass=mat('Grass',(.30,.55,.12)); hillmat=mat('Hill',(.26,.48,.11)); leaf=mat('Trees',(.12,.38,.10)); bark=mat('Trunk',(.30,.17,.07))
+rockmat=mat('Rocks',(.45,.47,.45)); mountain=mat('Mountains',(.40,.50,.47)); cloud=mat('Clouds',(.96,.96,.98))
+bossmat=mat('Mainframe body',(.14,.15,.18)); eyemat=mat('Mainframe red eye',(1,.04,.04)); riftmat=mat('Sky rift',(.08,.02,.10)); rim=mat('Rift glow',(.95,.25,.65))
+bluearm=mat('Blue arm',(.35,.72,1)); pinkarm=mat('Pink arrow',(1,.30,.70)); bolt=mat('Lightning',(1,.97,.6))
+mobmat=mat('Mobs',(.45,.28,.13)); mobeye=mat('Mob eyes',(1,.85,.1))
+warcol=mat('Warrior',(.88,.42,.14)); steel=mat('Sword',(.88,.90,.95)); dark=mat('Dark',(.04,.05,.06))
+robcol=mat('Robot',(.10,.66,.66)); cream=mat('Robot shell',(.85,.82,.66)); rocketmat=mat('Rockets',(.95,.30,.08)); boom=mat('Explosion',(1,.78,.12))
+magecol=mat('Mage',(.55,.22,.82)); orb=mat('Magic orb',(.35,.95,1)); skin=mat('Skin',(.85,.62,.45))
+monkcol=mat('Monkey',(.40,.20,.08)); capred=mat('Red cap',(.9,.08,.08)); white=mat('White vest',(.95,.95,.9))
+bone=mat('Skeleton',(.93,.91,.82)); pink=mat('Pink cap',(.98,.25,.55)); skate=mat('Skateboard',(.10,.40,.95)); teal=mat('Wheels',(.05,.75,.70))
+
+# ---------------- CAMERA PATH (follows the top/side schematic) ----------------
+# 0-5 s slow drift in the sky looking at the rift; 5-7 s pull back + dive; 7-15 s fast backward snake
+# between four fights, low near heroes, rising over mounds between them; skeleton at the end.
+RIFT=Vector((0,85,40))
+K=[(5,(0,18,13.5)),(7,(0,0,2.0)),(7.8,(2.6,-7,1.3)),(8.6,(.5,-14,2.6)),(9.4,(-3.2,-21,1.3)),(10.2,(-.8,-28,2.7)),
+   (11.0,(3.2,-35,1.3)),(11.8,(.8,-42,2.5)),(12.6,(-2.8,-49,1.3)),(13.5,(-.5,-56,2.2)),(14.4,(.3,-61.5,2.1)),(15.0,(.25,-63.2,2.15))]
+K=[(t,Vector(p)) for t,p in K]
+TAN={5:Vector((0,-.8,-.4)),7:Vector((1.5,-9,-1.2))}
+def tangent(i):
+ t,p=K[i]
+ if t in TAN: return TAN[t]
+ j0,j1=max(0,i-1),min(len(K)-1,i+1)
+ return (K[j1][1]-K[j0][1])/(K[j1][0]-K[j0][0])
+def flight_pos(t):
+ if t<5: return Vector((0,22-.8*t,15.5-.4*t))
+ for i in range(len(K)-1):
+  (t0,p0),(t1,p1)=K[i],K[i+1]
+  if t<=t1:
+   d=t1-t0;u=(t-t0)/d;m0,m1=tangent(i)*d,tangent(i+1)*d
+   return (2*u**3-3*u*u+1)*p0+(u**3-2*u*u+u)*m0+(-2*u**3+3*u*u)*p1+(u**3-u*u)*m1
+ return K[-1][1].copy()
+PATH2D=[flight_pos(7+i*.05) for i in range(161)]
+def path_dist(x,y): return min((Vector((x,y))-p.xy).length for p in PATH2D)
+def pass_time(y):
+ t=7.
+ while flight_pos(t).y>y and t<15: t+=1/96
+ return t
+
+# ---------------- FIELD ----------------
+box('Ground',(0,-25,-.25),(700,700,.5),grass)
+for t in [8.6,10.2,11.8,13.5]:
+ p=flight_pos(t); part('ball','Low mound under camera',(p.x,p.y,-.3),(9,6,2.2),hillmat)
+random.seed(5)
+FIGHTS=[Vector((6.6,-7)),Vector((-6.8,-21)),Vector((6.8,-35)),Vector((-6.4,-49))]
+def clear(x,y,r): return path_dist(x,y)>r and all((Vector((x,y))-c).length>7 for c in FIGHTS) and (Vector((x,y))-Vector((1.6,-62))).length>6
+n=0
+while n<170:
+ x,y=random.uniform(-40,40),random.uniform(-85,20)
+ if not clear(x,y,5.5): continue
+ n+=1;h=random.uniform(3.5,6.5)
+ box('Tree trunk',(x,y,h*.3),(.4,.4,h*.6),bark)
+ part('cone','Tree crown',(x,y,h*.72),(2.4,2.4,h*.75),leaf)
+n=0
+while n<220:
+ x,y=random.uniform(-30,30),random.uniform(-80,15)
+ if not clear(x,y,2.2): continue
+ n+=1;s=random.uniform(.3,1.1)
+ part('ball','Rock',(x,y,s*.25),(s*1.3,s,s*.9),rockmat,rot=(0,0,random.uniform(0,3)))
+for i in range(16):
+ a=i/16*2*math.pi;x,y=75*math.sin(a),-25+105*math.cos(a)
+ part('cone','Far mountain',(x,y,8),(random.uniform(30,45),random.uniform(30,45),random.uniform(22,34)),mountain)
+
+# ---------------- SKY: clouds, lightning, rift, Mainframe ----------------
+for i in range(40):
+ x,z=random.uniform(-60,60),random.uniform(30,58);y=random.uniform(92,140)
+ part('ball','Cloud',(x,y,z),(random.uniform(10,22),random.uniform(5,9),random.uniform(3,6)),cloud)
+# Thick clouds in front of the rift slide apart while the eye shows through.
+for i,(x,z) in enumerate([(-6,40),(5,42),(-2,37),(7,38),(-8,44),(1,45)]):
+ c=part('ball','Cloud veil',(x,80,z),(14,4,6),cloud)
+ for f,t in frames(0,6,6):
+  u=ss(2.2,4.5,t);key(c,f,loc=(x+(1 if x>=0 else -1)*u*22,80-u*4,z+u*(z-40)*.8))
+for i,(x0,windows) in enumerate([(-14,[(.15,.3),(1.3,1.4),(2.6,2.7)]),(10,[(.55,.65),(1.7,1.82)]),(-3,[(.9,1.02),(2.1,2.2),(3.3,3.4)]),(18,[(.35,.45),(1.95,2.05)]),(-20,[(1.1,1.2),(2.9,3.0)])]):
+ pts=[Vector((x0,82,58))]
+ for k in range(6): pts.append(pts[-1]+Vector((random.uniform(-2.5,2.5),0,-3.4)))
+ segs=[]
+ for a,b in zip(pts,pts[1:]):
+  d=b-a;segs.append(box('Lightning bolt',(a+b)/2,(.35,.35,d.length),bolt,rot=(0,math.atan2(d.x,d.z),0)))
+ for o in segs:
+  o.hide_render=True;o.keyframe_insert('hide_render',frame=1)
+  for t0,t1 in windows:
+   o.hide_render=False;o.keyframe_insert('hide_render',frame=F(t0));o.hide_render=True;o.keyframe_insert('hide_render',frame=F(t1))
+rift=part('disc','Sky rift',RIFT,(1,1,.4),riftmat,rot=(math.pi/2,0,0))
+glow=part('disc','Rift glow edge',RIFT+Vector((0,.4,0)),(1,1,.4),rim,rot=(math.pi/2,0,0))
+boss=empty('MAINFRAME ROOT',(0,92,40))
+box('Mainframe head',(0,0,0),(16,10,12),bossmat,boss)
+for k in range(10):
+ a=k/10*2*math.pi;box('Mainframe halo monitor',(11*math.cos(a),0,11*math.sin(a)),(2.6,2,2),bossmat,boss)
+box('Mainframe upper body',(0,1,-9),(20,9,7),bossmat,boss)
+arms=[]
+for side,ma in [(-1,bluearm),(1,pinkarm)]:
+ a=empty('Mainframe arm pivot',(side*9,-1,-6),boss)
+ box('Mainframe arm',(side*7,0,2),(14,3,3),bossmat,a)
+ part('cone','Mainframe arrow hand',(side*16,0,4),(5,5,6),ma,a,rot=(0,-side*math.pi/2,0))
+ arms.append((a,side))
+eye=box('Mainframe eye',(0,0,0),(5,.6,2.4),eyemat)
+box('Mainframe pupil',(0,-.7,0),(.6,.2,.8),dark,eye)
+for f,t in frames(0,6):
+ R=2*ss(1.8,3.0,t)+19*ss(3.0,4.6,t)
+ key(rift,f,scale=(R,R,.2));key(glow,f,scale=(R*1.07,R*1.07,.2))
+ s=max(.05,ss(2.9,4.3,t));y=92-14*ss(4.0,5.3,t)  # grows inside the rift, then pushes out through it
+ key(boss,f,loc=(0,y,40),scale=(s,s,s))
+ key(eye,f,loc=(0,min(84.6,y-5.4*s),41),scale=[max(.02,ss(1.9,3.0,t))]*3)
+ for a,side in arms:
+  u=ss(4.1,5.2,t);key(a,f,scale=(max(.02,u),1,1),rot=(0,side*(.35-.45*u),0))
+boss.hide_render=True;boss.keyframe_insert('hide_render',frame=1);boss.hide_render=False;boss.keyframe_insert('hide_render',frame=F(2.9))
+
+# ---------------- CHARACTERS ----------------
+def mob(name,pos,yaw,phase):
+ r=empty(name,(pos.x,pos.y,0));r.rotation_euler.z=yaw
+ box('Mob body',(0,0,.7),(.65,.5,.8),mobmat,r);box('Mob head',(0,0,1.32),(.6,.5,.45),mobmat,r)
+ for s in [-1,1]:
+  box('Mob eye',(s*.14,-.26,1.36),(.12,.04,.12),mobeye,r);box('Mob horn',(s*.22,0,1.7),(.08,.08,.35),bark,r,rot=(0,s*.4,0))
+  box('Mob leg',(s*.17,0,.18),(.18,.22,.36),bark,r);box('Mob arm',(s*.42,0,.75),(.16,.18,.55),bark,r)
+ return {'root':r,'base':pos,'yaw':yaw,'phase':phase,'hit':None}
+def animate_mobs(mobs,move=None):
+ for m in mobs:
+  for f,t in frames(0,18,2):
+   base=move(m,t) if move else m['base']
+   p=Vector((base.x,base.y,abs(math.sin(t*7+m['phase']))*.07));rx=.15*math.sin(t*5+m['phase']);rz=m['yaw']
+   if m['hit'] and t>=m['hit'][0]:
+    th,d,dist,hop=m['hit'];u=t-th
+    p+=d*dist*(1-math.exp(-u*4));p.z+=max(0,hop*math.sin(min(u/.6,1)*math.pi));rx=-min(1.5,u*4);rz+=u*3*(hop>0)
+   key(m['root'],f,loc=p,rot=(rx,0,rz))
+def ring(center,face,n,r0,r1,spread,seed):
+ rnd=random.Random(seed);out=[];a0=math.atan2(face.y,face.x)
+ for i in range(n):
+  a=a0+spread*(i/(n-1)-.5)+rnd.uniform(-.15,.15);r=rnd.uniform(r0,r1)
+  p=center+Vector((math.cos(a),math.sin(a)))*r
+  if path_dist(p.x,p.y)<2.2: p=center+(p-center)*1.6
+  out.append(p)
+ return out
+heroes=[]
+# Fight 1 (right): warrior, overhead sword chop knocks a mob away.
+c=FIGHTS[0];face=Vector((.6,-.8));tp=pass_time(c.y)
+w=empty('WARRIOR',(c.x,c.y,0));w.rotation_euler.z=yaw_to(face)
+box('Warrior torso',(0,0,1.25),(.95,.55,.95),warcol,w);box('Warrior head',(0,0,2.0),(.5,.5,.55),warcol,w);box('Warrior mohawk',(0,0,2.38),(.12,.45,.25),capred,w)
+for s in [-1,1]: box('Warrior leg',(s*.25,0,.4),(.32,.38,.8),dark,w);box('Warrior arm',(s*.65,0,1.3),(.32,.36,.8),warcol,w)
+sw=empty('Sword pivot',(-.65,-.2,1.5),w);box('Sword blade',(0,0,1.0),(.14,.08,1.7),steel,sw);box('Sword guard',(0,0,.15),(.45,.15,.1),dark,sw)
+mobs=[mob('MOB_WARRIOR_%02d'%i,p,yaw_to(c-p),i) for i,p in enumerate(ring(c,face,7,2.0,4.0,3.2,1))]
+for j,(t_hit) in enumerate([tp+.3,tp+1.0]):
+ m=min(mobs,key=lambda m:(m['base']-(c+face*2)).length if not m['hit'] else 99);m['hit']=(t_hit,(m['base']-c).normalized().to_3d(),4.5,1.3)
+for f,t in frames():
+ a=.6
+ for th in [tp+.3,tp+1.0]:
+  if th-.35<t<th+.4: a=.6+.6*ss(th-.35,th-.1,t)-2.6*ss(th-.1,th,t)+1.4*ss(th+.1,th+.4,t)
+ key(sw,f,rot=(a,0,0))
+animate_mobs(mobs);heroes.append(('WARRIOR',c,tp))
+# Fight 2 (left): robot runs toward camera, rockets leave its back and hit the chasing mobs.
+c=FIGHTS[1];tp=pass_time(c.y)
+def robot_pos(t): return Vector((c.x,c.y+5-5*(t-tp+1),0))
+rb=empty('CAT ROBOT')
+box('Robot chassis',(0,0,.95),(1.4,.8,.6),cream,rb);box('Robot CRT head',(0,0,1.65),(1.5,.8,.9),robcol,rb);box('Robot screen',(0,-.41,1.65),(1.2,.04,.6),dark,rb)
+box('Rocket pod',(0,.55,1.7),(1.0,.5,.8),rocketmat,rb);box('Cat on top',(0,0,2.35),(.45,.4,.5),dark,rb);box('Cat head',(0,-.15,2.7),(.4,.35,.35),dark,rb)
+legs=[]
+for s in [-1,1]:
+ for dy in [-.3,.3]:
+  l=empty('Robot leg pivot',(s*.55,dy,.7),rb);box('Robot leg',(0,0,-.35),(.25,.25,.7),cream,l);legs.append((l,s*dy))
+for f,t in frames():
+ p=robot_pos(t) if t<tp+3 else robot_pos(tp+3);p.z=abs(math.sin(t*14))*.12;key(rb,f,loc=p)
+ for l,ph in legs: key(l,f,rot=(.7*math.sin(t*14+(ph>0)*math.pi),0,0))
+chase=[]
+for i,p in enumerate(ring(Vector((c.x,c.y+4.5)),Vector((0,1)),8,1.0,3.5,2.6,2)):
+ m=mob('MOB_ROBOT_%02d'%i,p,0,i);m['off']=p-Vector((c.x,c.y+5));chase.append(m)
+def chase_pos(m,t):
+ tt=min(t,m['hit'][0]) if m['hit'] else t
+ return robot_pos(tt).xy+Vector((0,3.5))+m['off']
+for k in range(6):
+ t0=tp+.05+k*.16;t1=t0+.7;m=chase[k];m['hit']=(t1,Vector((random.uniform(-.4,.4),1,0)).normalized(),3,1.5)
+ target=chase_pos(m,t1).to_3d()+Vector((0,0,.8))
+ r=box('Rocket',(0,0,0),(.18,.6,.18),rocketmat);e=part('ball','Rocket explosion',target,(1,1,1),boom)
+ for f,t in frames(t0-.1,t1+.6):
+  u=ss(t0,t1,t);start=robot_pos(t0)+Vector((0,.6,2.1))
+  p=start.lerp(target,u)+Vector((0,0,4*math.sin(u*math.pi)));nxt=start.lerp(target,min(1,u+.05))+Vector((0,0,4*math.sin(min(1,u+.05)*math.pi)))
+  d=nxt-p;key(r,f,loc=p,rot=(math.atan2(d.z,d.y) if d.length>1e-4 else 0,0,0))
+  s=2.4*math.sin(min(1,max(0,(t-t1)/.45))*math.pi);key(e,f,scale=(s,s,s))
+ show_between(r,t0,t1);show_between(e,t1,t1+.45)
+animate_mobs(chase,chase_pos);heroes.append(('CAT ROBOT',c,tp))
+# Fight 3 (right): mage throws magic orbs into its group.
+c=FIGHTS[2];face=Vector((.7,-.7));tp=pass_time(c.y)
+mg=empty('MAGE',(c.x,c.y,0));mg.rotation_euler.z=yaw_to(face)
+part('cone','Mage robe',(0,0,.95),(1.2,1.2,1.9),magecol,mg);box('Mage head',(0,0,1.95),(.45,.45,.45),skin,mg);part('cone','Mage hat',(0,0,2.55),(.7,.7,.9),magecol,mg)
+st=empty('Staff pivot',(-.55,-.1,1.1),mg);box('Mage staff',(0,0,.5),(.08,.08,1.8),bark,st);part('ball','Staff gem',(0,0,1.45),(.3,.3,.3),orb,st)
+mobs=[mob('MOB_MAGE_%02d'%i,p,yaw_to(c-p),i) for i,p in enumerate(ring(c,face,8,2.5,4.5,3.4,3))]
+casts=[tp+.2,tp+.55,tp+.9]
+for f,t in frames(): key(st,f,rot=(-.9*max(ss(th-.25,th,t)*(1-ss(th+.05,th+.3,t)) for th in casts),0,0))
+for k,th in enumerate(casts):
+ m=sorted(mobs,key=lambda m:(m['base']-(c+face*3)).length)[k];m['hit']=(th+.3,(m['base']-c).normalized().to_3d(),3.5,1.0)
+ o=part('ball','Magic orb',(0,0,0),(.6,.6,.6),orb)
+ for f,t in frames(th-.05,th+.35): key(o,f,loc=(c.to_3d()+Vector((0,0,2.4))).lerp(m['base'].to_3d()+Vector((0,0,1)),ss(th,th+.3,t)))
+ show_between(o,th,th+.32)
+animate_mobs(mobs);heroes.append(('MAGE',c,tp))
+# Fight 4 (left): monkey punches, mobs fly back.
+c=FIGHTS[3];face=Vector((-.7,-.7));tp=pass_time(c.y)
+mk=empty('MONKEY',(c.x,c.y,0));mk.rotation_euler.z=yaw_to(face)
+box('Monkey body',(0,0,1.15),(1.3,.85,1.3),monkcol,mk);box('Monkey vest',(0,-.44,1.25),(.9,.06,.8),white,mk)
+box('Monkey head',(0,-.05,2.1),(.75,.65,.65),monkcol,mk);box('Monkey cap',(0,-.1,2.48),(.8,.8,.15),capred,mk);box('Monkey shorts',(0,0,.55),(1.0,.8,.4),capred,mk)
+fists=[]
+for s in [-1,1]:
+ box('Monkey leg',(s*.33,0,.25),(.42,.55,.5),monkcol,mk)
+ a=empty('Monkey shoulder',(s*.85,0,1.65),mk);box('Monkey long arm',(0,0,-.7),(.45,.5,1.4),monkcol,a);fists.append(a)
+mobs=[mob('MOB_MONKEY_%02d'%i,p,yaw_to(c-p),i) for i,p in enumerate(ring(c,face,8,2.0,4.2,3.4,4))]
+punches=[tp+.25,tp+.6,tp+1.0]
+for f,t in frames():
+ for k,a in enumerate(fists): key(a,f,rot=(sum(-1.5*ss(th-.15,th,t)*(1-ss(th+.1,th+.3,t)) for j,th in enumerate(punches) if j%2==k),0,0))
+for k,th in enumerate(punches):
+ m=sorted(mobs,key=lambda m:(m['base']-(c+face*2)).length)[k];m['hit']=(th,(m['base']-c).normalized().to_3d(),5,1.6)
+animate_mobs(mobs);heroes.append(('MONKEY',c,tp))
+
+# ---------------- SKELETON (catch + headbutt) ----------------
+SK=Vector((1.6,-63.5,0))
+def sk_pos(t):
+ # Rolls toward the incoming camera, spins around as it passes, then leans in to grab.
+ y=SK.y+2.0*(1-math.cos(min(1,max(0,(t-13.4)/1.0))*math.pi/2))-.6*ss(14.4,15.0,t)
+ return Vector((SK.x,y,0))
+def sk_yaw(t): return math.pi+math.pi*ss(14.3,14.7,t)
+def hold_lean(t): return .25*ss(14.6,15.0,t)-.1*ss(15.0,15.6,t)
+def sk_lean(t): return hold_lean(t)-.12*ss(15.8,16.15,t)+.40*ss(16.15,16.4,t)-.28*ss(16.45,16.9,t)  # wind-up, headbutt, back
+def skull_off(t): return .15*ss(15.8,16.15,t)-.35*ss(16.15,16.4,t)+.2*ss(16.45,16.9,t)
+sk=empty('SKELETON');body=empty('Skeleton lean',(0,0,.25),sk)
+box('Skateboard deck',(0,0,.12),(.7,1.4,.1),skate,sk)
+for dx in [-.25,.25]:
+ for dy in [-.45,.45]: box('Skate wheel',(dx,dy,.05),(.12,.15,.15),teal,sk)
+for s in [-1,1]: box('Skeleton leg',(s*.2,0,.55),(.14,.16,.85),bone,body);box('Black sneaker',(s*.2,-.08,.12),(.24,.42,.2),dark,body)
+box('Skeleton pelvis',(0,0,1.0),(.55,.3,.2),bone,body);box('Skeleton ribcage',(0,0,1.45),(.65,.35,.7),bone,body)
+for k in range(3): box('Rib gap',(0,-.18,1.3+k*.15),(.5,.02,.05),dark,body)
+box('Skeleton left arm',(.45,0,1.25),(.13,.13,.8),bone,body)
+skull=empty('Skull',(0,0,1.85),body)
+box('Skull',(0,0,.3),(.6,.55,.6),bone,skull);box('Pink cap',(0,0,.65),(.66,.6,.14),pink,skull);box('Cap brim',(0,-.38,.6),(.6,.3,.05),pink,skull)
+for s in [-1,1]: box('Eye socket',(s*.14,-.28,.38),(.14,.04,.14),dark,skull);box('Blue pupil',(s*.14,-.3,.38),(.06,.03,.06),skate,skull)
+box('Teeth',(0,-.28,.14),(.3,.03,.06),dark,skull)
+arm=box('Skeleton reaching arm',(0,0,0),(.14,.14,1),bone);hand=box('Skeleton hand',(0,0,0),(.22,.12,.22),bone)
+def sk_matrix_point(t,local): return sk_pos(t)+Quaternion((0,0,1),sk_yaw(t))@Vector(local)
+
+# ---------------- CAMERA ----------------
+bpy.ops.object.camera_add();cam=bpy.context.object;cam.name='Camera';scene.camera=cam
+cam.data.clip_start=.01;cam.data.clip_end=400;cam.rotation_mode='QUATERNION'
+def look(d,roll=0):
+ return d.to_track_quat('-Z','Y')@Quaternion((0,0,1),roll)
+def look_dir(t):
+ # Looks back along the route toward the Mainframe, and swings toward each hero as it is passed.
+ v=(flight_pos(t+.04)-flight_pos(t-.04))/.08
+ back=Vector((-v.x,-v.y)).normalized() if v.xy.length>.5 else Vector((0,1))
+ d=back.lerp(Vector((0,1)),.45).normalized()
+ for _,c,tp in heroes:
+  w=.6*ss(tp-.45,tp+.05,t)*(1-ss(tp+.55,tp+1.0,t))
+  if w>0: d=d.lerp((c-flight_pos(t).xy).normalized(),w).normalized()
+ return d
+def flight_quat(t):
+ d=look_dir(t);h0=math.atan2(d.x,d.y);d2=look_dir(t+.1);h1=math.atan2(d2.x,d2.y)
+ return look(Vector((d.x,d.y,.09)),max(-.06,min(.06,(h1-h0)*.8)))
+GRAB=15.0
+grab_pos=flight_pos(GRAB);grab_q=flight_quat(GRAB)
+def head_world(t):
+ return sk_matrix_point(t,(0,-hold_lean(t)*2.1,2.35))
+def cam_state(t):
+ if t<GRAB:
+  p=flight_pos(t)
+  if t<5.2: q=look(RIFT+Vector((0,0,1))-p)
+  else: q=look(RIFT+Vector((0,0,1))-p).slerp(flight_quat(t),ss(5.2,7.0,t))
+  return p,q
+ u=t-GRAB;hold=sk_matrix_point(t,(-.1,-1.05-hold_lean(t)*2.1,2.35))
+ p=grab_pos.lerp(hold,ss(GRAB+.05,GRAB+.8,t))
+ p+=Vector((.05,-.15,.06))*math.exp(-u*9)*math.sin(u*40)  # the snap
+ imp=max(0,t-16.4);p+=Vector((0,-.12,.03))*math.exp(-imp*7)*math.sin(min(imp*30,math.pi)) if t>16.4 else Vector()
+ p+=Vector((math.sin(t*9)*.012,0,math.sin(t*7.3)*.012))
+ q=grab_q.slerp(look(head_world(t)-p,.06*math.sin(t*3)),ss(GRAB,GRAB+.35,t))
+ if t>16.4: q=q@Quaternion((1,0,0),.12*math.exp(-imp*6)*math.sin(imp*45))
+ return p,q
+lastq=None;route=[]
+for f,t in frames():
+ p,q=cam_state(t)
+ if lastq is not None and q.dot(lastq)<0: q.negate()
+ lastq=q;cam.location=p;cam.rotation_quaternion=q
+ cam.keyframe_insert('location',frame=f);cam.keyframe_insert('rotation_quaternion',frame=f)
+ cam.data.lens=32-10*ss(5,7,t);cam.data.keyframe_insert('lens',frame=f)
+ if t<=GRAB: route.append(p)
+ # skeleton
+ key(sk,f,loc=sk_pos(t),rot=(0,0,sk_yaw(t)));key(body,f,rot=(sk_lean(t),0,0));key(skull,f,loc=(0,skull_off(t),1.85))
+ sh=sk_matrix_point(t,(-.45,-sk_lean(t)*1.3,1.75))
+ if t<GRAB: target=sh+Vector((0,0,-.75)) if t<14.6 else (sh+Vector((0,0,-.75))).lerp(grab_pos,ss(14.6,GRAB,t))
+ else: target=p+q@Vector((.08,-.05,.1))
+ d=target-sh;key(hand,f,loc=target);key(arm,f,loc=(sh+target)/2,scale=(.07,.07,max(.05,d.length/2)))
+ arm.rotation_mode='QUATERNION';arm.rotation_quaternion=d.to_track_quat('Z','Y') if d.length>1e-4 else Quaternion();arm.keyframe_insert('rotation_quaternion',frame=f)
+# Bone fingers wrap the lens edge at the catch; cracks stay on the glass after the headbutt.
+for i,(x,y,rz,ln) in enumerate([(.046,.016,.08,.03),(.047,.004,0,.032),(.046,-.008,-.08,.03),(.044,-.019,-.2,.026),(.03,-.027,1.3,.024)]):
+ o=box('Bone finger on lens',(0,0,0),(ln*.8,.006,.005),bone,cam,rot=(0,0,rz))
+ for f,t in frames(14.9,18): key(o,f,loc=(x+.006+.03*(1-ss(14.92,GRAB,t)),y,-.06))
+ show_between(o,14.92,19)
+for pts in [[(0,0),(-.012,.006),(-.022,.004),(-.036,.015)],[(0,0),(.009,.007),(.02,.017)],[(0,0),(.011,-.006),(.024,-.008),(.04,-.019)],[(0,0),(-.005,-.011),(-.016,-.02)],[(0,0),(.014,.002),(.03,.006)]]:
+ for a,b in zip(pts,pts[1:]):
+  a=Vector(a)+Vector((.004,.003));b=Vector(b)+Vector((.004,.003));d=b-a
+  o=box('Lens crack',((a.x+b.x)/2,(a.y+b.y)/2,-.05),(d.length,.0007,.0004),dark,cam,rot=(0,0,math.atan2(d.y,d.x)))
+  show_between(o,16.4,19)
+for t,txt in [(0,'SKY / LIGHTNING'),(2,'EYE'),(3,'RIFT OPENS'),(5,'PULL BACK / ACCELERATE'),(7,'FIGHTS'),(13.4,'SKELETON'),(15,'CATCH'),(16.4,'HEADBUTT / CRACKS')]: scene.timeline_markers.new(txt,frame=F(t))
+cu=bpy.data.curves.new('Camera path','CURVE');cu.dimensions='3D';cu.bevel_depth=.25;sp=cu.splines.new('POLY');sp.points.add(len(route)-1)
+for pt,p in zip(sp.points,route): pt.co=(*p,1)
+routeob=bpy.data.objects.new('Camera path — viewport only',cu);scene.collection.objects.link(routeob);cu.materials.append(skate);routeob.hide_render=True
+scene['notes']='revision-05 Seedance previs: colour blocks only. Camera follows the hand-drawn top/side schematic.'
+
+# ---------------- OUTPUT ----------------
+scene.frame_set(F(11))
+bpy.ops.object.camera_add(location=(0,-8,160));top=bpy.context.object;top.name='Top plan';top.data.type='ORTHO';top.data.ortho_scale=170
+scene.render.resolution_x=600;scene.render.resolution_y=1000
+routeob.hide_render=False;scene.camera=top;scene.render.filepath=os.path.join(OUT,'layout-top.png');bpy.ops.render.render(write_still=True)
+scene.render.resolution_x=960;scene.render.resolution_y=540
+bpy.ops.object.camera_add(location=(60,-75,40));side=bpy.context.object;side.name='Overview';side.rotation_euler=(Vector((0,-15,8))-side.location).to_track_quat('-Z','Y').to_euler();side.data.lens=24
+scene.camera=side;scene.render.filepath=os.path.join(OUT,'layout-overview.png');bpy.ops.render.render(write_still=True)
+routeob.hide_render=True;scene.camera=cam;scene.frame_set(1)
+with open(os.path.join(OUT,'scene-metrics.json'),'w') as fh:
+ json.dump({'duration_s':18,'fps':FPS,'heroes':[{'name':n,'pos':[round(c.x,2),round(c.y,2)],'camera_passes_at_s':round(tp,2)} for n,c,tp in heroes],
+  'skeleton_start':[SK.x,SK.y],'catch_s':GRAB,'headbutt_s':16.4,'rift':list(RIFT),
+  'camera_keys':[{'t':t,'pos':[round(v,2) for v in p]} for t,p in K]},fh,indent=1)
+bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT,'camera_previs_18s_v5.blend'))
+scene.render.image_settings.file_format='PNG';scene.render.filepath=os.path.join(OUT,'preview','frame_')
+if os.environ.get('CHECK_FRAMES'):  # quick check: CHECK_FRAMES="1,49,169" renders only these
+ for f in map(int,os.environ['CHECK_FRAMES'].split(',')):
+  scene.frame_set(f);scene.render.filepath=os.path.join(OUT,'preview','check_%04d.png'%f);bpy.ops.render.render(write_still=True)
+else: bpy.ops.render.render(animation=True)

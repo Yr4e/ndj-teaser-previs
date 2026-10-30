@@ -109,7 +109,11 @@ Close fighters sweep past the frame edges with light motion blur. One continuous
 В гайдах по 2.5 рекомендуют формулировку «Use Video 1 only for the complete shot order, camera positions, framing changes, subject paths, and timing», а на каждый отрезок времени ставить одно действие и одно движение камеры.
 
 ```
-Stylized voxel low-poly game cinematic, sunny meadow, bright blue sky. Use @Video1 only for the complete camera path, framing changes, subject positions and timing. Do not copy the blockout materials, shapes, colours or character appearance; looks come only from the images. World style from @Image9.
+Stylized voxel low-poly game cinematic, bright sunny day. Use @Video1 only for the complete camera path, framing changes, subject positions and timing. Do not copy the blockout materials, shapes, colours or character appearance; looks come only from the images. World style from @Image9.
+World: a wide open green meadow with tall pixel-textured grass and small flowers, low-poly blocky trees and pines, grey rocks, mossy ruined stone pillars, giant colourful mushrooms, a small stream, soft rolling hills fading into blue haze. Bright blue sky with soft white clouds.
+Mobs: wooden creatures with branch antlers and glowing cross-shaped eyes: round green mossy ones, slim blue spiky ones, bulky red hooded ones with backpacks, purple mage ones with pointy hats and staffs. Many of them, fighting all over the field.
+Mainframe (@Image1): a colossal blocky computer boss, monitor head with a single red eye, an arc of glowing cyan monitors above it, a red glowing core in its chest, a white spiked arm on the left and a pink arrow arm on the right.
+Heroes: warrior (@Image2) with red mohawk and silver sword; monkey (@Image3) in red cap and shorts with a banana basket; Glitch (@Image4), slim cream robot with a CRT head and blaster; cat robot (@Image5), teal-cream four-legged robot with a black cat on top and a hovering rocket launcher; skeleton (@Image6-@Image8) with blue eyes, pink cap and a skateboard.
 0-1s: camera looks up into the sky, lightning between clouds, a huge red eye glows through the haze.
 1-3s: the Mainframe (@Image1) tears the sky open and pushes out of the jagged rift, then stays still in the sky.
 3-7s: camera slowly pulls back, then accelerates backwards and glides down to waist height, lens facing the Mainframe.

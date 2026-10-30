@@ -1,0 +1,250 @@
+{
+  "crowds": [
+    {
+      "name": "MOB_WARRIOR_00",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_WARRIOR_01",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_WARRIOR_02",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_WARRIOR_03",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_WARRIOR_04",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_WARRIOR_05",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_WARRIOR_06",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_WARRIOR_07",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_WARRIOR_08",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_WARRIOR_09",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_MONKEY_00",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_MONKEY_01",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_MONKEY_02",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_MONKEY_03",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_MONKEY_04",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_MONKEY_05",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_MONKEY_06",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_MONKEY_07",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_MONKEY_08",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_MONKEY_09",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_GLITCH_00",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_GLITCH_01",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_GLITCH_02",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_GLITCH_03",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_GLITCH_04",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_GLITCH_05",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_GLITCH_06",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_GLITCH_07",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_GLITCH_08",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_GLITCH_09",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_CAT ROBOT_00",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_CAT ROBOT_01",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_CAT ROBOT_02",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_CAT ROBOT_03",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_CAT ROBOT_04",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_CAT ROBOT_05",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_CAT ROBOT_06",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_CAT ROBOT_07",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_CAT ROBOT_08",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    },
+    {
+      "name": "MOB_CAT ROBOT_09",
+      "Mob arm": 2,
+      "Mob leg": 2,
+      "Mob eye vertical": 2
+    }
+  ],
+  "camera": {
+    "max_ground_frame_step_m": 0.49667745002341196,
+    "all_mob_parts_correct": true,
+    "mob_count": 40
+  },
+  "collisions": []
+}

@@ -1,0 +1,32 @@
+{
+  "ground_width_m": 52,
+  "ground_length_m": 104,
+  "hero_positions": [
+    [
+      2,
+      1
+    ],
+    [
+      -9,
+      -11
+    ],
+    [
+      -2.5,
+      -23
+    ],
+    [
+      4,
+      -35
+    ]
+  ],
+  "mobs_per_group": 10,
+  "total_mobs": 40,
+  "camera_lens_mm": 21.0,
+  "ground_flight_height_m": 1.2,
+  "skeleton_position": [
+    0,
+    -47
+  ],
+  "robot_facing": "+Y, away from camera; mobs 4.5-8.8m ahead",
+  "duration_seconds": 18
+}

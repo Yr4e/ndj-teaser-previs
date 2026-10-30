@@ -97,35 +97,35 @@ Close fighters sweep past the frame edges with light motion blur. One continuous
 - генерация 4–30 с;
 - до 30 картинок и до 10 видео-референсов, видео в сумме до 30 с.
 
-Значит, 22 с можно попробовать целиком. Загрузить: @Video1 = `../camera_previs_22s_v6.mp4`, затем картинки в таком порядке:
-- @Image1 Майнфрейм;
-- @Image2 воин;
-- @Image3 обезьяна;
-- @Image4 Глитч;
-- @Image5 робот с кошкой;
-- @Image6–8 скелет;
-- @Image9 стиль мира.
+Значит, 22 с можно попробовать целиком. Загрузить: @Video1 = `../camera_previs_22s_v6.mp4`, затем картинки из `refs/` строго по номерам:
+- @Image1 `01-mainframe-through-clouds.webp` (лучше заменить артом Майнфрейма в разорванном небе);
+- @Image2 `02-warrior-fight.webp`;
+- @Image3 `03-monkey-fight.webp`;
+- @Image4 `04-glitch-fight.webp`;
+- @Image5 `05-cat-robot-fight.webp`;
+- @Image6–8 `06/07/08-skeleton-*.png`.
 
-В гайдах по 2.5 рекомендуют формулировку «Use Video 1 only for the complete shot order, camera positions, framing changes, subject paths, and timing», а на каждый отрезок времени ставить одно действие и одно движение камеры.
+Отдельной картинки стиля нет: стиль мира берётся из картинок боёв.
 
 ```
-Stylized voxel low-poly game cinematic, bright sunny day. Use @Video1 only for the complete camera path, framing changes, subject positions and timing. Do not copy the blockout materials, shapes, colours or character appearance; looks come only from the images. World style from @Image9.
-World: a wide open green meadow with tall pixel-textured grass and small flowers, low-poly blocky trees and pines, grey rocks, mossy ruined stone pillars, giant colourful mushrooms, a small stream, soft rolling hills fading into blue haze. Bright blue sky with soft white clouds.
-Mobs: wooden creatures with branch antlers and glowing cross-shaped eyes: round green mossy ones, slim blue spiky ones, bulky red hooded ones with backpacks, purple mage ones with pointy hats and staffs. Many of them, fighting all over the field.
-Mainframe (@Image1): a colossal blocky computer boss, monitor head with a single red eye, an arc of glowing cyan monitors above it, a red glowing core in its chest, a white spiked arm on the left and a pink arrow arm on the right.
+Stylized voxel low-poly game cinematic with pixel textures, bright sunny day. Use @Video1 only for the complete camera path, framing changes, subject positions and timing. Do not copy the blockout materials, shapes, colours or character appearance; looks come only from the images. World and lighting style from @Image2-@Image5. All effects (lightning, sky tear, sparks, sword trails, blaster shots, rockets, explosions) are in the same voxel pixel style.
+World: a wide open green meadow with tall pixel-textured grass and small flowers, blocky trees and pines, grey rocks, mossy ruined stone pillars, giant colourful mushrooms, a small stream, soft rolling hills. Bright blue sky with soft white clouds. Strong atmospheric depth: the further away, the hazier and softer, with a gentle bloom glow on distant fights and the sky.
+Mobs: wooden creatures with branch antlers and glowing cross-shaped eyes: round green mossy ones, slim blue spiky ones, bulky red hooded ones with backpacks, purple mage ones with pointy hats and staffs.
+Mainframe (@Image1): a colossal blocky computer boss, monitor head with a single red eye, an arc of glowing cyan monitors, a red glowing core in its chest, a white spiked arm on the left and a pink arrow arm on the right. Its movement is slow, heavy and massive.
 Heroes: warrior (@Image2) with red mohawk and silver sword; monkey (@Image3) in red cap and shorts with a banana basket; Glitch (@Image4), slim cream robot with a CRT head and blaster; cat robot (@Image5), teal-cream four-legged robot with a black cat on top and a hovering rocket launcher; skeleton (@Image6-@Image8) with blue eyes, pink cap and a skateboard.
-0-1s: camera looks up into the sky, lightning between clouds, a huge red eye glows through the haze.
-1-3s: the Mainframe (@Image1) tears the sky open and pushes out of the jagged rift, then stays still in the sky.
+Fights are continuous: every hero keeps fighting non-stop the whole time, attack after attack, mobs keep charging and getting knocked back. When the camera leaves a fight it keeps going in the background, fading into haze and bloom. Each fight shows only that hero and their mobs, nothing extra.
+0-1s: camera looks up into the sky; heavy voxel lightning strikes between the clouds; a huge red eye slowly glows through the haze.
+1-3s: the Mainframe slowly and heavily tears the sky open, the jagged rift crackles with electric edges, and it pushes out through it, then stays still in the sky.
 3-7s: camera slowly pulls back, then accelerates backwards and glides down to waist height, lens facing the Mainframe.
-7-9.5s: camera flies through the warrior's fight (@Image2): wide sword sweep, green tree mobs knocked back.
-9.5-12s: past the monkey (@Image3) punching blue spiky mobs.
-12-14.5s: past Glitch (@Image4), side-on and slightly from behind, firing his blaster at mobs ahead.
-14.5-17s: between the cat robot (@Image5, back to camera) and its targets; its hovering launcher fires rockets into blue, green and purple mage mobs.
+7-9.5s: camera flies right through the warrior's fight: he swings his sword again and again in wide sweeps, green tree mobs fly back.
+9.5-12s: past the monkey punching blue spiky mobs in a constant brawl.
+12-14.5s: past Glitch, side-on and slightly from behind, firing his blaster in rapid bursts at the mobs ahead.
+14.5-17s: between the cat robot (back to camera) and its targets; its hovering launcher fires rocket after rocket into blue, green and purple mage mobs, explosions keep going.
 The camera slows gently at each fight and speeds up between them.
-17-18.3s: camera rises once above head height to the skeleton on a skateboard (@Image6, @Image7, @Image8); he reaches out, bony fingers grab the lens, the flight stops with a sharp jerk.
+17-18.3s: camera rises once above head height to the skeleton on a skateboard; he reaches out, bony fingers grab the lens, the flight stops with a sharp jerk.
 18.3-20s: camera held in his hand, swaying; his skull close, staring in.
 20s: he headbutts the lens, hard shake, cracks spread across the camera glass and stay.
-20-22s: skull seen through the cracked glass. End.
+20-22s: skull seen through the cracked glass, fights still going far behind in the haze. End.
 One continuous shot, no cuts.
 ```
 

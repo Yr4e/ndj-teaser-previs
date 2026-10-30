@@ -108,19 +108,20 @@ Close fighters sweep past the frame edges with light motion blur. One continuous
 Отдельной картинки стиля нет: стиль мира берётся из картинок боёв.
 
 ```
+One continuous shot with no cuts, no jumps and no scene changes from start to end; the camera never teleports. Exactly replicate the camera movement from @Video1.
 Stylized voxel low-poly game cinematic with pixel textures, bright sunny day. Use @Video1 only for the complete camera path, framing changes, subject positions and timing. Do not copy the blockout materials, shapes, colours or character appearance; looks come only from the images. World and lighting style from @Image2-@Image5. All effects (lightning, sky tear, sparks, sword trails, blaster shots, rockets, explosions) are in the same voxel pixel style.
 World: a wide open green meadow with tall pixel-textured grass and small flowers, blocky trees and pines, grey rocks, mossy ruined stone pillars, giant colourful mushrooms, a small stream, soft rolling hills. Bright blue sky with soft white clouds. Strong atmospheric depth: the further away, the hazier and softer, with a gentle bloom glow on distant fights and the sky.
 Mobs: wooden creatures with branch antlers and glowing cross-shaped eyes: round green mossy ones, slim blue spiky ones, bulky red hooded ones with backpacks, purple mage ones with pointy hats and staffs.
 Mainframe (@Image1): a colossal blocky computer boss, monitor head with a single red eye, an arc of glowing cyan monitors, a red glowing core in its chest, a white spiked arm on the left and a pink arrow arm on the right. Its movement is slow, heavy and massive.
 Heroes: warrior (@Image2) with red mohawk and silver sword; monkey (@Image3) in red cap and shorts with a banana basket; Glitch (@Image4), slim cream robot with a CRT head and blaster; cat robot (@Image5), teal-cream four-legged robot with a black cat on top and a hovering rocket launcher; skeleton (@Image6-@Image8) with blue eyes, pink cap and a skateboard.
-Fights are continuous: every hero keeps fighting non-stop the whole time, attack after attack, mobs keep charging and getting knocked back. When the camera leaves a fight it keeps going in the background, fading into haze and bloom. Each fight shows only that hero and their mobs, nothing extra.
+Fights are continuous: every hero keeps fighting non-stop the whole time, attack after attack, mobs keep charging and getting knocked back. When the camera leaves a fight it keeps going in the background, fading into haze and bloom. Each fight shows only that hero and their mobs, nothing extra. The four fights are separate and far apart, on alternating sides of the camera path; heroes never appear together in one fight. During the whole flight the Mainframe stays visible high in the sky at the top of the frame.
 0-1s: camera looks up into the sky; heavy voxel lightning strikes between the clouds; a huge red eye slowly glows through the haze.
 1-3s: the Mainframe slowly and heavily tears the sky open, the jagged rift crackles with electric edges, and it pushes out through it, then stays still in the sky.
 3-7s: camera slowly pulls back, then accelerates backwards and glides down to waist height, lens facing the Mainframe.
-7-9.5s: camera flies right through the warrior's fight: he swings his sword again and again in wide sweeps, green tree mobs fly back.
-9.5-12s: past the monkey punching blue spiky mobs in a constant brawl.
-12-14.5s: past Glitch, side-on and slightly from behind, firing his blaster in rapid bursts at the mobs ahead.
-14.5-17s: between the cat robot (back to camera) and its targets; its hovering launcher fires rocket after rocket into blue, green and purple mage mobs, explosions keep going.
+7-9.5s: without any cut, the descending camera flies backwards right through the warrior's fight on the right: he swings his sword again and again in wide sweeps, green tree mobs fly back.
+9.5-12s: the warrior's fight recedes into the distance as the camera curves left past a separate fight further on: the monkey punching blue spiky mobs in a constant brawl.
+12-14.5s: further on, on the right, past Glitch alone with his mobs, side-on and slightly from behind, firing his blaster in rapid bursts at the mobs ahead.
+14.5-17s: further on, on the left, between the cat robot (back to camera) and its targets; its hovering launcher fires rocket after rocket into blue, green and purple mage mobs, explosions keep going.
 The camera slows gently at each fight and speeds up between them.
 17-18.3s: camera rises once above head height; the skeleton rides his skateboard toward it, notices the camera, spins around on the board as it flies past, leans in and reaches out; bony fingers enter from the frame edge and grab the lens, the flight stops with a sharp jerk.
 18.3-20s: camera held in his hand, swaying; his skull close, staring in.

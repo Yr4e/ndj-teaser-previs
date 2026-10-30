@@ -21,7 +21,7 @@
 - Start frame: `world-frame-7s.png`
 - @Video1: `previs_cont1_7-16.mp4`
 - @Image1: поляна, вид снизу на небо (`00-world-meadow.png`)
-- @Image2: поляна на высоте пояса (вторая сгенерированная картинка с грибами)
+- @Image2: та же поляна без грибов (`00c-world-meadow-alt.png`)
 - @Image3: воин на тёмном фоне (`character-refs/warrior-front.png`)
 - @Image4: обезьяна на тёмном фоне (`monkey-side.png`)
 - @Image5: Глитч на тёмном фоне (`glitch-front.png`)
@@ -29,7 +29,7 @@
 
 ```
 One continuous shot with no cuts, no jumps and no scene changes; the camera never teleports. The video continues seamlessly from the start frame. Exactly replicate the camera movement from @Video1.
-Stylized voxel low-poly game cinematic with pixel textures, bright sunny day. Use @Video1 only for the camera path, framing and where the fights stand; do not copy anything visual from it. The whole shot takes place in one single location: exactly the meadow from @Image1 and @Image2. It never changes; ignore any background in the other images. Characters look exactly like @Image3, @Image4, @Image5. The Mainframe from @Image6 hangs still, high in the sky at the top of the frame for the whole shot. Strong atmospheric depth with soft bloom in the distance.
+Stylized voxel low-poly game cinematic with pixel textures, bright sunny day. Use @Video1 only for the camera path, framing and where the fights stand; do not copy anything visual from it. The whole shot takes place in one single location: exactly the meadow from @Image1 and @Image2. It never changes; ignore any background in the other images. No mushrooms anywhere. Characters look exactly like @Image3, @Image4, @Image5. The Mainframe from @Image6 hangs still, high in the sky at the top of the frame for the whole shot. Strong atmospheric depth with soft bloom in the distance.
 Mobs: wooden creatures with branch antlers and glowing cross-shaped eyes: round green mossy ones, slim blue spiky ones, bulky red hooded ones.
 The camera flies backwards at waist height, lens facing the Mainframe, easing slower at each fight and faster between them. The fights are separate and far apart on alternating sides; heroes never appear together. Fights never stop; left behind, they keep going in the haze.
 0-1s: the camera finishes gliding down to waist height over the daisies.
@@ -47,14 +47,14 @@ No text, no UI, no dialogue.
 - Start frame: последний кадр продолжения 1
 - @Video1: `previs_cont2_16-23.mp4`
 - @Image1: поляна (`00-world-meadow.png`)
-- @Image2: поляна на высоте пояса
+- @Image2: та же поляна без грибов (`00c-world-meadow-alt.png`)
 - @Image3: робот с кошкой (лучше на тёмном фоне, если сделаешь)
 - @Image4 – @Image6: скелет спереди, сбоку и сзади (`skeleton-front/side/back.png`)
 - @Image7: Майнфрейм целиком
 
 ```
 One continuous shot with no cuts, no jumps and no scene changes; the camera never teleports. The video continues seamlessly from the start frame. Exactly replicate the camera movement from @Video1.
-Stylized voxel low-poly game cinematic with pixel textures, bright sunny day. Use @Video1 only for the camera path, framing and where things stand; do not copy anything visual from it. One single location: exactly the meadow from @Image1 and @Image2; it never changes; ignore other backgrounds. The Mainframe from @Image7 hangs still high in the sky. Fights keep going in the haze behind.
+Stylized voxel low-poly game cinematic with pixel textures, bright sunny day. Use @Video1 only for the camera path, framing and where things stand; do not copy anything visual from it. One single location: exactly the meadow from @Image1 and @Image2; it never changes; ignore other backgrounds. No mushrooms anywhere. The Mainframe from @Image7 hangs still high in the sky. Fights keep going in the haze behind.
 0-2s: the camera flies backwards between the cat robot (@Image3, back to camera, black cat on top) and its targets on the left; its hovering rocket launcher fires rocket after rocket into blue, green and purple mage mobs, explosions keep going.
 2-3.3s: the camera rises once above head height; the skeleton (@Image4, @Image5, @Image6: blue eyes, pink cap, black sneakers, turquoise wheels) rides his skateboard toward it, notices it, spins around on the board as it flies past, leans in and reaches out; bony fingers enter from the frame edge and grab the lens; the flight stops with a sharp jerk.
 3.3-5s: the camera is held in his hand, swaying slightly; his skull close, staring into the lens.

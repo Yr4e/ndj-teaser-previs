@@ -122,11 +122,12 @@ Fights are continuous: every hero keeps fighting non-stop the whole time, attack
 12-14.5s: past Glitch, side-on and slightly from behind, firing his blaster in rapid bursts at the mobs ahead.
 14.5-17s: between the cat robot (back to camera) and its targets; its hovering launcher fires rocket after rocket into blue, green and purple mage mobs, explosions keep going.
 The camera slows gently at each fight and speeds up between them.
-17-18.3s: camera rises once above head height to the skeleton on a skateboard; he reaches out, bony fingers grab the lens, the flight stops with a sharp jerk.
+17-18.3s: camera rises once above head height; the skeleton rides his skateboard toward it, notices the camera, spins around on the board as it flies past, leans in and reaches out; bony fingers enter from the frame edge and grab the lens, the flight stops with a sharp jerk.
 18.3-20s: camera held in his hand, swaying; his skull close, staring in.
 20s: he headbutts the lens, hard shake, cracks spread across the camera glass and stay.
 20-22s: skull seen through the cracked glass, fights still going far behind in the haze. End.
-One continuous shot, no cuts.
+Sound: rising deep rumble and thunder in the sky, heavy metallic groan as the Mainframe breaks through, wind rush during the flight, battle sounds passing by, a hard crack on the headbutt.
+No text, no UI, no extra characters. One continuous shot, no cuts.
 ```
 
 Если результат «плывёт» во второй половине, нужно вернуться к трём кускам, A/B/C из раздела Seedance 2.0.

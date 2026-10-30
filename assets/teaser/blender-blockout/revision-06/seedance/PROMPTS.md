@@ -132,3 +132,58 @@ No text, no UI, no extra characters. One continuous shot, no cuts.
 ```
 
 Если результат «плывёт» во второй половине, нужно вернуться к трём кускам, A/B/C из раздела Seedance 2.0.
+
+---
+
+# Seedance 2.5: тест 8 с, затем продление до 22 с
+
+Сначала дешёвый тест самого сложного куска. Если он удался, не перегенерировать его, а продлить: модель достраивает продолжение от последнего кадра, без склейки.
+
+## Шаг 1: тест 0–8 с (длительность 8 с)
+
+Загрузить по порядку:
+- @Video1 `previs_test_0-8.mp4`
+- @Image1–@Image2 из `refs/`: `01-mainframe…`, `02-warrior-fight…`
+
+```
+One continuous shot with no cuts, no jumps and no scene changes; the camera never teleports. Exactly replicate the camera movement from @Video1.
+Stylized voxel low-poly game cinematic with pixel textures, bright sunny day. Use @Video1 only for the camera path, framing and timing; do not copy its blockout shapes, materials or colours. World and lighting style from @Image2. All effects are in the same voxel pixel style. Strong atmospheric depth with soft bloom in the distance.
+Mainframe (@Image1): colossal blocky computer boss, monitor head with one red eye, arc of cyan monitors, red chest core, white spiked arm on the left, pink arrow arm on the right. Slow, heavy, massive movement.
+0-1s: camera looks up into the sky; heavy voxel lightning; a huge red eye slowly glows through the haze.
+1-3s: the Mainframe slowly and heavily tears the sky open, the jagged rift crackles with electric edges; it pushes out and stays still in the sky.
+3-7s: camera slowly pulls back, then accelerates backwards and glides down to waist height over a green meadow, lens facing the Mainframe.
+7-8s: without any cut, the camera flies backwards past the warrior (@Image2) on the right, swinging his sword at green mossy tree mobs; the Mainframe stays high in the sky at the top of the frame.
+Sound: deep rumble, thunder, heavy metallic groan, wind rush.
+No text, no UI.
+```
+
+Что проверить в результате:
+- есть ли отлёт и спуск без склейки;
+- виден ли Майнфрейм наверху кадра;
+- нет ли блокаута в картинке.
+
+## Шаг 2: продление 8–22 с (продлить на 14 с)
+
+Загрузить по порядку:
+- @Video1 результат шага 1 (готовая 8-секундная генерация);
+- @Video2 `previs_extend_8-22.mp4`;
+- @Image1 `02-warrior-fight`, @Image2 `03-monkey-fight`, @Image3 `04-glitch-fight`, @Image4 `05-cat-robot-fight`;
+- @Image5–@Image7 скелет (`06/07/08-skeleton-*`);
+- @Image8 `01-mainframe`.
+
+```
+Extend @Video1 forward by 14 seconds, continuing seamlessly from its last frame: same style, same lighting, same camera speed, no cut at the join. Use @Video2 only for the camera path, framing and timing from here on; do not copy its blockout shapes, materials or colours. One continuous shot, no cuts, no jumps.
+The camera keeps flying backwards at waist height, lens facing the Mainframe (@Image8), which stays high in the sky at the top of the frame. It eases slower at each fight and faster between them. The fights are separate and far apart on alternating sides; heroes never appear together. Fights never stop; left behind, they keep going in the haze and bloom.
+0-1.5s: the warrior (@Image1) keeps sweeping his sword, green mobs fly back; his fight recedes.
+1.5-4s: the camera curves left past a separate fight: the monkey (@Image2) punching blue spiky mobs.
+4-6.5s: further on, on the right: Glitch (@Image3) alone with his mobs, side-on and slightly from behind, firing his blaster in rapid bursts.
+6.5-9s: further on, on the left: between the cat robot (@Image4, back to camera) and its targets; its hovering launcher fires rocket after rocket into blue, green and purple mage mobs.
+9-10.3s: camera rises once above head height; the skeleton (@Image5-@Image7: blue eyes, pink cap, skateboard) rides toward it, spins around on the board as it flies past, leans in; bony fingers enter from the frame edge and grab the lens; the flight stops with a sharp jerk.
+10.3-12s: camera held in his hand, swaying; his skull close, staring in.
+12s: he headbutts the lens, hard shake, cracks spread across the camera glass and stay.
+12-14s: skull seen through the cracked glass, fights still going far behind. End.
+Sound: battle sounds passing by, blaster zaps, rockets and explosions, skateboard wheels, hard crack on the headbutt.
+No text, no UI, no extra characters.
+```
+
+Если в сервисе есть отдельная кнопка «Extend» или «Продлить», используй её с этим же промптом. Тогда @Video1 часто подставляется сам, и нумерация остальных файлов может сдвинуться: сверь теги с тем, что показывает интерфейс.

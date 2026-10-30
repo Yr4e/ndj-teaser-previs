@@ -61,3 +61,68 @@ One continuous shot, no cuts.
 - **B→C:** склейка около 17 с, на подъёме камеры.
 - Если сервис разрешает первый кадр вместе с референсами, последний кадр A можно дать первым кадром B, и так же для B→C. Есть сообщения, что режим первого кадра и мультимодальный режим нельзя совмещать в одной генерации, это надо проверить в интерфейсе.
 - В Seedance 2.5, по сторонним гайдам, лимит до 30 с и до 10 видео-референсов, то есть 22 с можно попробовать одной генерацией. Но 3 куска дают больше контроля над каждым боем.
+
+---
+
+# MiniMax H3 (Hailuo 3.0)
+
+По сторонним описаниям лимиты у H3 почти как у Seedance 2.0:
+- генерация 4–15 с (на Runway 5–15 с);
+- до 9 картинок и до 3 видео, всего до 12 референсов;
+- видео-референсы 2–15 с, в сумме до 15 с;
+- промпт до ~6000 символов.
+
+Значит, тоже нужно резать. Отличия от Seedance:
+- **Камера у H3 управляется в первую очередь текстом,** видео только помогает. Поэтому движение камеры описываем подробнее, чем для Seedance.
+- **Короткий референс с одним ясным движением переносится лучше длинного.** Поэтому бои лучше дать двумя кусками по ~6 с, а не одним на 11 с:
+  - `previs_B1.mp4` (6,5–12,3 с): воин и обезьяна;
+  - `previs_B2.mp4` (11,5–17,5 с): Глитч и робот.
+- Куски A и C те же, промпты A и C из раздела Seedance подходят. В начало каждого стоит добавить фразу про камеру из шаблона ниже.
+
+Шаблон для B1 (B2 такой же, только Глитч и робот):
+
+```
+Stylized voxel low-poly game cinematic on a sunny green meadow. @Video1 is a grey-box layout: follow only its camera path, speed and framing; never copy its blocky shapes, flat colours or materials. Character looks come only from the images.
+Camera: one continuous backward flight at waist height (about 1.2 m), lens always facing back toward the giant Mainframe hanging still in the sky (@Image3). It eases down to a slow glide while passing each fight, then speeds up smoothly between fights. The path snakes gently left and right; no cuts, no zooms, no shake.
+0-2.5s: the camera flies right through the warrior's fight (@Image1): he sweeps his silver sword in a wide arc and knocks green mossy tree mobs flying back.
+2.5-5.8s: the camera curves left past the monkey (@Image2), who punches blue spiky mobs, bananas in his basket.
+Close fighters sweep past the frame edges with light motion blur. One continuous shot, no cuts.
+```
+
+---
+
+# Seedance 2.5: одной генерацией
+
+По сторонним гайдам у 2.5:
+- генерация 4–30 с;
+- до 30 картинок и до 10 видео-референсов, видео в сумме до 30 с.
+
+Значит, 22 с можно попробовать целиком. Загрузить: @Video1 = `../camera_previs_22s_v6.mp4`, затем картинки в таком порядке:
+- @Image1 Майнфрейм;
+- @Image2 воин;
+- @Image3 обезьяна;
+- @Image4 Глитч;
+- @Image5 робот с кошкой;
+- @Image6–8 скелет;
+- @Image9 стиль мира.
+
+В гайдах по 2.5 рекомендуют формулировку «Use Video 1 only for the complete shot order, camera positions, framing changes, subject paths, and timing», а на каждый отрезок времени ставить одно действие и одно движение камеры.
+
+```
+Stylized voxel low-poly game cinematic, sunny meadow, bright blue sky. Use @Video1 only for the complete camera path, framing changes, subject positions and timing. Do not copy the blockout materials, shapes, colours or character appearance; looks come only from the images. World style from @Image9.
+0-1s: camera looks up into the sky, lightning between clouds, a huge red eye glows through the haze.
+1-3s: the Mainframe (@Image1) tears the sky open and pushes out of the jagged rift, then stays still in the sky.
+3-7s: camera slowly pulls back, then accelerates backwards and glides down to waist height, lens facing the Mainframe.
+7-9.5s: camera flies through the warrior's fight (@Image2): wide sword sweep, green tree mobs knocked back.
+9.5-12s: past the monkey (@Image3) punching blue spiky mobs.
+12-14.5s: past Glitch (@Image4), side-on and slightly from behind, firing his blaster at mobs ahead.
+14.5-17s: between the cat robot (@Image5, back to camera) and its targets; its hovering launcher fires rockets into blue, green and purple mage mobs.
+The camera slows gently at each fight and speeds up between them.
+17-18.3s: camera rises once above head height to the skeleton on a skateboard (@Image6, @Image7, @Image8); he reaches out, bony fingers grab the lens, the flight stops with a sharp jerk.
+18.3-20s: camera held in his hand, swaying; his skull close, staring in.
+20s: he headbutts the lens, hard shake, cracks spread across the camera glass and stay.
+20-22s: skull seen through the cracked glass. End.
+One continuous shot, no cuts.
+```
+
+Если результат «плывёт» во второй половине, нужно вернуться к трём кускам, A/B/C из раздела Seedance 2.0.

@@ -4,7 +4,7 @@ import {bundle} from "@remotion/bundler";
 import {renderStill, selectComposition} from "@remotion/renderer";
 const ROOT = path.resolve(import.meta.dirname, "..");
 
-/** Превью вариантов фона: npm run preview-bg [-- OS-Tomes] → out/overspam/bg-<вариант>.png */
+/** Превью вариантов фона: npm run preview-bg [-- OS-Cards] → out/overspam/bg-<вариант>.png */
 const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, "content/overspam/teaser.json"), "utf8"));
 const id = process.argv[2] ?? "OS-Worlds";
 const out = path.join(ROOT, "out/overspam");

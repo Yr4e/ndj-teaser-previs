@@ -8,7 +8,7 @@
     "world": "moon"
   },
   "bg": "deep",
-  "noFlash": ["OS-Weapons", "OS-Heroes", "OS-Items", "OS-Tomes", "OS-Worlds"],
+  "noFlash": ["OS-Weapons", "OS-Heroes", "OS-Items", "OS-Cards", "OS-Worlds"],
   "alpha": ["OS-Weapons"],
-  "render": ["OS-Worlds", "OS-Heroes", "OS-Weapons", "OS-Items", "OS-Tomes", "OS-Build", "OS-End", "OS-Boss"]
+  "render": ["OS-Worlds", "OS-Heroes", "OS-Weapons", "OS-Items", "OS-Cards", "OS-Build", "OS-End", "OS-Boss"]
 }

@@ -274,7 +274,7 @@ export const Items: React.FC<InsertProps> = ({bpm, sfx}) => {
   );
 };
 
-/* ───────────── 23 TOMES ───────────── */
+/* ───────────── 23 CARDS (в игре это карты, не книги-тома) ───────────── */
 const tomeTicks = (bpm: number) => grid(23, bpm, 1 / 8);
 export const tomesFrames = (p: InsertProps) => Math.round(tomeTicks(p.bpm)[22] + HOLD(p.bpm));
 
@@ -291,7 +291,7 @@ export const Tomes: React.FC<InsertProps> = ({bpm, sfx}) => {
       <Backdrop glow="#ffba6a" glow2="#a070ff" />
       <Camera hits={[slam]}>
         <AbsoluteFill style={{alignItems: "center", top: 100}}>
-          <Counter value={n} label="TOMES" ticks={ticks} />
+          <Counter value={n} label="CARDS" ticks={ticks} />
         </AbsoluteFill>
         {TOMES.map((tm, i) => {
           const t = frame - ticks[i];
@@ -335,7 +335,7 @@ export const buildFrames = (p: InsertProps) => Math.round(buildBeats(p.bpm)[4] +
 const TERMS = [
   {n: "33", label: "WEAPONS", icon: GAME("junk_rocket")},
   {n: "85", label: "ITEMS", icon: GAME("energy_drink")},
-  {n: "23", label: "TOMES", icon: "overspam/game/224x232_chaos_mini.png"},
+  {n: "23", label: "CARDS", icon: "overspam/game/224x232_chaos_mini.png"},
   {n: "12", label: "PASSIVES", icon: GAME("loot_dice")},
 ];
 

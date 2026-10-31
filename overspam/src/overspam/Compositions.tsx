@@ -12,7 +12,7 @@ const INSERTS = [
   {id: "OS-Heroes", component: Heroes, frames: heroesFrames},
   {id: "OS-Weapons", component: Weapons, frames: weaponsFrames},
   {id: "OS-Items", component: Items, frames: itemsFrames},
-  {id: "OS-Tomes", component: Tomes, frames: tomesFrames},
+  {id: "OS-Cards", component: Tomes, frames: tomesFrames},
   {id: "OS-Build", component: Build, frames: buildFrames},
 ];
 

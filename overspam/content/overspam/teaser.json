@@ -7,6 +7,8 @@
     "site": "OVERSPAM.COM",
     "world": "moon"
   },
+  "bg": "deep",
+  "noFlash": ["OS-Weapons", "OS-Heroes", "OS-Items", "OS-Tomes", "OS-Worlds"],
   "alpha": ["OS-Weapons"],
   "render": ["OS-Worlds", "OS-Heroes", "OS-Weapons", "OS-Items", "OS-Tomes", "OS-Build", "OS-End", "OS-Boss"]
 }

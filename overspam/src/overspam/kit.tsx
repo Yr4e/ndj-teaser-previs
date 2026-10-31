@@ -1,5 +1,5 @@
 import React from "react";
-import {AbsoluteFill, Audio, interpolate, Sequence, spring, staticFile, useCurrentFrame, useVideoConfig} from "remotion";
+import {AbsoluteFill, Audio, getInputProps, interpolate, Sequence, spring, staticFile, useCurrentFrame, useVideoConfig} from "remotion";
 import {BG} from "./data";
 import {PixelText, PixelStyle} from "./PixelText";
 
@@ -16,8 +16,52 @@ export const rand = (seed: number) => {
   return x - Math.floor(x);
 };
 
+/** Варианты фона вставок, выбираются в teaser.json полем "bg"; "grid" — исходный со свечением и сеткой */
+export type BgStyle = "grid" | "deep" | "spot" | "crt" | "dust";
+const VIGNETTE = "radial-gradient(80% 70% at 50% 50%, transparent 55%, rgba(0,0,0,0.75))";
+const GRAIN = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='256' height='256' filter='url(%23n)' opacity='0.5'/></svg>")`;
+
+/** Почти чёрный фон без свечения и сетки: живая плёночная зернистость, мягкое пятно света, CRT-строки или пыль */
+const DarkBackdrop: React.FC<{style: Exclude<BgStyle, "grid">}> = ({style}) => {
+  const frame = useCurrentFrame();
+  const base =
+    style === "spot"
+      ? "radial-gradient(48% 46% at 50% 56%, #1d1c26, #0b0b10 60%, #040406)"
+      : "radial-gradient(120% 90% at 50% 40%, #121219, #060609 70%)";
+  return (
+    <AbsoluteFill style={{background: base}}>
+      {style === "crt" && (
+        <>
+          <AbsoluteFill style={{backgroundImage: "repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 2px, transparent 2px 6px)"}} />
+          <AbsoluteFill style={{background: `linear-gradient(transparent ${(frame * 0.6) % 140 - 20}%, rgba(255,255,255,0.03) ${(frame * 0.6) % 140 - 10}%, transparent ${(frame * 0.6) % 140}%)`}} />
+        </>
+      )}
+      {style === "dust" &&
+        Array.from({length: 60}, (_, i) => {
+          const sp = 0.15 + rand(i + 7) * 0.35;
+          const y = 1100 - ((frame * sp + rand(i + 3) * 1200) % 1200);
+          const sz = 3 + Math.floor(rand(i + 11) * 3) * 2;
+          return (
+            <div
+              key={i}
+              style={{position: "absolute", left: rand(i) * 1920 + Math.sin(frame / 60 + i) * 12, top: y, width: sz, height: sz, background: "#ffffff", opacity: 0.05 + rand(i + 21) * 0.1}}
+            />
+          );
+        })}
+      <AbsoluteFill style={{backgroundImage: GRAIN, opacity: 0.09, backgroundPosition: `${rand(frame) * 256}px ${rand(frame + 1) * 256}px`, mixBlendMode: "screen"}} />
+      <AbsoluteFill style={{background: VIGNETTE}} />
+    </AbsoluteFill>
+  );
+};
+
 /** Тёмный фон с цветным свечением, пиксельной сеткой и виньеткой */
 export const Backdrop: React.FC<{glow: string; glow2?: string}> = ({glow, glow2}) => {
+  const bg = (getInputProps() as {bg?: BgStyle}).bg ?? "grid";
+  if (bg !== "grid") return <DarkBackdrop style={bg} />;
+  return <GridBackdrop glow={glow} glow2={glow2} />;
+};
+
+const GridBackdrop: React.FC<{glow: string; glow2?: string}> = ({glow, glow2}) => {
   const frame = useCurrentFrame();
   const drift = frame * 0.15;
   return (
@@ -38,7 +82,7 @@ export const Backdrop: React.FC<{glow: string; glow2?: string}> = ({glow, glow2}
           backgroundPosition: `0 ${drift}px`,
         }}
       />
-      <AbsoluteFill style={{background: "radial-gradient(80% 70% at 50% 50%, transparent 55%, rgba(0,0,0,0.75))"}} />
+      <AbsoluteFill style={{background: VIGNETTE}} />
     </AbsoluteFill>
   );
 };
@@ -67,6 +111,8 @@ export const Camera: React.FC<{hits: number[]; push?: number; children: React.Re
 /** Белая вспышка во весь кадр */
 export const Flash: React.FC<{at: number; strength?: number; len?: number}> = ({at, strength = 0.55, len = 10}) => {
   const frame = useCurrentFrame();
+  // вставки из teaser.json "noFlash" рендерятся без белой вспышки на импакте
+  if ((getInputProps() as {flash?: boolean}).flash === false) return null;
   const o = interpolate(frame - at, [0, 1, len], [0, strength, 0], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   return <AbsoluteFill style={{background: "#fffae8", opacity: o, pointerEvents: "none"}} />;
 };

@@ -16,7 +16,7 @@ const out = path.join(ROOT, "out/overspam");
 fs.mkdirSync(out, {recursive: true});
 
 const serveUrl = await bundle({entryPoint: path.join(ROOT, "src/index.ts"), publicDir: path.join(ROOT, "public")});
-const base = {bpm: cfg.bpm, sfx: cfg.sfx};
+const base = {bpm: cfg.bpm, sfx: cfg.sfx, bg: cfg.bg ?? "grid"};
 // In the cloud container point this at an installed headless Chrome instead of downloading one
 const browser = process.env.REMOTION_BROWSER ? {browserExecutable: process.env.REMOTION_BROWSER} : {};
 
@@ -35,6 +35,7 @@ for (const id of ids) {
 }
 
 for (const job of jobs) {
+  if ((cfg.noFlash ?? []).includes(job.id)) job.props = {...job.props, flash: false};
   const composition = await selectComposition({serveUrl, id: job.id, inputProps: job.props, ...browser});
   const outputLocation = path.join(out, job.file);
   let last = -1;

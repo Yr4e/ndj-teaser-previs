@@ -1,6 +1,6 @@
 import React from "react";
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from "remotion";
-import {BOSSES, GOLD, HERO_IMG, WORLDS} from "./data";
+import {BOSSES, GOLD, HERO_IMG, WORLD_IMG, WORLDS} from "./data";
 import {Backdrop, beatFrames, Camera, Flash, LAND, rand, Sfx, SPAWN, TickSfx} from "./kit";
 import type {InsertProps} from "./Inserts";
 import {PixelLogo, PixelText} from "./PixelText";
@@ -8,7 +8,7 @@ import {PixelLogo, PixelText} from "./PixelText";
 const FPS = 60;
 
 /* ───────────── Концовка: герои, логотип, COMING SOON, кнопка Wishlist ───────────── */
-export type EndCardProps = InsertProps & {line: string; button: string; site: string};
+export type EndCardProps = InsertProps & {line: string; button: string; site: string; world?: string};
 export const END_DEFAULTS: EndCardProps = {bpm: 120, sfx: true, line: "COMING SOON", button: "WISHLIST ON STEAM", site: "OVERSPAM.COM"};
 export const endFrames = (p: InsertProps) => Math.round(beatFrames(p.bpm, FPS) * 12);
 
@@ -43,7 +43,22 @@ const Gems: React.FC = () => {
   );
 };
 
-export const EndCard: React.FC<EndCardProps> = ({bpm, sfx, line, button, site}) => {
+/** Фон концовки: картинка мира с сайта, приглушённая, с медленным наездом и виньеткой */
+const WorldBackdrop: React.FC<{world: string}> = ({world}) => {
+  const frame = useCurrentFrame();
+  const {durationInFrames} = useVideoConfig();
+  return (
+    <AbsoluteFill style={{background: "#000"}}>
+      <Img
+        src={staticFile(WORLD_IMG(world))}
+        style={{width: "100%", height: "100%", objectFit: "cover", transform: `scale(${1 + (frame / durationInFrames) * 0.06})`, filter: "brightness(0.55) blur(2px)"}}
+      />
+      <AbsoluteFill style={{background: "radial-gradient(80% 70% at 50% 50%, transparent 55%, rgba(0,0,0,0.75))"}} />
+    </AbsoluteFill>
+  );
+};
+
+export const EndCard: React.FC<EndCardProps> = ({bpm, sfx, line, button, site, world}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const B = beatFrames(bpm, FPS);
@@ -83,7 +98,7 @@ export const EndCard: React.FC<EndCardProps> = ({bpm, sfx, line, button, site}) 
 
   return (
     <AbsoluteFill>
-      <Backdrop glow="#ff9a5a" glow2="#6ff3ff" />
+      {world ? <WorldBackdrop world={world} /> : <Backdrop glow="#ff9a5a" glow2="#6ff3ff" />}
       <Gems />
       <Camera hits={[tLogo]} push={0.03}>
         {LEFT.map(hero(-1))}

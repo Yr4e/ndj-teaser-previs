@@ -4,7 +4,8 @@
   "end": {
     "line": "COMING SOON",
     "button": "WISHLIST ON STEAM",
-    "site": "OVERSPAM.COM"
+    "site": "OVERSPAM.COM",
+    "world": "moon"
   },
   "alpha": ["OS-Weapons"],
   "render": ["OS-Worlds", "OS-Heroes", "OS-Weapons", "OS-Items", "OS-Tomes", "OS-Build", "OS-End", "OS-Boss"]

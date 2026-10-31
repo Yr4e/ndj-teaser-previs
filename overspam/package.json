@@ -7,6 +7,7 @@
     "studio": "remotion studio src/index.ts",
     "overspam": "tsx scripts/render-overspam.ts",
     "preview-bg": "tsx scripts/preview-bg.ts",
+    "still": "tsx scripts/still.ts",
     "typecheck": "tsc"
   },
   "dependencies": {

@@ -8,7 +8,7 @@ import {PixelLogo, PixelText} from "./PixelText";
 const FPS = 60;
 
 /* ───────────── Концовка: герои, логотип, COMING SOON, кнопка Wishlist ───────────── */
-export type EndCardProps = InsertProps & {line: string; button: string; site: string; world?: string};
+export type EndCardProps = InsertProps & {line: string; button: string; site: string; world?: string; layout?: "heroes" | "versus"};
 export const END_DEFAULTS: EndCardProps = {bpm: 120, sfx: true, line: "COMING SOON", button: "WISHLIST ON STEAM", site: "OVERSPAM.COM"};
 export const endFrames = (p: InsertProps) => Math.round(beatFrames(p.bpm, FPS) * 12);
 
@@ -21,6 +21,43 @@ const RIGHT: [string, number, number, boolean][] = [
   ["deadletter", 1470, 500, true], ["brakka", 1630, 580, true], ["junkpaw", 1810, 560, true],
   ["glitch", 1510, 460, false], ["grindbone", 1670, 540, false], ["spammer", 1840, 520, false],
 ];
+
+// layout "versus": слева мобы, справа герои, между ними светящийся разлом
+const VS_MOBS: [string, number, number, boolean][] = [
+  ["craterbrute", 120, 560, true], ["overlord", 330, 520, true], ["barnaclebrute", 520, 500, true],
+  ["junkling", 70, 400, false], ["ping", 250, 430, false], ["popup", 420, 400, false], ["crawler", 560, 300, false],
+];
+const VS_HEROES: [string, number, number, boolean][] = [
+  ["deadletter", 1400, 500, true], ["brakka", 1590, 580, true], ["junkpaw", 1790, 560, true],
+  ["bongo", 1330, 480, false], ["glitch", 1500, 460, false], ["grindbone", 1670, 540, false], ["spammer", 1850, 520, false],
+];
+const ENEMY_IMG = (m: string) => `overspam/site/enemies/${m}.webp`;
+
+/** Разлом между мобами и героями: зубчатая молния сверху вниз, красное поле слева, голубое справа */
+const VersusSplit: React.FC<{reveal: number}> = ({reveal}) => {
+  const frame = useCurrentFrame();
+  const pts = Array.from({length: 13}, (_, i) => {
+    const y = (i / 12) * 1080;
+    const x = 960 + (i % 2 ? 1 : -1) * (26 + rand(i + 40) * 30) + Math.sin(frame / 9 + i) * 3;
+    return [x, y] as const;
+  });
+  const line = pts.map(([x, y]) => `${x},${y}`).join(" ");
+  const shown = 1080 * reveal;
+  return (
+    <AbsoluteFill>
+      <AbsoluteFill style={{background: `linear-gradient(90deg, rgba(255,60,70,${0.16 * reveal}), transparent 45%, transparent 55%, rgba(80,220,255,${0.16 * reveal}))`}} />
+      <svg width={1920} height={1080} style={{position: "absolute"}}>
+        <defs>
+          <clipPath id="vs-reveal"><rect x={0} y={0} width={1920} height={shown} /></clipPath>
+        </defs>
+        <g clipPath="url(#vs-reveal)">
+          <polyline points={line} fill="none" stroke={GOLD} strokeWidth={22} strokeLinejoin="miter" opacity={0.25} />
+          <polyline points={line} fill="none" stroke="#fff2c8" strokeWidth={7} strokeLinejoin="miter" style={{filter: `drop-shadow(0 0 14px ${GOLD})`}} />
+        </g>
+      </svg>
+    </AbsoluteFill>
+  );
+};
 
 const Gems: React.FC = () => {
   const frame = useCurrentFrame();
@@ -58,7 +95,7 @@ const WorldBackdrop: React.FC<{world: string}> = ({world}) => {
   );
 };
 
-export const EndCard: React.FC<EndCardProps> = ({bpm, sfx, line, button, site, world}) => {
+export const EndCard: React.FC<EndCardProps> = ({bpm, sfx, line, button, site, world, layout}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const B = beatFrames(bpm, FPS);
@@ -76,13 +113,14 @@ export const EndCard: React.FC<EndCardProps> = ({bpm, sfx, line, button, site, w
   const beatPhase = sinceBtn > 0 ? (sinceBtn % B) / B : 1;
   const pulse = sinceBtn > 0 ? Math.pow(1 - beatPhase, 3) : 0;
 
-  const hero = (side: -1 | 1) => ([h, x, height, back]: [string, number, number, boolean], i: number) => {
+  const versus = layout === "versus";
+  const hero = (side: -1 | 1, mobs = false) => ([h, x, height, back]: [string, number, number, boolean], i: number) => {
     const s = spring({frame: frame - tHeroes - i * 2.5, fps, config: LAND, durationInFrames: 30});
-    const w = (height * 3) / 4;
+    const w = mobs ? height : (height * 3) / 4;
     return (
       <Img
         key={h}
-        src={staticFile(HERO_IMG(h))}
+        src={staticFile(mobs ? ENEMY_IMG(h) : HERO_IMG(h))}
         style={{
           position: "absolute",
           left: x - w / 2 + side * (1 - s) * 700,
@@ -101,8 +139,9 @@ export const EndCard: React.FC<EndCardProps> = ({bpm, sfx, line, button, site, w
       {world ? <WorldBackdrop world={world} /> : <Backdrop glow="#ff9a5a" glow2="#6ff3ff" />}
       <Gems />
       <Camera hits={[tLogo]} push={0.03}>
-        {LEFT.map(hero(-1))}
-        {RIGHT.map(hero(1))}
+        {versus && <VersusSplit reveal={interpolate(frame, [tHeroes, tLogo], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"})} />}
+        {versus ? VS_MOBS.map(hero(-1, true)) : LEFT.map(hero(-1))}
+        {versus ? VS_HEROES.map(hero(1)) : RIGHT.map(hero(1))}
         <AbsoluteFill style={{background: "radial-gradient(38% 50% at 50% 46%, rgba(7,7,13,0.75), transparent 75%)", zIndex: 3}} />
         <AbsoluteFill style={{alignItems: "center", zIndex: 4}}>
           <div

@@ -5,7 +5,7 @@ import {Backdrop, beatFrames, Camera, Counter, Flash, LAND, rand, SPAWN, ticksDo
 import {PixelText} from "./PixelText";
 
 /** Общие настройки вставок: темп музыки и звук тиков */
-export type InsertProps = {bpm: number; sfx: boolean};
+export type InsertProps = {bpm: number; sfx: boolean; transparent?: boolean};
 export const INSERT_DEFAULTS: InsertProps = {bpm: 120, sfx: true};
 
 const FPS = 60;
@@ -152,7 +152,7 @@ const Slot: React.FC<{size: number; lit: number; children?: React.ReactNode}> = 
   </div>
 );
 
-export const Weapons: React.FC<InsertProps> = ({bpm, sfx}) => {
+export const Weapons: React.FC<InsertProps> = ({bpm, sfx, transparent}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const ticks = weaponTicks(bpm);
@@ -164,7 +164,7 @@ export const Weapons: React.FC<InsertProps> = ({bpm, sfx}) => {
   const left = (1920 - (COLS * SIZE + (COLS - 1) * GAP)) / 2;
   return (
     <AbsoluteFill>
-      <Backdrop glow={GOLD} glow2="#ff4fd8" />
+      {!transparent && <Backdrop glow={GOLD} glow2="#ff4fd8" />}
       <Camera hits={[slam]}>
         <AbsoluteFill style={{alignItems: "center", top: 120}}>
           <Counter value={n} label="WEAPONS" ticks={ticks} />
@@ -203,7 +203,7 @@ export const Weapons: React.FC<InsertProps> = ({bpm, sfx}) => {
           );
         })}
       </Camera>
-      <Flash at={slam} strength={0.3} />
+      {!transparent && <Flash at={slam} strength={0.3} />}
       {sfx && <TickSfx ticks={ticks} slam={slam} volume={0.35} />}
     </AbsoluteFill>
   );

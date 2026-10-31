@@ -7,7 +7,7 @@ const ROOT = path.resolve(import.meta.dirname, "..");
 /**
  * Вставки для трейлера OVERSPAM: npm run overspam [-- OS-Weapons OS-End]
  * Настройки (bpm, звук, тексты концовки) в content/overspam/teaser.json.
- * Полноэкранные вставки → MP4, плашки боссов → MOV ProRes 4444 с прозрачностью.
+ * Полноэкранные вставки → MP4, плашки боссов и вставки из "alpha" → MOV ProRes 4444 с прозрачностью.
  */
 const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, "content/overspam/teaser.json"), "utf8"));
 const only = process.argv.slice(2);
@@ -17,6 +17,8 @@ fs.mkdirSync(out, {recursive: true});
 
 const serveUrl = await bundle({entryPoint: path.join(ROOT, "src/index.ts"), publicDir: path.join(ROOT, "public")});
 const base = {bpm: cfg.bpm, sfx: cfg.sfx};
+// In the cloud container point this at an installed headless Chrome instead of downloading one
+const browser = process.env.REMOTION_BROWSER ? {browserExecutable: process.env.REMOTION_BROWSER} : {};
 
 const jobs: {id: string; file: string; props: Record<string, unknown>; alpha: boolean}[] = [];
 for (const id of ids) {
@@ -25,12 +27,15 @@ for (const id of ids) {
   } else if (id === "OS-End") {
     jobs.push({id, file: "end.mp4", props: {...base, ...cfg.end}, alpha: false});
   } else {
-    jobs.push({id, file: `${id.replace("OS-", "").toLowerCase()}.mp4`, props: base, alpha: false});
+    const name = id.replace("OS-", "").toLowerCase();
+    jobs.push({id, file: `${name}.mp4`, props: base, alpha: false});
+    // Same insert without the backdrop, to lay over gameplay: listed in teaser.json "alpha"
+    if ((cfg.alpha ?? []).includes(id)) jobs.push({id, file: `${name}-alpha.mov`, props: {...base, transparent: true}, alpha: true});
   }
 }
 
 for (const job of jobs) {
-  const composition = await selectComposition({serveUrl, id: job.id, inputProps: job.props});
+  const composition = await selectComposition({serveUrl, id: job.id, inputProps: job.props, ...browser});
   const outputLocation = path.join(out, job.file);
   let last = -1;
   await renderMedia({
@@ -38,6 +43,7 @@ for (const job of jobs) {
     serveUrl,
     inputProps: job.props,
     outputLocation,
+    ...browser,
     audioCodec: job.alpha ? "pcm-16" : "aac",
     ...(job.alpha
       ? {codec: "prores" as const, proResProfile: "4444" as const, pixelFormat: "yuva444p10le" as const, imageFormat: "png" as const}

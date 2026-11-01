@@ -23,32 +23,29 @@ const RIGHT: [string, number, number, boolean][] = [
 ];
 
 // layout "versus": слева мобы, справа герои, между ними светящийся разлом
+// крайние высокие фигуры заднего ряда закрывают пустые углы
 const VS_MOBS: [string, number, number, boolean][] = [
-  ["craterbrute", 120, 560, true], ["overlord", 330, 520, true], ["barnaclebrute", 520, 500, true],
-  ["junkling", 70, 400, false], ["ping", 250, 430, false], ["popup", 420, 400, false], ["crawler", 560, 300, false],
+  ["obeliskbrute", 60, 720, true], ["craterbrute", 230, 600, true], ["overlord", 400, 540, true], ["barnaclebrute", 560, 500, true],
+  ["junkling", 90, 420, false], ["ping", 260, 440, false], ["popup", 430, 400, false], ["crawler", 580, 300, false],
 ];
 const VS_HEROES: [string, number, number, boolean][] = [
-  ["deadletter", 1400, 500, true], ["brakka", 1590, 580, true], ["junkpaw", 1790, 560, true],
+  ["deadletter", 1380, 500, true], ["brakka", 1540, 600, true], ["junkpaw", 1700, 600, true], ["wizzle", 1870, 720, true],
   ["bongo", 1330, 480, false], ["glitch", 1500, 460, false], ["grindbone", 1670, 540, false], ["spammer", 1850, 520, false],
 ];
 export const ENEMY_IMG = (m: string) => `overspam/site/enemies/${m}.webp`;
 
 /** Подъём и масштаб по дуге: чем дальше от центра, тем выше и чуть мельче — толпа уходит вверх к краям */
-const arcLift = (x: number) => 0.00022 * (x - 960) ** 2;
+const arcLift = (x: number) => 0.0003 * (x - 960) ** 2;
 const arcScale = (x: number) => 1 - 0.00016 * Math.abs(x - 960);
 
-/** Разделение мобов и героев: косая граница, красный свет слева, голубой справа, по шву мягкий световой луч */
+/** Разделение мобов и героев без линии: красный свет слева плавно переходит в голубой справа, по центру мягкое тёплое свечение */
 export const VersusSplit: React.FC<{reveal: number}> = ({reveal}) => {
   const frame = useCurrentFrame();
-  const flicker = 0.85 + Math.sin(frame / 7) * 0.08 + Math.sin(frame / 3.1) * 0.05;
+  const breathe = 0.9 + Math.sin(frame / 20) * 0.1;
   return (
     <AbsoluteFill>
-      <AbsoluteFill style={{clipPath: "polygon(0 0, 52.5% 0, 47.5% 100%, 0 100%)", background: `linear-gradient(90deg, rgba(255,55,70,${0.28 * reveal}), rgba(255,55,70,${0.06 * reveal}) 48%)`}} />
-      <AbsoluteFill style={{clipPath: "polygon(52.5% 0, 100% 0, 100% 100%, 47.5% 100%)", background: `linear-gradient(270deg, rgba(70,215,255,${0.28 * reveal}), rgba(70,215,255,${0.06 * reveal}) 48%)`}} />
-      <AbsoluteFill style={{alignItems: "center", justifyContent: "center"}}>
-        <div style={{position: "absolute", width: 160, height: 1300, transform: `rotate(5.3deg) scaleY(${reveal})`, background: "linear-gradient(90deg, transparent, rgba(255,214,140,0.16), transparent)", filter: "blur(18px)", opacity: flicker}} />
-        <div style={{position: "absolute", width: 4, height: 1300, transform: `rotate(5.3deg) scaleY(${reveal})`, background: "linear-gradient(transparent, #fff3d0 18%, #fff3d0 82%, transparent)", boxShadow: `0 0 18px ${GOLD}, 0 0 46px ${GOLD}99`, opacity: flicker}} />
-      </AbsoluteFill>
+      <AbsoluteFill style={{background: `linear-gradient(100deg, rgba(255,50,65,${0.3 * reveal}) 0%, rgba(255,50,65,${0.08 * reveal}) 38%, transparent 50%, rgba(60,205,255,${0.08 * reveal}) 62%, rgba(60,205,255,${0.3 * reveal}) 100%)`}} />
+      <AbsoluteFill style={{background: `radial-gradient(14% 60% at 50% 55%, rgba(255,200,130,${0.1 * reveal * breathe}), transparent 70%)`}} />
     </AbsoluteFill>
   );
 };
@@ -82,7 +79,7 @@ export const WorldBackdrop: React.FC<{world: string}> = ({world}) => {
     <AbsoluteFill style={{background: "#000"}}>
       <Img
         src={staticFile(WORLD_IMG(world))}
-        style={{width: "100%", height: "100%", objectFit: "cover", transform: `scale(${1 + (frame / durationInFrames) * 0.06})`, filter: "brightness(0.55) blur(2px)"}}
+        style={{width: "100%", height: "100%", objectFit: "cover", transform: `scale(${1 + (frame / durationInFrames) * 0.06})`, filter: "brightness(0.35) blur(2px)"}}
       />
       <AbsoluteFill style={{background: "radial-gradient(80% 70% at 50% 50%, transparent 55%, rgba(0,0,0,0.75))"}} />
     </AbsoluteFill>

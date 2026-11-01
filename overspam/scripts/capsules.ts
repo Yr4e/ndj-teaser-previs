@@ -10,7 +10,7 @@ const out = path.join(ROOT, "out/overspam/capsules");
 fs.mkdirSync(out, {recursive: true});
 const browser = process.env.REMOTION_BROWSER ? {browserExecutable: process.env.REMOTION_BROWSER} : {};
 const serveUrl = await bundle({entryPoint: path.join(ROOT, "src/index.ts"), publicDir: path.join(ROOT, "public")});
-for (const kind of ["header", "small", "main", "vertical", "library"]) {
+for (const kind of ["header", "small", "main", "vertical", "library", "libraryHero", "libraryLogo"]) {
   const inputProps = {kind, world: cfg.end?.world ?? "moon"};
   const composition = await selectComposition({serveUrl, id: "OS-Capsule", inputProps, ...browser});
   const output = path.join(out, `${kind}_${composition.width}x${composition.height}.png`);

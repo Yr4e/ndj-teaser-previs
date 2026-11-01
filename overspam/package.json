@@ -8,6 +8,7 @@
     "overspam": "tsx scripts/render-overspam.ts",
     "preview-bg": "tsx scripts/preview-bg.ts",
     "still": "tsx scripts/still.ts",
+    "capsules": "tsx scripts/capsules.ts",
     "typecheck": "tsc"
   },
   "dependencies": {

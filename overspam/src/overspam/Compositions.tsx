@@ -1,5 +1,6 @@
 import React from "react";
 import {Composition} from "remotion";
+import {Capsule, CAPSULES} from "./Capsule";
 import {BossIntro, bossFrames, END_DEFAULTS, EndCard, endFrames} from "./EndCard";
 import {
   Build, buildFrames, Heroes, heroesFrames, INSERT_DEFAULTS, Items, itemsFrames,
@@ -50,6 +51,16 @@ export const OverspamCompositions: React.FC = () => (
       durationInFrames={bossFrames({bpm: 120})}
       defaultProps={{boss: 0, bpm: 120, sfx: true}}
       calculateMetadata={({props}) => ({durationInFrames: bossFrames(props)})}
+    />
+    <Composition
+      id="OS-Capsule"
+      component={Capsule}
+      width={CAPSULES.header.width}
+      height={CAPSULES.header.height}
+      fps={60}
+      durationInFrames={1}
+      defaultProps={{kind: "header" as const, world: "moon"}}
+      calculateMetadata={({props}) => CAPSULES[props.kind]}
     />
   </>
 );

@@ -31,30 +31,24 @@ const VS_HEROES: [string, number, number, boolean][] = [
   ["deadletter", 1400, 500, true], ["brakka", 1590, 580, true], ["junkpaw", 1790, 560, true],
   ["bongo", 1330, 480, false], ["glitch", 1500, 460, false], ["grindbone", 1670, 540, false], ["spammer", 1850, 520, false],
 ];
-const ENEMY_IMG = (m: string) => `overspam/site/enemies/${m}.webp`;
+export const ENEMY_IMG = (m: string) => `overspam/site/enemies/${m}.webp`;
 
-/** Разлом между мобами и героями: зубчатая молния сверху вниз, красное поле слева, голубое справа */
-const VersusSplit: React.FC<{reveal: number}> = ({reveal}) => {
+/** Подъём и масштаб по дуге: чем дальше от центра, тем выше и чуть мельче — толпа уходит вверх к краям */
+const arcLift = (x: number) => 0.00022 * (x - 960) ** 2;
+const arcScale = (x: number) => 1 - 0.00016 * Math.abs(x - 960);
+
+/** Разделение мобов и героев: косая граница, красный свет слева, голубой справа, по шву мягкий световой луч */
+export const VersusSplit: React.FC<{reveal: number}> = ({reveal}) => {
   const frame = useCurrentFrame();
-  const pts = Array.from({length: 13}, (_, i) => {
-    const y = (i / 12) * 1080;
-    const x = 960 + (i % 2 ? 1 : -1) * (26 + rand(i + 40) * 30) + Math.sin(frame / 9 + i) * 3;
-    return [x, y] as const;
-  });
-  const line = pts.map(([x, y]) => `${x},${y}`).join(" ");
-  const shown = 1080 * reveal;
+  const flicker = 0.85 + Math.sin(frame / 7) * 0.08 + Math.sin(frame / 3.1) * 0.05;
   return (
     <AbsoluteFill>
-      <AbsoluteFill style={{background: `linear-gradient(90deg, rgba(255,60,70,${0.16 * reveal}), transparent 45%, transparent 55%, rgba(80,220,255,${0.16 * reveal}))`}} />
-      <svg width={1920} height={1080} style={{position: "absolute"}}>
-        <defs>
-          <clipPath id="vs-reveal"><rect x={0} y={0} width={1920} height={shown} /></clipPath>
-        </defs>
-        <g clipPath="url(#vs-reveal)">
-          <polyline points={line} fill="none" stroke={GOLD} strokeWidth={22} strokeLinejoin="miter" opacity={0.25} />
-          <polyline points={line} fill="none" stroke="#fff2c8" strokeWidth={7} strokeLinejoin="miter" style={{filter: `drop-shadow(0 0 14px ${GOLD})`}} />
-        </g>
-      </svg>
+      <AbsoluteFill style={{clipPath: "polygon(0 0, 52.5% 0, 47.5% 100%, 0 100%)", background: `linear-gradient(90deg, rgba(255,55,70,${0.28 * reveal}), rgba(255,55,70,${0.06 * reveal}) 48%)`}} />
+      <AbsoluteFill style={{clipPath: "polygon(52.5% 0, 100% 0, 100% 100%, 47.5% 100%)", background: `linear-gradient(270deg, rgba(70,215,255,${0.28 * reveal}), rgba(70,215,255,${0.06 * reveal}) 48%)`}} />
+      <AbsoluteFill style={{alignItems: "center", justifyContent: "center"}}>
+        <div style={{position: "absolute", width: 160, height: 1300, transform: `rotate(5.3deg) scaleY(${reveal})`, background: "linear-gradient(90deg, transparent, rgba(255,214,140,0.16), transparent)", filter: "blur(18px)", opacity: flicker}} />
+        <div style={{position: "absolute", width: 4, height: 1300, transform: `rotate(5.3deg) scaleY(${reveal})`, background: "linear-gradient(transparent, #fff3d0 18%, #fff3d0 82%, transparent)", boxShadow: `0 0 18px ${GOLD}, 0 0 46px ${GOLD}99`, opacity: flicker}} />
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
@@ -81,7 +75,7 @@ const Gems: React.FC = () => {
 };
 
 /** Фон концовки: картинка мира с сайта, приглушённая, с медленным наездом и виньеткой */
-const WorldBackdrop: React.FC<{world: string}> = ({world}) => {
+export const WorldBackdrop: React.FC<{world: string}> = ({world}) => {
   const frame = useCurrentFrame();
   const {durationInFrames} = useVideoConfig();
   return (
@@ -114,8 +108,10 @@ export const EndCard: React.FC<EndCardProps> = ({bpm, sfx, line, button, site, w
   const pulse = sinceBtn > 0 ? Math.pow(1 - beatPhase, 3) : 0;
 
   const versus = layout === "versus";
-  const hero = (side: -1 | 1, mobs = false) => ([h, x, height, back]: [string, number, number, boolean], i: number) => {
+  const hero = (side: -1 | 1, mobs = false) => ([h, x, height0, back]: [string, number, number, boolean], i: number) => {
     const s = spring({frame: frame - tHeroes - i * 2.5, fps, config: LAND, durationInFrames: 30});
+    // в versus обе толпы стоят дугой, поднимаясь к краям; мобы развёрнуты лицом к центру
+    const height = versus ? height0 * arcScale(x) : height0;
     const w = mobs ? height : (height * 3) / 4;
     return (
       <Img
@@ -124,10 +120,11 @@ export const EndCard: React.FC<EndCardProps> = ({bpm, sfx, line, button, site, w
         style={{
           position: "absolute",
           left: x - w / 2 + side * (1 - s) * 700,
-          bottom: back ? 70 : -30,
+          bottom: (back ? 70 : -30) + (versus ? arcLift(x) : 0),
           width: w,
           height,
           zIndex: back ? 1 : 2,
+          transform: mobs ? "scaleX(-1)" : undefined,
           filter: `brightness(${back ? 0.62 : 1}) drop-shadow(0 25px 30px rgba(0,0,0,0.7))`,
         }}
       />

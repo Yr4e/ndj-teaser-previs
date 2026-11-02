@@ -372,7 +372,6 @@ export const Build: React.FC<InsertProps> = ({bpm, sfx}) => {
                   </div>
                 )}
                 <div style={{display: "flex", flexDirection: "column", alignItems: "center", gap: 18, opacity: s, transform: `scale(${s})`}}>
-                  <Img src={staticFile(tm.icon)} style={{width: 120, height: 120, objectFit: "contain", imageRendering: "pixelated"}} />
                   <PixelText text={tm.n} scale={16} style="logo" />
                   <PixelText text={tm.label} scale={5} style="white" />
                 </div>
@@ -391,7 +390,7 @@ export const Build: React.FC<InsertProps> = ({bpm, sfx}) => {
           </AbsoluteFill>
         )}
       </Camera>
-      <Flash at={slam} strength={0.7} len={14} />
+      {/* белой вспышки на итоге нет (владелец: убрать), остаётся удар камеры */}
       {sfx && <TickSfx ticks={beats.slice(0, 4)} slam={slam} volume={0.6} slamVolume={1} />}
     </AbsoluteFill>
   );

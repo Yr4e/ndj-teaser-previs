@@ -10,8 +10,10 @@ import {
   Cards, cardsFrames, Chests, chestsFrames, HeroTag, heroTagFrames, MapTag, mapTagFrames, Title, TITLE_DEFAULTS, titleFrames,
   Opener, OPENER_DEFAULTS, openerFrames,
 } from "./Trailer";
+import {Overtime, overtimeFrames} from "./Overtime";
+import {BossLineup, bossLineupFrames, BossPath, bossPathFrames} from "./Bosses";
+import {ChestsOpen, chestsOpenFrames} from "./ChestsOpen";
 import {OpenerCuts, OPENER_CUTS_DEFAULTS, openerCutsFrames} from "./OpenerCuts";
-import {Release, RELEASE_DEFAULTS, releaseFrames} from "./Release";
 import {CardsPick, CARDS_PICK_DEFAULTS, cardsPickFrames} from "./CardsPick";
 
 /** Вставки для трейлера OVERSPAM: 1920×1080, 60 fps, длина зависит от bpm */
@@ -71,6 +73,10 @@ export const OverspamCompositions: React.FC = () => (
       defaultProps={TITLE_DEFAULTS}
       calculateMetadata={({props}) => ({durationInFrames: titleFrames(props)})}
     />
+    <Composition id="OS-Overtime" component={Overtime} width={1920} height={1080} fps={60} durationInFrames={overtimeFrames} />
+    <Composition id="OS-BossPath" component={BossPath} width={1920} height={1080} fps={60} durationInFrames={bossPathFrames} />
+    <Composition id="OS-BossLineup" component={BossLineup} width={1920} height={1080} fps={60} durationInFrames={bossLineupFrames} />
+    <Composition id="OS-ChestsOpen" component={ChestsOpen} width={1920} height={1080} fps={60} durationInFrames={chestsOpenFrames} />
     <Composition
       id="OS-OpenerCuts"
       component={OpenerCuts}
@@ -79,15 +85,6 @@ export const OverspamCompositions: React.FC = () => (
       fps={60}
       durationInFrames={openerCutsFrames}
       defaultProps={OPENER_CUTS_DEFAULTS}
-    />
-    <Composition
-      id="OS-Release"
-      component={Release}
-      width={1920}
-      height={1080}
-      fps={60}
-      durationInFrames={releaseFrames}
-      defaultProps={RELEASE_DEFAULTS}
     />
     <Composition
       id="OS-CardsPick"

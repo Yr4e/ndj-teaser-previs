@@ -10,6 +10,8 @@ import {
   Cards, cardsFrames, Chests, chestsFrames, HeroTag, heroTagFrames, MapTag, mapTagFrames, Title, TITLE_DEFAULTS, titleFrames,
   Opener, OPENER_DEFAULTS, openerFrames,
 } from "./Trailer";
+import {OpenerCuts, OPENER_CUTS_DEFAULTS, openerCutsFrames} from "./OpenerCuts";
+import {Release, RELEASE_DEFAULTS, releaseFrames} from "./Release";
 import {CardsPick, CARDS_PICK_DEFAULTS, cardsPickFrames} from "./CardsPick";
 
 /** Вставки для трейлера OVERSPAM: 1920×1080, 60 fps, длина зависит от bpm */
@@ -68,6 +70,24 @@ export const OverspamCompositions: React.FC = () => (
       durationInFrames={titleFrames(TITLE_DEFAULTS)}
       defaultProps={TITLE_DEFAULTS}
       calculateMetadata={({props}) => ({durationInFrames: titleFrames(props)})}
+    />
+    <Composition
+      id="OS-OpenerCuts"
+      component={OpenerCuts}
+      width={1920}
+      height={1080}
+      fps={60}
+      durationInFrames={openerCutsFrames}
+      defaultProps={OPENER_CUTS_DEFAULTS}
+    />
+    <Composition
+      id="OS-Release"
+      component={Release}
+      width={1920}
+      height={1080}
+      fps={60}
+      durationInFrames={releaseFrames}
+      defaultProps={RELEASE_DEFAULTS}
     />
     <Composition
       id="OS-CardsPick"

@@ -1,20 +1,19 @@
 import React from "react";
 import {AbsoluteFill, interpolate, OffthreadVideo, Sequence, staticFile, useCurrentFrame} from "remotion";
 import {FOOTAGE} from "./data";
-import {Counter} from "./kit";
 
 /* ───────────── Сундуки: каждый кусок ждёт анимацию до конца ─────────────
    В каждом куске: чуть-чуть подхода (владелец сам подрежет) → выскакивает пиксельный сундук → карточка награды
-   висит до конца → склейка. Без белой вспышки. Сверху счётчик CHESTS прибавляется в момент, когда выскакивает сундук.
+   висит до конца → склейка. Без белой вспышки и без надписи сверху (владелец убрал счётчик CHESTS).
    Моменты найдены по яркости кадра: в начале анимации сундука экран резко темнеет. */
 type Piece = {src: string; from: number; to: number; pop: number};
-// from / to / pop — секунды в записи (pop = выскакивает сундук)
+// from / to / pop — секунды в записи (pop = выскакивает сундук). Каждый кусок держится 0,85 с от сундука: владелец просил быстрее
 export const CHEST_PIECES: Piece[] = [
   // 1-й кусок с подходом (владелец подрежет), дальше каждый начинается сразу с анимации сундука (кадр, где экран темнеет)
-  {src: "chests/chest_3.mp4", from: 0.45, to: 2.47, pop: 1.02}, // Лес
-  {src: "chests/chest_1.mp4", from: 1.82, to: 3.52, pop: 1.82}, // Dead Internet
-  {src: "chests/chest_4.mp4", from: 0.82, to: 1.87, pop: 0.82}, // Луна
-  {src: "chests/chest_5.mp4", from: 0.87, to: 2.28, pop: 0.87}, // Dead Internet, бой
+  {src: "chests/chest_3.mp4", from: 0.45, to: 1.87, pop: 1.02}, // Лес
+  {src: "chests/chest_1.mp4", from: 1.82, to: 2.67, pop: 1.82}, // Dead Internet
+  {src: "chests/chest_4.mp4", from: 0.82, to: 1.67, pop: 0.82}, // Луна
+  {src: "chests/chest_5.mp4", from: 0.87, to: 1.72, pop: 0.87}, // Dead Internet, бой
 ];
 
 const FPS = 60;
@@ -36,9 +35,6 @@ const Piece: React.FC<{p: Piece}> = ({p}) => {
 };
 
 export const ChestsOpen: React.FC = () => {
-  const frame = useCurrentFrame();
-  const pops = CHEST_PIECES.map((p, i) => starts[i] + f(p.pop - p.from));
-  const n = pops.filter((t) => frame >= t).length;
   return (
     <AbsoluteFill style={{background: "#000"}}>
       {CHEST_PIECES.map((p, i) => (
@@ -46,10 +42,6 @@ export const ChestsOpen: React.FC = () => {
           <Piece p={p} />
         </Sequence>
       ))}
-      <AbsoluteFill style={{background: "linear-gradient(rgba(0,0,0,0.7), transparent 22%)"}} />
-      <AbsoluteFill style={{alignItems: "center", paddingTop: 50, opacity: interpolate(frame, [0, 10], [0, 1], clamp)}}>
-        <Counter value={n} label="CHESTS" ticks={pops} numScale={14} labelScale={8} />
-      </AbsoluteFill>
     </AbsoluteFill>
   );
 };

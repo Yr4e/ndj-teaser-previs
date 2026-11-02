@@ -9,6 +9,9 @@
 | `chests/chest_1.mp4` | 5 с, Dead Internet: открытие сундука, карточка CHEST с наградой. |
 | `chests/chest_2.mp4` | 8 с, Луна: на самом деле **шрайн** (SHRINE BLESSING, выбор из 3), не сундук. |
 | `chests/chest_3.mp4` | 5 с, Лес: открытие сундука, карточка CHEST, потом бой. |
+| `chests/chest_4.mp4` | 3,1 с, Луна: сундук (анимация с 0,82 с, карточка до 1,87 с). |
+| `chests/chest_5.mp4` | 3,1 с, Dead Internet: сундук (анимация с 0,87 с, карточка до 2,28 с). |
+| `opener/cut03..12.mp4` | клипы владельца для опенера, уже нужной длины. |
 | `events/event_1.mp4` | 11 с, Луна: шрайн, круг активации, SHRINE BLESSING (зелёные карты). |
 | `events/event_2.mp4` | 10 с, Лес: GOLDEN SHRINE, золотой круг, выбор из 3 золотых карт. |
 | `events/event_3.mp4` | 8,5 с, Abyss Dome: GOLDEN SHRINE с молниями, выбор карты. |

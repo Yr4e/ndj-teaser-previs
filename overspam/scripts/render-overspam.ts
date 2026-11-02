@@ -32,6 +32,8 @@ for (const id of ids) {
     jobs.push({id, file: "opener-sfx.wav", props: {...base, ...cfg.title, ...cfg.opener}, alpha: false});
   } else if (id === "OS-BossPath" || id === "OS-BossLineup") {
     jobs.push({id, file: id === "OS-BossPath" ? "bosses-path.mp4" : "bosses-lineup.mp4", props: base, alpha: false});
+  } else if (id === "OS-Shrines") {
+    jobs.push({id, file: "shrines.mp4", props: base, alpha: false});
   } else if (id === "OS-ChestsOpen") {
     jobs.push({id, file: "chests-open.mp4", props: base, alpha: false});
   } else if (id === "OS-OpenerCuts") {

@@ -59,5 +59,14 @@ export const BOSSES = [
   {id: "captain", name: "THE SHARK CAPTAIN", world: 4},
 ] as const;
 
+/** Плашки героев для трейлера: роль и пассивка (с overspam.com). Добавлять сюда по мере надобности. */
+export const HERO_INFO: Record<string, {name: string; role: string; passive: string}> = {
+  grindbone: {name: "GRINDBONE", role: "SKATE-PUNK SPEEDSTER", passive: "SKATE FLOW"},
+  junkpaw: {name: "JUNKPAW", role: "SPAM COLLECTOR", passive: "SCRAP PLATING"},
+};
+
+/** Записи геймплея: footage/ подключена в public/ ссылкой */
+export const FOOTAGE = (name: string) => `footage/${name}`;
+
 export const BG = "#07070d";
 export const GOLD = "#ffc547";

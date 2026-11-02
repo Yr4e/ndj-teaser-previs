@@ -26,6 +26,14 @@ for (const id of ids) {
     for (let boss = 0; boss < 5; boss++) jobs.push({id, file: `boss-${boss + 1}.mov`, props: {...base, boss}, alpha: true});
   } else if (id === "OS-End") {
     jobs.push({id, file: "end.mp4", props: {...base, ...cfg.end}, alpha: false});
+  } else if (id === "OS-Title") {
+    jobs.push({id, file: "title.mp4", props: {...base, ...cfg.title}, alpha: false});
+  } else if (id === "OS-HeroTag") {
+    // прозрачные плашки героев: teaser.json "heroTags"
+    for (const hero of cfg.heroTags ?? []) jobs.push({id, file: `herotag-${hero}.mov`, props: {...base, hero}, alpha: true});
+  } else if (id === "OS-MapTag") {
+    // прозрачные метки поверх геймплея: teaser.json "mapTags"
+    for (const tag of cfg.mapTags ?? []) jobs.push({id, file: `maptag-${tag.toLowerCase().replace(/\s+/g, "-")}.mov`, props: {...base, tag}, alpha: true});
   } else {
     const name = id.replace("OS-", "").toLowerCase();
     jobs.push({id, file: `${name}.mp4`, props: base, alpha: false});

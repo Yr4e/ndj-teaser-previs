@@ -6,6 +6,9 @@ import {
   Build, buildFrames, Heroes, heroesFrames, INSERT_DEFAULTS, Items, itemsFrames,
   Tomes, tomesFrames, Weapons, weaponsFrames, Worlds, worldsFrames,
 } from "./Inserts";
+import {
+  Cards, cardsFrames, Chests, chestsFrames, HeroTag, heroTagFrames, MapTag, mapTagFrames, Title, TITLE_DEFAULTS, titleFrames,
+} from "./Trailer";
 
 /** Вставки для трейлера OVERSPAM: 1920×1080, 60 fps, длина зависит от bpm */
 const INSERTS = [
@@ -13,7 +16,9 @@ const INSERTS = [
   {id: "OS-Heroes", component: Heroes, frames: heroesFrames},
   {id: "OS-Weapons", component: Weapons, frames: weaponsFrames},
   {id: "OS-Items", component: Items, frames: itemsFrames},
-  {id: "OS-Cards", component: Tomes, frames: tomesFrames},
+  {id: "OS-CardsFan", component: Tomes, frames: tomesFrames},
+  {id: "OS-Cards", component: Cards, frames: cardsFrames},
+  {id: "OS-Chests", component: Chests, frames: chestsFrames},
   {id: "OS-Build", component: Build, frames: buildFrames},
 ];
 
@@ -51,6 +56,36 @@ export const OverspamCompositions: React.FC = () => (
       durationInFrames={bossFrames({bpm: 120})}
       defaultProps={{boss: 0, bpm: 120, sfx: true}}
       calculateMetadata={({props}) => ({durationInFrames: bossFrames(props)})}
+    />
+    <Composition
+      id="OS-Title"
+      component={Title}
+      width={1920}
+      height={1080}
+      fps={60}
+      durationInFrames={titleFrames(TITLE_DEFAULTS)}
+      defaultProps={TITLE_DEFAULTS}
+      calculateMetadata={({props}) => ({durationInFrames: titleFrames(props)})}
+    />
+    <Composition
+      id="OS-HeroTag"
+      component={HeroTag}
+      width={1920}
+      height={1080}
+      fps={60}
+      durationInFrames={heroTagFrames(INSERT_DEFAULTS)}
+      defaultProps={{...INSERT_DEFAULTS, hero: "grindbone"}}
+      calculateMetadata={({props}) => ({durationInFrames: heroTagFrames(props)})}
+    />
+    <Composition
+      id="OS-MapTag"
+      component={MapTag}
+      width={1920}
+      height={1080}
+      fps={60}
+      durationInFrames={mapTagFrames(INSERT_DEFAULTS)}
+      defaultProps={{...INSERT_DEFAULTS, tag: "SHRINES"}}
+      calculateMetadata={({props}) => ({durationInFrames: mapTagFrames(props)})}
     />
     <Composition
       id="OS-Capsule"

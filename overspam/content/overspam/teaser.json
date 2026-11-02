@@ -2,13 +2,52 @@
   "bpm": 130,
   "sfx": true,
   "end": {
-    "line": "COMING SOON",
+    "line": "COMING THIS FALL",
     "button": "WISHLIST ON STEAM",
     "site": "OVERSPAM.COM",
     "world": "moon"
   },
   "bg": "deep",
-  "noFlash": ["OS-Weapons", "OS-Heroes", "OS-Items", "OS-Cards", "OS-Worlds"],
-  "alpha": ["OS-Weapons"],
-  "render": ["OS-Worlds", "OS-Heroes", "OS-Weapons", "OS-Items", "OS-Cards", "OS-Build", "OS-End", "OS-Boss"]
+  "noFlash": [
+    "OS-Weapons",
+    "OS-Heroes",
+    "OS-Items",
+    "OS-CardsFan",
+    "OS-Worlds"
+  ],
+  "alpha": [
+    "OS-Weapons"
+  ],
+  "render": [
+    "OS-Worlds",
+    "OS-Heroes",
+    "OS-Weapons",
+    "OS-Items",
+    "OS-CardsFan",
+    "OS-Build",
+    "OS-End",
+    "OS-Boss",
+    "OS-Title",
+    "OS-Cards",
+    "OS-Chests",
+    "OS-HeroTag",
+    "OS-MapTag"
+  ],
+  "title": {
+    "line1": "THIS FALL",
+    "line2": "FROM THE CREATORS OF",
+    "line3": "INPUTLAG.APP"
+  },
+  "heroTags": [
+    "grindbone",
+    "junkpaw"
+  ],
+  "mapTags": [
+    "CHESTS",
+    "SHRINES",
+    "GOLDEN SHRINES",
+    "GOLD POTS",
+    "BOSS ALTARS",
+    "PORTALS"
+  ]
 }

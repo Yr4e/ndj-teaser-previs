@@ -51,6 +51,7 @@
 - [x] `OS-Title` (Claude, `title.mp4`): чёрный экран, мелкий пиксельный текст, плавное появление (по референсу Fast Cuts), 2 строки по такту.
 - [x] `OS-HeroTag` (Claude, `herotag-grindbone.mov`, `herotag-junkpaw.mov`; роли в `HERO_INFO`, `src/overspam/data.ts`): прозрачная плашка для крупных планов героев (владелец снимает их сам во фри-каме и кладёт плашку сверху). Два героя: **Grindbone** (Skate-punk speedster, пассивка Skate Flow) и **Junkpaw** (Spam collector, пассивка Scrap Plating). Крупно имя, ниже роль, мелко пассивка. Роли и пассивки всех 12 — на overspam.com (JSON в HTML, поля name/role).
 - [x] `OS-Cards` (Claude, `cards.mp4`; старый веер карт теперь `OS-CardsFan` → `cardsfan.mp4`): вставка карт, нарезка рероллов на доли + подпись.
+  - Новый исходник: `footage/cards_reroll_forest.mp4` (Лес, ~25 рероллов, фиолетовая карта, **бой после выбора** в конце). Можно пересобрать `cards.mp4` из него или взять его хвост для кадра «выбор → оружие стреляет».
 - [x] `OS-Chests` (Claude, `chests.mp4`): вставка ~2 с из `footage/chests/chest_1.mp4` и `chest_3.mp4` (реальные открытия сундуков), по доле, на последнем удар; счётчик выпавшего тикает.
 - [x] `OS-MapTag` (Claude, `maptag-*.mov`, список в `mapTags`): прозрачные подписи игровым шрифтом поверх геймплея, 1–1,5 с: `CHESTS`, `SHRINES`, `GOLDEN SHRINES`, `GOLD POTS`, `BOSS ALTARS`, `PORTALS`. Кадры для проверки: `footage/events/*` (шрайны) и `chests/chest_2.mp4` (тоже шрайн).
 - [x] `end.line` = `COMING THIS FALL` (Claude, `end.mp4` перерендерен).

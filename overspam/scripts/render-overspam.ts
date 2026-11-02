@@ -30,6 +30,10 @@ for (const id of ids) {
     // начало трейлера: пролёт, быстрые склейки (opener.cuts, пустые = разметка), титр; плюс отдельная дорожка звуков
     jobs.push({id, file: "opener.mp4", props: {...base, ...cfg.title, ...cfg.opener}, alpha: false});
     jobs.push({id, file: "opener-sfx.wav", props: {...base, ...cfg.title, ...cfg.opener}, alpha: false});
+  } else if (id === "OS-CardsPick") {
+    // выбор карты по рефу: свои звуки (для трейлера) и звук рефа (только сравнить)
+    jobs.push({id, file: "cards-pick.mp4", props: {...base, audio: "ours"}, alpha: false});
+    if (fs.existsSync(path.join(ROOT, "public/sfx/ref/cards_ref.wav"))) jobs.push({id, file: "cards-pick-refaudio.mp4", props: {...base, audio: "ref"}, alpha: false});
   } else if (id === "OS-Title") {
     jobs.push({id, file: "title.mp4", props: {...base, ...cfg.title}, alpha: false});
   } else if (id === "OS-HeroTag") {

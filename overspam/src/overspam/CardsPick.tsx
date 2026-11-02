@@ -132,8 +132,8 @@ export const CardsPick: React.FC<CardsPickProps> = ({audio}) => {
       {audio === "drg" && (
         <Sequence from={f(OWNER_SOUND_AT)}><Audio src={staticFile("sfx/owner/drg_cards.mp3")} /></Sequence>
       )}
-      {/* импакт: удар внутри файла на 0,10 с */}
-      <Sequence from={hitF - 6}><Audio src={staticFile("sfx/foley/card_impact.wav")} volume={0.85} /></Sequence>
+      {/* удар на получение карты: тот же бумс из звука DRG владельца (удар внутри куска на 0,012 с) */}
+      <Sequence from={hitF - 1}><Audio src={staticFile("sfx/owner/drg_boom.wav")} /></Sequence>
     </AbsoluteFill>
   );
 };

@@ -30,6 +30,10 @@ for (const id of ids) {
     // начало трейлера: пролёт, быстрые склейки (opener.cuts, пустые = разметка), титр; плюс отдельная дорожка звуков
     jobs.push({id, file: "opener.mp4", props: {...base, ...cfg.title, ...cfg.opener}, alpha: false});
     jobs.push({id, file: "opener-sfx.wav", props: {...base, ...cfg.title, ...cfg.opener}, alpha: false});
+  } else if (id === "OS-OpenerCuts") {
+    // опенер-шаблон под звук рефа Fast Cuts: слоты под клипы владельца + отдельная дорожка
+    jobs.push({id, file: "opener-cuts.mp4", props: {...base, audio: true}, alpha: false});
+    jobs.push({id, file: "opener-cuts.wav", props: {...base, audio: true}, alpha: false});
   } else if (id === "OS-CardsPick") {
     // выбор карты под звук DRG владельца: со звуком (проверить синхрон) и без него (звук кладётся с 1,20 с)
     if (fs.existsSync(path.join(ROOT, "public/sfx/owner/drg_cards.mp3"))) jobs.push({id, file: "cards-pick.mp4", props: {...base, audio: "drg"}, alpha: false});

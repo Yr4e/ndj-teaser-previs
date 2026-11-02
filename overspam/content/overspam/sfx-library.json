@@ -1,0 +1,1334 @@
+[
+ {
+  "id": "pop_soft_1",
+  "file": "sfx/foley/pop_soft_1.mp3",
+  "group": "pop",
+  "dur": 0.11,
+  "role": "base",
+  "use": "Элемент появился / лопнул пузырь / слово выскочило",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "pop_soft_2",
+  "file": "sfx/foley/pop_soft_2.mp3",
+  "group": "pop",
+  "dur": 0.1,
+  "role": "base",
+  "use": "Элемент появился / лопнул пузырь / слово выскочило",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "pop_soft_3",
+  "file": "sfx/foley/pop_soft_3.mp3",
+  "group": "pop",
+  "dur": 0.13,
+  "role": "base",
+  "use": "Элемент появился / лопнул пузырь / слово выскочило",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "pop_bubble_1",
+  "file": "sfx/foley/pop_bubble_1.mp3",
+  "group": "pop",
+  "dur": 0.12,
+  "role": "base",
+  "use": "Пузырь всплыл (подъём тона), мягкое появление вверх",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "pop_bubble_2",
+  "file": "sfx/foley/pop_bubble_2.mp3",
+  "group": "pop",
+  "dur": 0.1,
+  "role": "base",
+  "use": "Пузырь всплыл (подъём тона), мягкое появление вверх",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "stretch_s",
+  "file": "sfx/foley/stretch_s.mp3",
+  "group": "stretch",
+  "dur": 0.35,
+  "role": "base",
+  "use": "Объект растягивается (подгони длительность под растяжение)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "stretch_m",
+  "file": "sfx/foley/stretch_m.mp3",
+  "group": "stretch",
+  "dur": 0.6,
+  "role": "base",
+  "use": "Объект растягивается (подгони длительность под растяжение)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "stretch_l",
+  "file": "sfx/foley/stretch_l.mp3",
+  "group": "stretch",
+  "dur": 1.0,
+  "role": "base",
+  "use": "Объект растягивается (подгони длительность под растяжение)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "snapback_1",
+  "file": "sfx/foley/snapback_1.mp3",
+  "group": "stretch",
+  "dur": 0.5,
+  "role": "base",
+  "use": "Резинка отпущена / предмет вернулся на место с «пружиной»",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "snapback_2",
+  "file": "sfx/foley/snapback_2.mp3",
+  "group": "stretch",
+  "dur": 0.5,
+  "role": "base",
+  "use": "Резинка отпущена / предмет вернулся на место с «пружиной»",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "squish_1",
+  "file": "sfx/foley/squish_1.mp3",
+  "group": "stretch",
+  "dur": 0.22,
+  "role": "base",
+  "use": "Объект сжимается / проседает",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "squish_2",
+  "file": "sfx/foley/squish_2.mp3",
+  "group": "stretch",
+  "dur": 0.3,
+  "role": "base",
+  "use": "Объект сжимается / проседает",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "boing",
+  "file": "sfx/foley/boing.mp3",
+  "group": "stretch",
+  "dur": 0.7,
+  "role": "base",
+  "use": "Подпрыгнул, шуточное пружинение",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "swish_s_lr",
+  "file": "sfx/foley/swish_s_lr.mp3",
+  "group": "swish",
+  "dur": 0.25,
+  "role": "base",
+  "use": "Объект проносится по экрану (lr: слева направо, rl: справа налево)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "swish_s_rl",
+  "file": "sfx/foley/swish_s_rl.mp3",
+  "group": "swish",
+  "dur": 0.25,
+  "role": "base",
+  "use": "Объект проносится по экрану (lr: слева направо, rl: справа налево)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "swish_m_lr",
+  "file": "sfx/foley/swish_m_lr.mp3",
+  "group": "swish",
+  "dur": 0.45,
+  "role": "base",
+  "use": "Объект проносится по экрану (lr: слева направо, rl: справа налево)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "swish_m_rl",
+  "file": "sfx/foley/swish_m_rl.mp3",
+  "group": "swish",
+  "dur": 0.45,
+  "role": "base",
+  "use": "Объект проносится по экрану (lr: слева направо, rl: справа налево)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "whoosh_l_lr",
+  "file": "sfx/foley/whoosh_l_lr.mp3",
+  "group": "swish",
+  "dur": 0.85,
+  "role": "accent",
+  "use": "Объект проносится по экрану (lr: слева направо, rl: справа налево)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "whoosh_l_rl",
+  "file": "sfx/foley/whoosh_l_rl.mp3",
+  "group": "swish",
+  "dur": 0.85,
+  "role": "accent",
+  "use": "Объект проносится по экрану (lr: слева направо, rl: справа налево)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "whoosh_up",
+  "file": "sfx/foley/whoosh_up.mp3",
+  "group": "swish",
+  "dur": 0.5,
+  "role": "base",
+  "use": "Объект летит вверх / падает вниз по экрану",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "whoosh_down",
+  "file": "sfx/foley/whoosh_down.mp3",
+  "group": "swish",
+  "dur": 0.5,
+  "role": "base",
+  "use": "Объект летит вверх / падает вниз по экрану",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "slam_soft_1",
+  "file": "sfx/foley/slam_soft_1.mp3",
+  "group": "impact",
+  "dur": 0.22,
+  "role": "base",
+  "use": "Слово/плита приземлилась мягко (без резкого удара)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "slam_soft_2",
+  "file": "sfx/foley/slam_soft_2.mp3",
+  "group": "impact",
+  "dur": 0.28,
+  "role": "base",
+  "use": "Слово/плита приземлилась мягко (без резкого удара)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "drop_in",
+  "file": "sfx/foley/drop_in.mp3",
+  "group": "impact",
+  "dur": 0.35,
+  "role": "base",
+  "use": "Предмет упал и чуть подпрыгнул",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "tick_1",
+  "file": "sfx/foley/tick_1.mp3",
+  "group": "tick",
+  "dur": 0.05,
+  "role": "base",
+  "use": "Мелкий акцент: буква, слово, шаг счётчика",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "tick_2",
+  "file": "sfx/foley/tick_2.mp3",
+  "group": "tick",
+  "dur": 0.05,
+  "role": "base",
+  "use": "Мелкий акцент: буква, слово, шаг счётчика",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "tick_3",
+  "file": "sfx/foley/tick_3.mp3",
+  "group": "tick",
+  "dur": 0.05,
+  "role": "base",
+  "use": "Мелкий акцент: буква, слово, шаг счётчика",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "click_soft",
+  "file": "sfx/foley/click_soft.mp3",
+  "group": "tick",
+  "dur": 0.06,
+  "role": "base",
+  "use": "Мягкий щелчок мыши / нажатие кнопки",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "key_tap_1",
+  "file": "sfx/foley/key_tap_1.mp3",
+  "group": "tick",
+  "dur": 0.07,
+  "role": "base",
+  "use": "Печать текста: клавиша",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "key_tap_2",
+  "file": "sfx/foley/key_tap_2.mp3",
+  "group": "tick",
+  "dur": 0.07,
+  "role": "base",
+  "use": "Печать текста: клавиша",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "key_tap_3",
+  "file": "sfx/foley/key_tap_3.mp3",
+  "group": "tick",
+  "dur": 0.07,
+  "role": "base",
+  "use": "Печать текста: клавиша",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "count_tick_0",
+  "file": "sfx/foley/count_tick_0.mp3",
+  "group": "count",
+  "dur": 0.06,
+  "role": "base",
+  "use": "Счётчик набирает значение: брать по порядку 0..7, тон растёт",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "count_tick_1",
+  "file": "sfx/foley/count_tick_1.mp3",
+  "group": "count",
+  "dur": 0.06,
+  "role": "base",
+  "use": "Счётчик набирает значение: брать по порядку 0..7, тон растёт",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "count_tick_2",
+  "file": "sfx/foley/count_tick_2.mp3",
+  "group": "count",
+  "dur": 0.06,
+  "role": "base",
+  "use": "Счётчик набирает значение: брать по порядку 0..7, тон растёт",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "count_tick_3",
+  "file": "sfx/foley/count_tick_3.mp3",
+  "group": "count",
+  "dur": 0.06,
+  "role": "base",
+  "use": "Счётчик набирает значение: брать по порядку 0..7, тон растёт",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "count_tick_4",
+  "file": "sfx/foley/count_tick_4.mp3",
+  "group": "count",
+  "dur": 0.06,
+  "role": "base",
+  "use": "Счётчик набирает значение: брать по порядку 0..7, тон растёт",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "count_tick_5",
+  "file": "sfx/foley/count_tick_5.mp3",
+  "group": "count",
+  "dur": 0.06,
+  "role": "base",
+  "use": "Счётчик набирает значение: брать по порядку 0..7, тон растёт",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "count_tick_6",
+  "file": "sfx/foley/count_tick_6.mp3",
+  "group": "count",
+  "dur": 0.06,
+  "role": "base",
+  "use": "Счётчик набирает значение: брать по порядку 0..7, тон растёт",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "count_tick_7",
+  "file": "sfx/foley/count_tick_7.mp3",
+  "group": "count",
+  "dur": 0.06,
+  "role": "base",
+  "use": "Счётчик набирает значение: брать по порядку 0..7, тон растёт",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "toggle_on",
+  "file": "sfx/foley/toggle_on.mp3",
+  "group": "ui",
+  "dur": 0.15,
+  "role": "base",
+  "use": "Переключатель щёлкнул (on — вверх, off — вниз)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "toggle_off",
+  "file": "sfx/foley/toggle_off.mp3",
+  "group": "ui",
+  "dur": 0.15,
+  "role": "base",
+  "use": "Переключатель щёлкнул (on — вверх, off — вниз)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "chime_soft",
+  "file": "sfx/foley/chime_soft.mp3",
+  "group": "ui",
+  "dur": 0.9,
+  "role": "base",
+  "use": "Готово / принято (мягкий восходящий)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "chime_done",
+  "file": "sfx/foley/chime_done.mp3",
+  "group": "ui",
+  "dur": 1.1,
+  "role": "accent",
+  "use": "Финал, всё применено",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "wrong_soft",
+  "file": "sfx/foley/wrong_soft.mp3",
+  "group": "ui",
+  "dur": 0.7,
+  "role": "base",
+  "use": "Не то / ошибка в квизе (мягкий нисходящий)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "answer_reveal",
+  "file": "sfx/foley/answer_reveal.mp3",
+  "group": "ui",
+  "dur": 0.8,
+  "role": "base",
+  "use": "Правильный ответ показан",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "sparkle",
+  "file": "sfx/foley/sparkle.mp3",
+  "group": "ui",
+  "dur": 0.8,
+  "role": "accent",
+  "use": "Конфетти / искры",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "riser_soft_1",
+  "file": "sfx/foley/riser_soft_1.mp3",
+  "group": "riser",
+  "dur": 1.0,
+  "role": "accent",
+  "use": "Мягкое нарастание перед сменой (кончается резко в момент события)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "riser_soft_2",
+  "file": "sfx/foley/riser_soft_2.mp3",
+  "group": "riser",
+  "dur": 2.0,
+  "role": "accent",
+  "use": "Мягкое нарастание перед сменой (кончается резко в момент события)",
+  "src": "synth (наш, без прав)"
+ },
+ {
+  "id": "ui_back_001",
+  "file": "sfx/ui/back_001.mp3",
+  "group": "back",
+  "dur": 0.1,
+  "role": "base",
+  "use": "назад",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_back_002",
+  "file": "sfx/ui/back_002.mp3",
+  "group": "back",
+  "dur": 0.13,
+  "role": "base",
+  "use": "назад",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_back_003",
+  "file": "sfx/ui/back_003.mp3",
+  "group": "back",
+  "dur": 0.13,
+  "role": "base",
+  "use": "назад",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_back_004",
+  "file": "sfx/ui/back_004.mp3",
+  "group": "back",
+  "dur": 0.13,
+  "role": "base",
+  "use": "назад",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_bong_001",
+  "file": "sfx/ui/bong_001.mp3",
+  "group": "bong",
+  "dur": 0.18,
+  "role": "accent",
+  "use": "гонг, акцент",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_click_001",
+  "file": "sfx/ui/click_001.mp3",
+  "group": "click",
+  "dur": 0.16,
+  "role": "base",
+  "use": "клик, нажатие",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_click_002",
+  "file": "sfx/ui/click_002.mp3",
+  "group": "click",
+  "dur": 0.05,
+  "role": "base",
+  "use": "клик, нажатие",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_click_003",
+  "file": "sfx/ui/click_003.mp3",
+  "group": "click",
+  "dur": 0.05,
+  "role": "base",
+  "use": "клик, нажатие",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_click_004",
+  "file": "sfx/ui/click_004.mp3",
+  "group": "click",
+  "dur": 0.05,
+  "role": "base",
+  "use": "клик, нажатие",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_click_005",
+  "file": "sfx/ui/click_005.mp3",
+  "group": "click",
+  "dur": 0.05,
+  "role": "base",
+  "use": "клик, нажатие",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_close_001",
+  "file": "sfx/ui/close_001.mp3",
+  "group": "close",
+  "dur": 0.18,
+  "role": "base",
+  "use": "закрылось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_close_002",
+  "file": "sfx/ui/close_002.mp3",
+  "group": "close",
+  "dur": 0.37,
+  "role": "base",
+  "use": "закрылось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_close_003",
+  "file": "sfx/ui/close_003.mp3",
+  "group": "close",
+  "dur": 0.37,
+  "role": "base",
+  "use": "закрылось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_close_004",
+  "file": "sfx/ui/close_004.mp3",
+  "group": "close",
+  "dur": 0.37,
+  "role": "base",
+  "use": "закрылось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_confirmation_001",
+  "file": "sfx/ui/confirmation_001.mp3",
+  "group": "confirmation",
+  "dur": 0.34,
+  "role": "base",
+  "use": "подтверждение, взял",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_confirmation_002",
+  "file": "sfx/ui/confirmation_002.mp3",
+  "group": "confirmation",
+  "dur": 0.6,
+  "role": "base",
+  "use": "подтверждение, взял",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_confirmation_003",
+  "file": "sfx/ui/confirmation_003.mp3",
+  "group": "confirmation",
+  "dur": 0.37,
+  "role": "base",
+  "use": "подтверждение, взял",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_confirmation_004",
+  "file": "sfx/ui/confirmation_004.mp3",
+  "group": "confirmation",
+  "dur": 0.55,
+  "role": "base",
+  "use": "подтверждение, взял",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_drop_001",
+  "file": "sfx/ui/drop_001.mp3",
+  "group": "drop",
+  "dur": 0.18,
+  "role": "base",
+  "use": "предмет упал в слот",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_drop_002",
+  "file": "sfx/ui/drop_002.mp3",
+  "group": "drop",
+  "dur": 0.24,
+  "role": "base",
+  "use": "предмет упал в слот",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_drop_003",
+  "file": "sfx/ui/drop_003.mp3",
+  "group": "drop",
+  "dur": 0.24,
+  "role": "base",
+  "use": "предмет упал в слот",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_drop_004",
+  "file": "sfx/ui/drop_004.mp3",
+  "group": "drop",
+  "dur": 0.34,
+  "role": "base",
+  "use": "предмет упал в слот",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_error_001",
+  "file": "sfx/ui/error_001.mp3",
+  "group": "error",
+  "dur": 0.21,
+  "role": "accent",
+  "use": "ошибка, отказ",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_error_002",
+  "file": "sfx/ui/error_002.mp3",
+  "group": "error",
+  "dur": 0.21,
+  "role": "accent",
+  "use": "ошибка, отказ",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_error_003",
+  "file": "sfx/ui/error_003.mp3",
+  "group": "error",
+  "dur": 0.6,
+  "role": "accent",
+  "use": "ошибка, отказ",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_error_004",
+  "file": "sfx/ui/error_004.mp3",
+  "group": "error",
+  "dur": 0.13,
+  "role": "accent",
+  "use": "ошибка, отказ",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_error_005",
+  "file": "sfx/ui/error_005.mp3",
+  "group": "error",
+  "dur": 0.55,
+  "role": "accent",
+  "use": "ошибка, отказ",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_error_006",
+  "file": "sfx/ui/error_006.mp3",
+  "group": "error",
+  "dur": 0.55,
+  "role": "accent",
+  "use": "ошибка, отказ",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_error_007",
+  "file": "sfx/ui/error_007.mp3",
+  "group": "error",
+  "dur": 0.24,
+  "role": "accent",
+  "use": "ошибка, отказ",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_error_008",
+  "file": "sfx/ui/error_008.mp3",
+  "group": "error",
+  "dur": 0.18,
+  "role": "accent",
+  "use": "ошибка, отказ",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_glass_001",
+  "file": "sfx/ui/glass_001.mp3",
+  "group": "glass",
+  "dur": 0.34,
+  "role": "base",
+  "use": "звонкий, блеск, лут",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_glass_002",
+  "file": "sfx/ui/glass_002.mp3",
+  "group": "glass",
+  "dur": 0.16,
+  "role": "base",
+  "use": "звонкий, блеск, лут",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_glass_003",
+  "file": "sfx/ui/glass_003.mp3",
+  "group": "glass",
+  "dur": 0.16,
+  "role": "base",
+  "use": "звонкий, блеск, лут",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_glass_004",
+  "file": "sfx/ui/glass_004.mp3",
+  "group": "glass",
+  "dur": 0.76,
+  "role": "base",
+  "use": "звонкий, блеск, лут",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_glass_005",
+  "file": "sfx/ui/glass_005.mp3",
+  "group": "glass",
+  "dur": 0.18,
+  "role": "base",
+  "use": "звонкий, блеск, лут",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_glass_006",
+  "file": "sfx/ui/glass_006.mp3",
+  "group": "glass",
+  "dur": 0.18,
+  "role": "base",
+  "use": "звонкий, блеск, лут",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_glitch_001",
+  "file": "sfx/ui/glitch_001.mp3",
+  "group": "glitch",
+  "dur": 0.05,
+  "role": "accent",
+  "use": "цифровой сбой",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_glitch_002",
+  "file": "sfx/ui/glitch_002.mp3",
+  "group": "glitch",
+  "dur": 0.08,
+  "role": "accent",
+  "use": "цифровой сбой",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_glitch_003",
+  "file": "sfx/ui/glitch_003.mp3",
+  "group": "glitch",
+  "dur": 0.05,
+  "role": "accent",
+  "use": "цифровой сбой",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_glitch_004",
+  "file": "sfx/ui/glitch_004.mp3",
+  "group": "glitch",
+  "dur": 0.08,
+  "role": "accent",
+  "use": "цифровой сбой",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_maximize_001",
+  "file": "sfx/ui/maximize_001.mp3",
+  "group": "maximize",
+  "dur": 0.29,
+  "role": "base",
+  "use": "раскрылось, выросло",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_maximize_002",
+  "file": "sfx/ui/maximize_002.mp3",
+  "group": "maximize",
+  "dur": 0.29,
+  "role": "base",
+  "use": "раскрылось, выросло",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_maximize_003",
+  "file": "sfx/ui/maximize_003.mp3",
+  "group": "maximize",
+  "dur": 0.26,
+  "role": "base",
+  "use": "раскрылось, выросло",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_maximize_004",
+  "file": "sfx/ui/maximize_004.mp3",
+  "group": "maximize",
+  "dur": 0.47,
+  "role": "base",
+  "use": "раскрылось, выросло",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_maximize_005",
+  "file": "sfx/ui/maximize_005.mp3",
+  "group": "maximize",
+  "dur": 0.57,
+  "role": "base",
+  "use": "раскрылось, выросло",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_maximize_006",
+  "file": "sfx/ui/maximize_006.mp3",
+  "group": "maximize",
+  "dur": 0.42,
+  "role": "base",
+  "use": "раскрылось, выросло",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_maximize_007",
+  "file": "sfx/ui/maximize_007.mp3",
+  "group": "maximize",
+  "dur": 0.24,
+  "role": "base",
+  "use": "раскрылось, выросло",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_maximize_008",
+  "file": "sfx/ui/maximize_008.mp3",
+  "group": "maximize",
+  "dur": 0.29,
+  "role": "base",
+  "use": "раскрылось, выросло",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_maximize_009",
+  "file": "sfx/ui/maximize_009.mp3",
+  "group": "maximize",
+  "dur": 0.26,
+  "role": "base",
+  "use": "раскрылось, выросло",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_minimize_001",
+  "file": "sfx/ui/minimize_001.mp3",
+  "group": "minimize",
+  "dur": 0.31,
+  "role": "base",
+  "use": "свернулось, уменьшилось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_minimize_002",
+  "file": "sfx/ui/minimize_002.mp3",
+  "group": "minimize",
+  "dur": 0.29,
+  "role": "base",
+  "use": "свернулось, уменьшилось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_minimize_003",
+  "file": "sfx/ui/minimize_003.mp3",
+  "group": "minimize",
+  "dur": 0.26,
+  "role": "base",
+  "use": "свернулось, уменьшилось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_minimize_004",
+  "file": "sfx/ui/minimize_004.mp3",
+  "group": "minimize",
+  "dur": 0.47,
+  "role": "base",
+  "use": "свернулось, уменьшилось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_minimize_005",
+  "file": "sfx/ui/minimize_005.mp3",
+  "group": "minimize",
+  "dur": 0.57,
+  "role": "base",
+  "use": "свернулось, уменьшилось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_minimize_006",
+  "file": "sfx/ui/minimize_006.mp3",
+  "group": "minimize",
+  "dur": 0.42,
+  "role": "base",
+  "use": "свернулось, уменьшилось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_minimize_007",
+  "file": "sfx/ui/minimize_007.mp3",
+  "group": "minimize",
+  "dur": 0.24,
+  "role": "base",
+  "use": "свернулось, уменьшилось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_minimize_008",
+  "file": "sfx/ui/minimize_008.mp3",
+  "group": "minimize",
+  "dur": 0.29,
+  "role": "base",
+  "use": "свернулось, уменьшилось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_minimize_009",
+  "file": "sfx/ui/minimize_009.mp3",
+  "group": "minimize",
+  "dur": 0.29,
+  "role": "base",
+  "use": "свернулось, уменьшилось",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_open_001",
+  "file": "sfx/ui/open_001.mp3",
+  "group": "open",
+  "dur": 0.18,
+  "role": "base",
+  "use": "открылось (сундук, меню)",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_open_002",
+  "file": "sfx/ui/open_002.mp3",
+  "group": "open",
+  "dur": 0.37,
+  "role": "base",
+  "use": "открылось (сундук, меню)",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_open_003",
+  "file": "sfx/ui/open_003.mp3",
+  "group": "open",
+  "dur": 0.37,
+  "role": "base",
+  "use": "открылось (сундук, меню)",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_open_004",
+  "file": "sfx/ui/open_004.mp3",
+  "group": "open",
+  "dur": 0.37,
+  "role": "base",
+  "use": "открылось (сундук, меню)",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_pluck_001",
+  "file": "sfx/ui/pluck_001.mp3",
+  "group": "pluck",
+  "dur": 0.16,
+  "role": "base",
+  "use": "щипок, мелкий акцент",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_pluck_002",
+  "file": "sfx/ui/pluck_002.mp3",
+  "group": "pluck",
+  "dur": 0.21,
+  "role": "base",
+  "use": "щипок, мелкий акцент",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_question_001",
+  "file": "sfx/ui/question_001.mp3",
+  "group": "question",
+  "dur": 0.55,
+  "role": "base",
+  "use": "вопрос, «?»",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_question_002",
+  "file": "sfx/ui/question_002.mp3",
+  "group": "question",
+  "dur": 0.37,
+  "role": "base",
+  "use": "вопрос, «?»",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_question_003",
+  "file": "sfx/ui/question_003.mp3",
+  "group": "question",
+  "dur": 0.39,
+  "role": "base",
+  "use": "вопрос, «?»",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_question_004",
+  "file": "sfx/ui/question_004.mp3",
+  "group": "question",
+  "dur": 0.37,
+  "role": "base",
+  "use": "вопрос, «?»",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_scratch_001",
+  "file": "sfx/ui/scratch_001.mp3",
+  "group": "scratch",
+  "dur": 0.21,
+  "role": "accent",
+  "use": "царапина, шуршание",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_scratch_002",
+  "file": "sfx/ui/scratch_002.mp3",
+  "group": "scratch",
+  "dur": 0.21,
+  "role": "accent",
+  "use": "царапина, шуршание",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_scratch_003",
+  "file": "sfx/ui/scratch_003.mp3",
+  "group": "scratch",
+  "dur": 0.16,
+  "role": "accent",
+  "use": "царапина, шуршание",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_scratch_004",
+  "file": "sfx/ui/scratch_004.mp3",
+  "group": "scratch",
+  "dur": 0.39,
+  "role": "accent",
+  "use": "царапина, шуршание",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_scratch_005",
+  "file": "sfx/ui/scratch_005.mp3",
+  "group": "scratch",
+  "dur": 0.39,
+  "role": "accent",
+  "use": "царапина, шуршание",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_scroll_001",
+  "file": "sfx/ui/scroll_001.mp3",
+  "group": "scroll",
+  "dur": 1.07,
+  "role": "base",
+  "use": "прокрутка, перебор (реролл карт)",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_scroll_002",
+  "file": "sfx/ui/scroll_002.mp3",
+  "group": "scroll",
+  "dur": 1.04,
+  "role": "base",
+  "use": "прокрутка, перебор (реролл карт)",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_scroll_003",
+  "file": "sfx/ui/scroll_003.mp3",
+  "group": "scroll",
+  "dur": 1.04,
+  "role": "base",
+  "use": "прокрутка, перебор (реролл карт)",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_scroll_004",
+  "file": "sfx/ui/scroll_004.mp3",
+  "group": "scroll",
+  "dur": 1.04,
+  "role": "base",
+  "use": "прокрутка, перебор (реролл карт)",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_scroll_005",
+  "file": "sfx/ui/scroll_005.mp3",
+  "group": "scroll",
+  "dur": 1.07,
+  "role": "base",
+  "use": "прокрутка, перебор (реролл карт)",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_select_001",
+  "file": "sfx/ui/select_001.mp3",
+  "group": "select",
+  "dur": 0.1,
+  "role": "base",
+  "use": "выбор пункта, карта выбрана",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_select_002",
+  "file": "sfx/ui/select_002.mp3",
+  "group": "select",
+  "dur": 0.1,
+  "role": "base",
+  "use": "выбор пункта, карта выбрана",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_select_003",
+  "file": "sfx/ui/select_003.mp3",
+  "group": "select",
+  "dur": 0.42,
+  "role": "base",
+  "use": "выбор пункта, карта выбрана",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_select_004",
+  "file": "sfx/ui/select_004.mp3",
+  "group": "select",
+  "dur": 0.42,
+  "role": "base",
+  "use": "выбор пункта, карта выбрана",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_select_005",
+  "file": "sfx/ui/select_005.mp3",
+  "group": "select",
+  "dur": 0.42,
+  "role": "base",
+  "use": "выбор пункта, карта выбрана",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_select_006",
+  "file": "sfx/ui/select_006.mp3",
+  "group": "select",
+  "dur": 1.99,
+  "role": "base",
+  "use": "выбор пункта, карта выбрана",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_select_007",
+  "file": "sfx/ui/select_007.mp3",
+  "group": "select",
+  "dur": 0.1,
+  "role": "base",
+  "use": "выбор пункта, карта выбрана",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_select_008",
+  "file": "sfx/ui/select_008.mp3",
+  "group": "select",
+  "dur": 0.1,
+  "role": "base",
+  "use": "выбор пункта, карта выбрана",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_switch_001",
+  "file": "sfx/ui/switch_001.mp3",
+  "group": "switch",
+  "dur": 0.65,
+  "role": "base",
+  "use": "переключение, смена плашки",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_switch_002",
+  "file": "sfx/ui/switch_002.mp3",
+  "group": "switch",
+  "dur": 0.65,
+  "role": "base",
+  "use": "переключение, смена плашки",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_switch_003",
+  "file": "sfx/ui/switch_003.mp3",
+  "group": "switch",
+  "dur": 0.55,
+  "role": "base",
+  "use": "переключение, смена плашки",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_switch_004",
+  "file": "sfx/ui/switch_004.mp3",
+  "group": "switch",
+  "dur": 0.55,
+  "role": "base",
+  "use": "переключение, смена плашки",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_switch_005",
+  "file": "sfx/ui/switch_005.mp3",
+  "group": "switch",
+  "dur": 0.65,
+  "role": "base",
+  "use": "переключение, смена плашки",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_switch_006",
+  "file": "sfx/ui/switch_006.mp3",
+  "group": "switch",
+  "dur": 0.65,
+  "role": "base",
+  "use": "переключение, смена плашки",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_switch_007",
+  "file": "sfx/ui/switch_007.mp3",
+  "group": "switch",
+  "dur": 0.65,
+  "role": "base",
+  "use": "переключение, смена плашки",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_tick_001",
+  "file": "sfx/ui/tick_001.mp3",
+  "group": "tick",
+  "dur": 0.08,
+  "role": "base",
+  "use": "тик, шаг",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_tick_002",
+  "file": "sfx/ui/tick_002.mp3",
+  "group": "tick",
+  "dur": 0.05,
+  "role": "base",
+  "use": "тик, шаг",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_tick_004",
+  "file": "sfx/ui/tick_004.mp3",
+  "group": "tick",
+  "dur": 0.1,
+  "role": "base",
+  "use": "тик, шаг",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_toggle_001",
+  "file": "sfx/ui/toggle_001.mp3",
+  "group": "toggle",
+  "dur": 0.21,
+  "role": "base",
+  "use": "переключатель",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_toggle_002",
+  "file": "sfx/ui/toggle_002.mp3",
+  "group": "toggle",
+  "dur": 0.18,
+  "role": "base",
+  "use": "переключатель",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_toggle_003",
+  "file": "sfx/ui/toggle_003.mp3",
+  "group": "toggle",
+  "dur": 0.21,
+  "role": "base",
+  "use": "переключатель",
+  "src": "Kenney Interface Sounds, CC0"
+ },
+ {
+  "id": "ui_toggle_004",
+  "file": "sfx/ui/toggle_004.mp3",
+  "group": "toggle",
+  "dur": 0.1,
+  "role": "base",
+  "use": "переключатель",
+  "src": "Kenney Interface Sounds, CC0"
+ }
+]

@@ -1,0 +1,64 @@
+{
+  "bpm": 130,
+  "sfx": true,
+  "end": {
+    "line": "COMING THIS FALL",
+    "button": "WISHLIST ON STEAM",
+    "site": "OVERSPAM.COM",
+    "world": "moon"
+  },
+  "bg": "deep",
+  "noFlash": [
+    "OS-Weapons",
+    "OS-Heroes",
+    "OS-Items",
+    "OS-CardsFan",
+    "OS-Worlds"
+  ],
+  "alpha": [
+    "OS-Weapons"
+  ],
+  "render": [
+    "OS-Opener",
+    "OS-Worlds",
+    "OS-Heroes",
+    "OS-Weapons",
+    "OS-Items",
+    "OS-CardsFan",
+    "OS-Build",
+    "OS-End",
+    "OS-Boss",
+    "OS-Title",
+    "OS-Cards",
+    "OS-Chests",
+    "OS-HeroTag",
+    "OS-MapTag"
+  ],
+  "title": {
+    "top": "COMING",
+    "main": "THIS FALL",
+    "bottom": "5 WORLDS · 12 HEROES · ONE RIDICULOUS RUN",
+    "byline": "FROM THE CREATORS OF",
+    "studio": "INPUTLAG.APP"
+  },
+  "heroTags": [
+    "grindbone",
+    "junkpaw"
+  ],
+  "mapTags": [
+    "CHESTS",
+    "SHRINES",
+    "GOLDEN SHRINES",
+    "GOLD POTS",
+    "BOSS ALTARS",
+    "PORTALS"
+  ],
+  "opener": {
+    "flyby": {
+      "src": "flyby/forest_1.mp4",
+      "at": 2.0
+    },
+    "cutCount": 10,
+    "cuts": []
+  }
+}

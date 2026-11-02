@@ -31,9 +31,9 @@ for (const id of ids) {
     jobs.push({id, file: "opener.mp4", props: {...base, ...cfg.title, ...cfg.opener}, alpha: false});
     jobs.push({id, file: "opener-sfx.wav", props: {...base, ...cfg.title, ...cfg.opener}, alpha: false});
   } else if (id === "OS-CardsPick") {
-    // выбор карты по рефу: звук игры (звук владельца он кладёт сам с 1,20 с) и звук рефа (только сравнить)
-    jobs.push({id, file: "cards-pick.mp4", props: {...base, audio: "game"}, alpha: false});
-    if (fs.existsSync(path.join(ROOT, "public/sfx/ref/cards_ref.wav"))) jobs.push({id, file: "cards-pick-refaudio.mp4", props: {...base, audio: "ref"}, alpha: false});
+    // выбор карты под звук DRG владельца: со звуком (проверить синхрон) и без него (звук кладётся с 1,20 с)
+    if (fs.existsSync(path.join(ROOT, "public/sfx/owner/drg_cards.mp3"))) jobs.push({id, file: "cards-pick.mp4", props: {...base, audio: "drg"}, alpha: false});
+    jobs.push({id, file: "cards-pick-clean.mp4", props: {...base, audio: "game"}, alpha: false});
   } else if (id === "OS-Title") {
     jobs.push({id, file: "title.mp4", props: {...base, ...cfg.title}, alpha: false});
   } else if (id === "OS-HeroTag") {

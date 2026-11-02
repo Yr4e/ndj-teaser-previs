@@ -12,6 +12,7 @@ import {
 } from "./Trailer";
 import {Overtime, overtimeFrames} from "./Overtime";
 import {BossLineup, bossLineupFrames, BossPath, bossPathFrames} from "./Bosses";
+import {Shrines, shrinesFrames} from "./Shrines";
 import {ChestsOpen, chestsOpenFrames} from "./ChestsOpen";
 import {OpenerCuts, OPENER_CUTS_DEFAULTS, openerCutsFrames} from "./OpenerCuts";
 import {CardsPick, CARDS_PICK_DEFAULTS, cardsPickFrames} from "./CardsPick";
@@ -76,6 +77,7 @@ export const OverspamCompositions: React.FC = () => (
     <Composition id="OS-Overtime" component={Overtime} width={1920} height={1080} fps={60} durationInFrames={overtimeFrames} />
     <Composition id="OS-BossPath" component={BossPath} width={1920} height={1080} fps={60} durationInFrames={bossPathFrames} />
     <Composition id="OS-BossLineup" component={BossLineup} width={1920} height={1080} fps={60} durationInFrames={bossLineupFrames} />
+    <Composition id="OS-Shrines" component={Shrines} width={1920} height={1080} fps={60} durationInFrames={shrinesFrames} />
     <Composition id="OS-ChestsOpen" component={ChestsOpen} width={1920} height={1080} fps={60} durationInFrames={chestsOpenFrames} />
     <Composition
       id="OS-OpenerCuts"

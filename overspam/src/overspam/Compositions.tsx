@@ -8,6 +8,7 @@ import {
 } from "./Inserts";
 import {
   Cards, cardsFrames, Chests, chestsFrames, HeroTag, heroTagFrames, MapTag, mapTagFrames, Title, TITLE_DEFAULTS, titleFrames,
+  Opener, OPENER_DEFAULTS, openerFrames,
 } from "./Trailer";
 
 /** Вставки для трейлера OVERSPAM: 1920×1080, 60 fps, длина зависит от bpm */
@@ -66,6 +67,16 @@ export const OverspamCompositions: React.FC = () => (
       durationInFrames={titleFrames(TITLE_DEFAULTS)}
       defaultProps={TITLE_DEFAULTS}
       calculateMetadata={({props}) => ({durationInFrames: titleFrames(props)})}
+    />
+    <Composition
+      id="OS-Opener"
+      component={Opener}
+      width={1920}
+      height={1080}
+      fps={60}
+      durationInFrames={openerFrames(OPENER_DEFAULTS)}
+      defaultProps={OPENER_DEFAULTS}
+      calculateMetadata={({props}) => ({durationInFrames: openerFrames(props)})}
     />
     <Composition
       id="OS-HeroTag"

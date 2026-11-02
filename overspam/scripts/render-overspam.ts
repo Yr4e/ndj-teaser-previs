@@ -26,6 +26,10 @@ for (const id of ids) {
     for (let boss = 0; boss < 5; boss++) jobs.push({id, file: `boss-${boss + 1}.mov`, props: {...base, boss}, alpha: true});
   } else if (id === "OS-End") {
     jobs.push({id, file: "end.mp4", props: {...base, ...cfg.end}, alpha: false});
+  } else if (id === "OS-Opener") {
+    // начало трейлера: пролёт, быстрые склейки (opener.cuts, пустые = разметка), титр; плюс отдельная дорожка звуков
+    jobs.push({id, file: "opener.mp4", props: {...base, ...cfg.title, ...cfg.opener}, alpha: false});
+    jobs.push({id, file: "opener-sfx.wav", props: {...base, ...cfg.title, ...cfg.opener}, alpha: false});
   } else if (id === "OS-Title") {
     jobs.push({id, file: "title.mp4", props: {...base, ...cfg.title}, alpha: false});
   } else if (id === "OS-HeroTag") {
@@ -53,10 +57,12 @@ for (const job of jobs) {
     inputProps: job.props,
     outputLocation,
     ...browser,
-    audioCodec: job.alpha ? "pcm-16" : "aac",
-    ...(job.alpha
-      ? {codec: "prores" as const, proResProfile: "4444" as const, pixelFormat: "yuva444p10le" as const, imageFormat: "png" as const}
-      : {codec: "h264" as const, crf: 14, pixelFormat: "yuv420p" as const, audioBitrate: "256k"}),
+    // .wav — только звук; MOV — ProRes 4444 с прозрачностью; остальное — H.264
+    ...(job.file.endsWith(".wav")
+      ? {codec: "wav" as const}
+      : job.alpha
+        ? {codec: "prores" as const, audioCodec: "pcm-16" as const, proResProfile: "4444" as const, pixelFormat: "yuva444p10le" as const, imageFormat: "png" as const}
+        : {codec: "h264" as const, audioCodec: "aac" as const, crf: 14, pixelFormat: "yuv420p" as const, audioBitrate: "256k"}),
     onProgress: ({progress}) => {
       const p = Math.floor(progress * 10);
       if (p !== last) {

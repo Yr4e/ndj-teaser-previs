@@ -30,6 +30,10 @@ for (const id of ids) {
     // начало трейлера: пролёт, быстрые склейки (opener.cuts, пустые = разметка), титр; плюс отдельная дорожка звуков
     jobs.push({id, file: "opener.mp4", props: {...base, ...cfg.title, ...cfg.opener}, alpha: false});
     jobs.push({id, file: "opener-sfx.wav", props: {...base, ...cfg.title, ...cfg.opener}, alpha: false});
+  } else if (id === "OS-BossPath" || id === "OS-BossLineup") {
+    jobs.push({id, file: id === "OS-BossPath" ? "bosses-path.mp4" : "bosses-lineup.mp4", props: base, alpha: false});
+  } else if (id === "OS-ChestsOpen") {
+    jobs.push({id, file: "chests-open.mp4", props: base, alpha: false});
   } else if (id === "OS-OpenerCuts") {
     // опенер-шаблон под звук рефа Fast Cuts: слоты под клипы владельца + отдельная дорожка
     jobs.push({id, file: "opener-cuts.mp4", props: {...base, audio: true}, alpha: false});

@@ -34,9 +34,11 @@
     "OS-MapTag"
   ],
   "title": {
-    "line1": "THIS FALL",
-    "line2": "FROM THE CREATORS OF",
-    "line3": "INPUTLAG.APP"
+    "top": "COMING",
+    "main": "THIS FALL",
+    "bottom": "5 WORLDS · 12 HEROES · ONE RIDICULOUS RUN",
+    "byline": "FROM THE CREATORS OF",
+    "studio": "INPUTLAG.APP"
   },
   "heroTags": [
     "grindbone",

@@ -19,26 +19,45 @@ const Soft: React.FC<{at: number; until: number; children: React.ReactNode}> = (
   return <div style={{opacity: o, filter: `blur(${t * 8}px)`, transform: `translateY(${t * 10}px) scale(${1 + t * 0.04})`}}>{children}</div>;
 };
 
-/* ───────────── Титр: чёрный экран, мелкий пиксельный текст, 2 строки по такту ───────────── */
-export type TitleProps = InsertProps & {line1: string; line2: string; line3: string};
-export const TITLE_DEFAULTS: TitleProps = {bpm: 130, sfx: false, line1: "THIS FALL", line2: "FROM THE CREATORS OF", line3: "INPUTLAG.APP"};
+/* ───────────── Титр по референсу Fast Cuts: чёрный экран, 2 карточки по такту ─────────────
+   Карточка 1 в три яруса: мелко сверху, крупно название, мелко снизу (как INTRODUCING / FAST CUTS / SOUND DESIGN TRACKS).
+   Карточка 2: маленький знак студии — ромбик и имя (как LENS DISTORTIONS). */
+export type TitleProps = InsertProps & {top: string; main: string; bottom: string; byline: string; studio: string};
+export const TITLE_DEFAULTS: TitleProps = {
+  bpm: 130,
+  sfx: false,
+  top: "COMING",
+  main: "THIS FALL",
+  bottom: "5 WORLDS · 12 HEROES · ONE RIDICULOUS RUN",
+  byline: "FROM THE CREATORS OF",
+  studio: "INPUTLAG.APP",
+};
 export const titleFrames = (p: InsertProps) => Math.round(beatFrames(p.bpm, FPS) * 8);
 
-export const Title: React.FC<TitleProps> = ({bpm, line1, line2, line3}) => {
+export const Title: React.FC<TitleProps> = ({bpm, top, main, bottom, byline, studio}) => {
   const bar = beatFrames(bpm, FPS) * 4;
   return (
-    <AbsoluteFill style={{background: "#000", alignItems: "center", justifyContent: "center"}}>
-      <AbsoluteFill style={{alignItems: "center", justifyContent: "center"}}>
-        <Soft at={4} until={bar - 2}>
-          <PixelText text={line1} scale={7} style="white" />
+    <AbsoluteFill style={{background: "#000"}}>
+      <AbsoluteFill style={{alignItems: "center", justifyContent: "center", gap: 26}}>
+        <Soft at={2} until={bar}>
+          <PixelText text={top} scale={3} style="dim" spacing={3} noOutline />
+        </Soft>
+        <Soft at={6} until={bar}>
+          <PixelText text={main} scale={9} style="white" />
+        </Soft>
+        <Soft at={12} until={bar}>
+          <PixelText text={bottom} scale={3} style="dim" spacing={2} noOutline />
         </Soft>
       </AbsoluteFill>
-      <AbsoluteFill style={{alignItems: "center", justifyContent: "center", gap: 34}}>
-        <Soft at={bar + 4} until={bar * 2}>
-          <PixelText text={line2} scale={4} style="dim" noOutline />
+      <AbsoluteFill style={{alignItems: "center", justifyContent: "center", gap: 22}}>
+        <Soft at={bar + 2} until={bar * 2}>
+          <PixelText text={byline} scale={3} style="dim" spacing={3} noOutline />
         </Soft>
-        <Soft at={bar + 14} until={bar * 2}>
-          <PixelText text={line3} scale={7} style="logo" />
+        <Soft at={bar + 8} until={bar * 2}>
+          <div style={{display: "flex", alignItems: "center", gap: 20}}>
+            <div style={{width: 18, height: 18, border: `4px solid ${GOLD}`, transform: "rotate(45deg)", boxShadow: `0 0 14px ${GOLD}88`}} />
+            <PixelText text={studio} scale={5} style="logo" />
+          </div>
         </Soft>
       </AbsoluteFill>
     </AbsoluteFill>

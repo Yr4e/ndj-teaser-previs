@@ -65,3 +65,9 @@
 - Глитч-зап для текстовых карточек (1–2 варианта).
 - Финальный удар с длинным хвостом.
 - Опционально: голос рассказчика (ElevenLabs TTS) на 2–3 фразы в нагнетании, как голос в рефе. Тексты — с владельцем.
+
+## 5. Сборка (2026-11-04)
+
+Одобрены владельцем: `boom_1..4`, `final_hit`, `text_zap_2`, `card_whoosh_hit`, `card_braam`, `predrop_reverse`, `predrop_subdrop` (глитч-запы и чирпы забракованы: «дерьмо полное»). Голос рассказчика: варианты текстов предложены, не выбран.
+
+Сборка: `python -I scripts/teaser_audio.py <папка с teaser90_B_safe.mp3 и sfx/ok> <выход>` → `teaser_mix`, `teaser_music`, `teaser_sfx`, `teaser_cues.txt`. Готовые файлы: ветка `overspam-renders`, папка `audio/teaser_full/`. Тайминги — в `teaser_cues.txt` там же.

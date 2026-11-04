@@ -38,8 +38,10 @@ for (const id of ids) {
     jobs.push({id, file: "chests-open.mp4", props: base, alpha: false});
   } else if (id === "OS-OpenerCuts") {
     // опенер-шаблон под звук рефа Fast Cuts: слоты под клипы владельца + отдельная дорожка
-    jobs.push({id, file: "opener-cuts.mp4", props: {...base, audio: true}, alpha: false});
-    jobs.push({id, file: "opener-cuts.wav", props: {...base, audio: true}, alpha: false});
+    // openerCuts.extend: удлинение первого слота (пролёт), звук готовит scripts/opener_audio_extend.py
+    const oc = {...base, audio: true, ...(cfg.openerCuts ?? {})};
+    jobs.push({id, file: "opener-cuts.mp4", props: oc, alpha: false});
+    jobs.push({id, file: "opener-cuts.wav", props: oc, alpha: false});
   } else if (id === "OS-CardsPick") {
     // выбор карты под звук DRG владельца: со звуком (проверить синхрон) и без него (звук кладётся с 1,20 с)
     if (fs.existsSync(path.join(ROOT, "public/sfx/owner/drg_cards.mp3"))) jobs.push({id, file: "cards-pick.mp4", props: {...base, audio: "drg"}, alpha: false});

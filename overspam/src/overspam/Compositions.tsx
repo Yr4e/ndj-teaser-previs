@@ -85,8 +85,9 @@ export const OverspamCompositions: React.FC = () => (
       width={1920}
       height={1080}
       fps={60}
-      durationInFrames={openerCutsFrames}
+      durationInFrames={openerCutsFrames(OPENER_CUTS_DEFAULTS.extend)}
       defaultProps={OPENER_CUTS_DEFAULTS}
+      calculateMetadata={({props}) => ({durationInFrames: openerCutsFrames(props.extend)})}
     />
     <Composition
       id="OS-CardsPick"

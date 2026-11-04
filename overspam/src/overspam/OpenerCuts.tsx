@@ -10,12 +10,15 @@ import {PixelLogo, PixelText} from "./PixelText";
    С 4,00 с титр (удар в чёрное), с 6,76 с знак студии (второй удар). */
 /* clips: клип владельца на каждый слот (null = пустой слот, владелец вставит сам). Клип берётся с начала;
    если он короче слота, чуть замедляется, чтобы закрыть слот без стоп-кадра. */
-export type OpenerCutsProps = {audio: boolean; soon: string; begins: string; date: string; clips: (string | null)[]};
+/* extend: на сколько секунд удлинить первый слот (пролёт). Удар остаётся, гул после него растягивается
+   (scripts/opener_audio_extend.py), щелчки, титр и концовка сдвигаются на столько же. */
+export type OpenerCutsProps = {audio: boolean; soon: string; begins: string; date: string; clips: (string | null)[]; extend: number};
 export const OPENER_CUTS_DEFAULTS: OpenerCutsProps = {
   audio: true,
   soon: "COMING SOON",
   begins: "THE ADVENTURE BEGINS",
   date: "12.12.2026",
+  extend: 4,
   clips: [null, null, ...[3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((n) => `opener/cut${String(n).padStart(2, "0")}.mp4`)],
 };
 // длины клипов владельца, кадры при 60 fps (cut03…cut12)
@@ -33,7 +36,8 @@ export const OPENER_CUTS = [0, 1.96, 2.33, 2.746, 3.036, 3.2, 3.375, 3.505, 3.66
 const TITLE = 4.0;
 const STUDIO = 6.755;
 const END = 9.33;
-export const openerCutsFrames = f(END);
+export const openerCutsFrames = (extend = 0) => f(END + extend);
+const audioFile = (extend: number) => (extend > 0 ? `sfx/ref/fastcuts-ext-${Math.round(extend * 1000)}.wav` : "sfx/ref/fastcuts.wav");
 
 const Clip: React.FC<{src: string; slotFrames: number}> = ({src, slotFrames}) => {
   const frame = useCurrentFrame();
@@ -121,26 +125,29 @@ const Store: React.FC<{icon: string; name: string}> = ({icon, name}) => (
   </div>
 );
 
-export const OpenerCuts: React.FC<OpenerCutsProps> = ({audio, soon, begins, date, clips}) => {
-  const ends = [...OPENER_CUTS.slice(1), TITLE];
+export const OpenerCuts: React.FC<OpenerCutsProps> = ({audio, soon, begins, date, clips, extend = 0}) => {
+  // всё после первого слота сдвигается на extend
+  const cuts = OPENER_CUTS.map((s, i) => (i === 0 ? 0 : s + extend));
+  const TITLE_ = TITLE + extend, STUDIO_ = STUDIO + extend, END_ = END + extend;
+  const ends = [...cuts.slice(1), TITLE_];
   return (
     <AbsoluteFill style={{background: "#000"}}>
-      {OPENER_CUTS.map((s, i) => (
+      {cuts.map((s, i) => (
         <Sequence key={i} from={f(s)} durationInFrames={f(ends[i]) - f(s)}>
           {clips?.[i] ? <Clip src={clips[i]!} slotFrames={f(ends[i]) - f(s)} /> : <Slot n={i + 1} from={s} to={ends[i]} />}
         </Sequence>
       ))}
       {/* кадр 1: COMING SOON / OVERSPAM, снизу площадки */}
       <AbsoluteFill style={{alignItems: "center", justifyContent: "center", gap: 30}}>
-        <Soft at={f(TITLE)} until={f(STUDIO)}>
+        <Soft at={f(TITLE_)} until={f(STUDIO_)}>
           <PixelText text={soon} scale={3} style="dim" spacing={3} noOutline />
         </Soft>
-        <Soft at={f(TITLE) + 3} until={f(STUDIO)}>
+        <Soft at={f(TITLE_) + 3} until={f(STUDIO_)}>
           <PixelLogo scale={14} />
         </Soft>
       </AbsoluteFill>
       <AbsoluteFill style={{alignItems: "center", justifyContent: "flex-end", paddingBottom: 96}}>
-        <Soft at={f(TITLE) + 14} until={f(STUDIO)}>
+        <Soft at={f(TITLE_) + 14} until={f(STUDIO_)}>
           <div style={{display: "flex", alignItems: "center", gap: 46}}>
             <Store icon="steam" name="STEAM" />
             <div style={{width: 10, height: 10, border: `3px solid ${GOLD}`, transform: "rotate(45deg)", opacity: 0.8}} />
@@ -150,14 +157,14 @@ export const OpenerCuts: React.FC<OpenerCutsProps> = ({audio, soon, begins, date
       </AbsoluteFill>
       {/* кадр 2: THE ADVENTURE BEGINS / дата из глитча */}
       <AbsoluteFill style={{alignItems: "center", justifyContent: "center", gap: 30}}>
-        <Soft at={f(STUDIO)} until={f(END) + 12}>
+        <Soft at={f(STUDIO_)} until={f(END_) + 12}>
           <PixelText text={begins} scale={3} style="dim" spacing={3} noOutline />
         </Soft>
-        <Soft at={f(STUDIO) + 6} until={f(END) + 12}>
-          <GlitchDate text={date} at={f(STUDIO) + 6} lock={f(STUDIO + 1.5)} scale={8} />
+        <Soft at={f(STUDIO_) + 6} until={f(END_) + 12}>
+          <GlitchDate text={date} at={f(STUDIO_) + 6} lock={f(STUDIO_ + 1.5)} scale={8} />
         </Soft>
       </AbsoluteFill>
-      {audio && <Audio src={staticFile("sfx/ref/fastcuts.wav")} />}
+      {audio && <Audio src={staticFile(audioFile(extend))} />}
     </AbsoluteFill>
   );
 };

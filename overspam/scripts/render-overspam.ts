@@ -38,8 +38,7 @@ for (const id of ids) {
     jobs.push({id, file: "chests-open.mp4", props: base, alpha: false});
   } else if (id === "OS-BLEnd") {
     // концовка по рефу Borderlands 4 Gameplay, со звуками ElevenLabs
-    jobs.push({id, file: "bl-end.mp4", props: {bpm: 168, sfx: true, withLogo: true}, alpha: false});
-    jobs.push({id, file: "bl-end-nologo.mp4", props: {bpm: 168, sfx: true, withLogo: false}, alpha: false});
+    jobs.push({id, file: "bl-end.mp4", props: {bpm: 168, sfx: true, withLogo: false, tail: 235}, alpha: false});
   } else if (id === "OS-WordCards") {
     jobs.push({id, file: "words-play-together.mp4", props: {bpm: 168, lines: [["PLAY"], ["TOGETHER"]]}, alpha: false});
   } else if (id === "OS-WordOverlay") {

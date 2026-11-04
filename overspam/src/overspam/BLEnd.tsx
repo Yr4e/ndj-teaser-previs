@@ -3,27 +3,28 @@ import {AbsoluteFill, Audio, Easing, Img, interpolate, Sequence, staticFile, use
 import {PixelText} from "./PixelText";
 
 /* ───────────── Концовка покадрово по рефу Borderlands 4 Gameplay (IGN, 86,6–98 с) ─────────────
-   логотип на чёрном → удар и резкая склейка на сверхкрупный арт, который с размытием отъезжает в квадрат слева →
-   тёмная штриховка → чёрная шторка (0,3 с, на чёрном начинает собираться текст) → красный фон с дымом, текст
-   собирается рваными буквами и мерцает, кнопка: сначала пустой чёрный прямоугольник, потом надпись →
-   яркая вспышка + чёрная шторка → вторая вспышка. Арт — картинка владельца (public/overspam/keyart.webp). */
+   удар и резкая склейка на сверхкрупный арт, который с размытием отъезжает в квадрат слева → красный фон с дымом,
+   текст собирается рваными буквами и мерцает, кнопка: сначала пустой чёрный прямоугольник, потом надпись.
+   Правки владельца: без логотипа на чёрном, без белых вспышек и чёрных полос. Удар клипа (0,1 с) ставится на
+   финальный удар трека teaser60c_v2 (56,08 с). Арт — картинка владельца (public/overspam/keyart.webp). */
 const FPS = 60;
 const clamp = {extrapolateLeft: "clamp", extrapolateRight: "clamp"} as const;
 const LOGO = (scale: number) => ({width: 60 * scale, height: 14 * scale});
 
-export type BLEndProps = {bpm: number; line1: string; line2: string; button: string; sfx: boolean; withLogo: boolean};
-export const BL_END_DEFAULTS: BLEndProps = {bpm: 168, line1: "COMING DECEMBER 12", line2: "OVERSPAM.COM", button: "WISHLIST NOW", sfx: true, withLogo: true};
+// tail: сколько кадров идёт концовка после удара (под трек teaser60c_v2: удар 56,08 с, файл кончается на 60,0 с → 235)
+export type BLEndProps = {bpm: number; line1: string; line2: string; button: string; sfx: boolean; withLogo: boolean; tail: number};
+export const BL_END_DEFAULTS: BLEndProps = {bpm: 168, line1: "COMING DECEMBER 12", line2: "OVERSPAM.COM", button: "WISHLIST NOW", sfx: true, withLogo: false, tail: 235};
 
 const LOGO_HOLD = 96; // логотип на чёрном, кадры
 const RED = "#d0121e";
 const CARD = {left: 150, top: 200, w: 540, h: 680}; // арт владельца 1117×1408
 const FACE = {x: 0.45, y: 0.47}; // лицо Бракки на арте: отсюда отъезжает камера
 
-const timeline = (withLogo: boolean) => {
-  const H = withLogo ? LOGO_HOLD : 6; // удар: склейка на арт
-  return {H, ZOOM: 40, S1: H + 42, W2: H + 60, RED_BACK: H + 78, TXT: H + 62, BTN: H + 80, F1: H + 210, F2: H + 372, END: H + 480};
+const timeline = (withLogo: boolean, tail = 235) => {
+  const H = withLogo ? LOGO_HOLD : 6; // удар: склейка на арт (кадр 6 = 0,1 с от начала клипа)
+  return {H, ZOOM: 40, TXT: H + 50, LINE2: H + 62, BTN: H + 70, END: H + tail};
 };
-export const blEndFrames = (p: {withLogo?: boolean} = {}) => timeline(p.withLogo ?? true).END;
+export const blEndFrames = (p: {withLogo?: boolean; tail?: number} = {}) => timeline(p.withLogo ?? false, p.tail).END;
 
 const prand = (n: number) => {
   const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -57,22 +58,6 @@ const Smoke: React.FC = () => {
   );
 };
 
-/** Диагональная штриховка/шторка: полосы проходят по кадру слева направо */
-const Streaks: React.FC<{at: number; len: number; color: string; dark?: boolean}> = ({at, len, color, dark}) => {
-  const frame = useCurrentFrame();
-  const k = (frame - at) / len;
-  if (k < 0 || k > 1) return null;
-  return (
-    <AbsoluteFill style={{overflow: "hidden"}}>
-      {Array.from({length: 14}, (_, i) => {
-        const w = 20 + ((i * 37) % 90);
-        const x = -30 + k * 160 - ((i * 53) % 40) + ((i * 7) % 30);
-        return <div key={i} style={{position: "absolute", top: "-10%", bottom: "-10%", left: `${x}%`, width: w, background: color, opacity: dark ? 0.9 : 0.55, transform: "skewX(-14deg)"}} />;
-      })}
-    </AbsoluteFill>
-  );
-};
-
 /** Текст собирается рваными буквами: каждая встаёт в свой случайный кадр, первые 40 кадров буквы мигают */
 const ragged = (txt: string, frame: number, start: number, seed: number) =>
   txt
@@ -86,9 +71,9 @@ const ragged = (txt: string, frame: number, start: number, seed: number) =>
     })
     .join("");
 
-export const BLEnd: React.FC<BLEndProps> = ({line1, line2, button, sfx, withLogo}) => {
+export const BLEnd: React.FC<BLEndProps> = ({line1, line2, button, sfx, withLogo, tail}) => {
   const frame = useCurrentFrame();
-  const T = timeline(withLogo);
+  const T = timeline(withLogo, tail);
   // 1) логотип на чёрном, лёгкий наезд
   const logoOn = withLogo && frame < T.H;
   const push = interpolate(frame, [0, T.H], [0.96, 1.02], clamp);
@@ -103,17 +88,13 @@ export const BLEnd: React.FC<BLEndProps> = ({line1, line2, button, sfx, withLogo
   const dy = (540 - faceY) * (1 - z);
   // первые 3 кадра крупного плана резкие, размытие только на отъезде (как в рефе)
   const blur = Math.min(12, (z - zPrev) * 220) * interpolate(frame - T.H, [2, 5], [0, 1], clamp);
-  // 3) фон: красный; чёрный на время шторок; вспышки
-  const black = frame >= T.W2 && frame < T.RED_BACK;
-  const black2 = frame >= T.F1 + 4 && frame < T.F1 + 14;
-  const flash = (at: number) => interpolate(frame, [at, at + 2, at + 10], [0, 0.85, 0], clamp);
-  const fl = flash(T.F1) + flash(T.F2) * 0.8;
-  const textOn = frame >= T.TXT && !black2;
+  // 3) фон красный с дымом; вспышки и чёрные шторки убраны (правка владельца)
+  const textOn = frame >= T.TXT;
   return (
     <AbsoluteFill style={{background: "#000", overflow: "hidden"}}>
       {frame >= T.H && (
-        <AbsoluteFill style={{background: black || black2 ? "#050003" : RED}}>
-          {!black && !black2 && <Smoke />}
+        <AbsoluteFill style={{background: RED}}>
+          <Smoke />
           <AbsoluteFill style={{background: "radial-gradient(80% 70% at 50% 50%, transparent 55%, rgba(50,0,0,0.5))"}} />
           {/* арт */}
           <div
@@ -135,7 +116,7 @@ export const BLEnd: React.FC<BLEndProps> = ({line1, line2, button, sfx, withLogo
           {textOn && (
             <div style={{position: "absolute", left: 760, top: 420, display: "flex", flexDirection: "column", alignItems: "center", gap: 30}}>
               <PixelText text={ragged(line1, frame, T.TXT, 11) || " "} scale={8} style="white" spacing={1} />
-              {frame >= T.RED_BACK && <PixelText text={ragged(line2, frame, T.RED_BACK, 47) || " "} scale={12} style="black" noOutline spacing={1} />}
+              {frame >= T.LINE2 && <PixelText text={ragged(line2, frame, T.LINE2, 47) || " "} scale={12} style="black" noOutline spacing={1} />}
             </div>
           )}
           {/* кнопка: сначала пустой чёрный прямоугольник, потом надпись */}
@@ -146,14 +127,11 @@ export const BLEnd: React.FC<BLEndProps> = ({line1, line2, button, sfx, withLogo
               </div>
             </div>
           )}
-          <div style={{position: "absolute", left: CARD.left, bottom: 60, display: "flex", gap: 30, alignItems: "center", opacity: frame >= T.RED_BACK ? 0.9 : 0}}>
+          <div style={{position: "absolute", left: CARD.left, bottom: 60, display: "flex", gap: 30, alignItems: "center", opacity: frame >= T.LINE2 ? 0.9 : 0}}>
             {["steam", "epicgames"].map((st) => (
               <Img key={st} src={staticFile(`overspam/stores/${st}.svg`)} style={{width: 42, height: 42}} />
             ))}
           </div>
-          <Streaks at={T.S1} len={10} color="#5a0008" />
-          <Streaks at={T.W2 - 4} len={10} color="#000" dark />
-          <Streaks at={T.F1 + 2} len={12} color="#000" dark />
         </AbsoluteFill>
       )}
       {/* логотип на чёрном */}
@@ -167,18 +145,12 @@ export const BLEnd: React.FC<BLEndProps> = ({line1, line2, button, sfx, withLogo
           </div>
         </AbsoluteFill>
       )}
-      {/* вспышки на весь кадр */}
-      {fl > 0.01 && <AbsoluteFill style={{background: "radial-gradient(70% 70% at 40% 45%, #fff6f0, #ffb0b8 60%, #ff5a7a)", opacity: fl, mixBlendMode: "screen"}} />}
-      {/* звуки по рефу: удар на склейку, щелчки на штриховке/шторке/мерцании текста, вспышки с ударом */}
+      {/* звуки: удар на склейку (в треке на этом месте свой финальный удар — громкость небольшая) и тихие щелчки на сборке текста */}
       {sfx && (
         <>
-          <Sequence from={T.H} durationInFrames={150}><Audio src={staticFile("sfx/el/art_hit.mp3")} volume={0.95} /></Sequence>
-          <Sequence from={T.S1 - 15} durationInFrames={45}><Audio src={staticFile("sfx/el/wipe_crackle.mp3")} volume={0.45} /></Sequence>
-          <Sequence from={T.W2 - 15} durationInFrames={45}><Audio src={staticFile("sfx/el/wipe_crackle.mp3")} volume={0.5} /></Sequence>
-          <Sequence from={T.TXT} durationInFrames={72}><Audio src={staticFile("sfx/el/ticks_soft.mp3")} volume={0.35} /></Sequence>
-          <Sequence from={T.RED_BACK + 10} durationInFrames={72}><Audio src={staticFile("sfx/el/ticks_soft.mp3")} volume={0.3} /></Sequence>
-          <Sequence from={T.F1} durationInFrames={90}><Audio src={staticFile("sfx/el/flash_hit.mp3")} volume={0.75} /></Sequence>
-          <Sequence from={T.F2} durationInFrames={90}><Audio src={staticFile("sfx/el/flash_hit.mp3")} volume={0.55} /></Sequence>
+          <Sequence from={T.H} durationInFrames={150}><Audio src={staticFile("sfx/el/art_hit.mp3")} volume={0.55} /></Sequence>
+          <Sequence from={T.TXT} durationInFrames={72}><Audio src={staticFile("sfx/el/ticks_soft.mp3")} volume={0.3} /></Sequence>
+          <Sequence from={T.LINE2 + 10} durationInFrames={72}><Audio src={staticFile("sfx/el/ticks_soft.mp3")} volume={0.25} /></Sequence>
         </>
       )}
     </AbsoluteFill>

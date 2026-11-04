@@ -36,6 +36,9 @@ for (const id of ids) {
     jobs.push({id, file: "shrines.mp4", props: base, alpha: false});
   } else if (id === "OS-ChestsOpen") {
     jobs.push({id, file: "chests-open.mp4", props: base, alpha: false});
+  } else if (id === "OS-WorldsSplit") {
+    // вставки полноценного тизера идут под его музыку: teaser.json → teaser.bpm
+    jobs.push({id, file: "worldssplit.mp4", props: {...base, bpm: cfg.teaser?.bpm ?? base.bpm}, alpha: false});
   } else if (id === "OS-OpenerCuts") {
     // опенер-шаблон под звук рефа Fast Cuts: слоты под клипы владельца + отдельная дорожка
     // openerCuts.extend: удлинение первого слота (пролёт), звук готовит scripts/opener_audio_extend.py

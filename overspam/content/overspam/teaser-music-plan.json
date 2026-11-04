@@ -1,0 +1,130 @@
+{
+ "positive_global_styles": [
+  "video game trailer",
+  "chiptune meets electro rock",
+  "110 bpm",
+  "4/4",
+  "punchy modern drums",
+  "8-bit arpeggios",
+  "distorted synth bass",
+  "driving electric guitar riffs",
+  "playful but huge",
+  "instrumental",
+  "heavy half-time swagger"
+ ],
+ "negative_global_styles": [
+  "vocals",
+  "singing",
+  "lyrics",
+  "lo-fi",
+  "jazz",
+  "acoustic",
+  "orchestral only",
+  "slow tempo",
+  "tempo changes"
+ ],
+ "sections": [
+  {
+   "section_name": "Inbox Silence",
+   "positive_local_styles": [
+    "starts with one deep sub boom",
+    "dark low drone",
+    "quiet ticking clock",
+    "sparse glitchy 8-bit blips",
+    "slow filtered arpeggio fading in",
+    "reverse cymbal riser at the very end"
+   ],
+   "negative_local_styles": [
+    "drums",
+    "full mix",
+    "loud guitars"
+   ],
+   "duration_ms": 8727,
+   "lines": []
+  },
+  {
+   "section_name": "Build Up",
+   "positive_local_styles": [
+    "kick on every beat",
+    "snare rolls building",
+    "arpeggio opens up",
+    "rising tension",
+    "short drum fill into next section"
+   ],
+   "negative_local_styles": [
+    "drop",
+    "breakdown"
+   ],
+   "duration_ms": 8727,
+   "lines": []
+  },
+  {
+   "section_name": "Main Run",
+   "positive_local_styles": [
+    "full energy groove",
+    "catchy 8-bit lead hook",
+    "electro rock guitar riff",
+    "punchy kick and clap",
+    "clear accents on every bar"
+   ],
+   "negative_local_styles": [
+    "quiet",
+    "ambient",
+    "breakdown"
+   ],
+   "duration_ms": 13091,
+   "lines": []
+  },
+  {
+   "section_name": "Boss Stop",
+   "positive_local_styles": [
+    "sudden full stop",
+    "near silence",
+    "deep sub bass rumble",
+    "slow heartbeat thump",
+    "tension riser that ends exactly at the next downbeat"
+   ],
+   "negative_local_styles": [
+    "drums",
+    "melody",
+    "full mix"
+   ],
+   "duration_ms": 4364,
+   "lines": []
+  },
+  {
+   "section_name": "Overspam Drop",
+   "positive_local_styles": [
+    "massive drop on the first beat",
+    "maximum energy",
+    "heavy distorted synth bass",
+    "fast 8-bit lead",
+    "big guitar chords",
+    "relentless drums",
+    "chaotic but tight"
+   ],
+   "negative_local_styles": [
+    "quiet",
+    "breakdown",
+    "fade"
+   ],
+   "duration_ms": 13091,
+   "lines": []
+  },
+  {
+   "section_name": "Final Hit",
+   "positive_local_styles": [
+    "one huge final hit on the first beat",
+    "long ringing tail",
+    "8-bit sparkle fading out",
+    "clean ending"
+   ],
+   "negative_local_styles": [
+    "drums continuing",
+    "new melody"
+   ],
+   "duration_ms": 4364,
+   "lines": []
+  }
+ ]
+}

@@ -10,9 +10,10 @@ import {SPAWN} from "./kit";
 type Seg = {from: number; to: number};
 type Shrine = {src: string; color: string; capture: Seg; cards: Seg; pick: Seg; slam: Seg};
 const SHRINES: Shrine[] = [
-  {src: "events/event_2.mp4", color: "255,200,70", capture: {from: 3.0, to: 4.18}, cards: {from: 4.25, to: 4.6}, pick: {from: 5.75, to: 6.28}, slam: {from: 6.28, to: 6.88}}, // Лес, золотой
-  {src: "events/event_1.mp4", color: "90,230,255", capture: {from: 5.0, to: 6.08}, cards: {from: 6.15, to: 6.5}, pick: {from: 7.75, to: 8.28}, slam: {from: 8.28, to: 8.88}}, // Луна, обычный
-  {src: "events/event_3.mp4", color: "255,200,70", capture: {from: 4.9, to: 6.2}, cards: {from: 6.3, to: 6.65}, pick: {from: 7.5, to: 7.98}, slam: {from: 7.98, to: 8.58}}, // Abyss Dome, золотой
+  // клипы владельца D:B8 (4 нояб.); длины кусков те же, что в первой версии; моменты найдены по яркости (карты — затемнение, удар — вспышка)
+  {src: "shr/1028-1.mp4", color: "255,200,70", capture: {from: 5.2, to: 6.38}, cards: {from: 6.45, to: 6.8}, pick: {from: 7.317, to: 7.85}, slam: {from: 7.85, to: 8.45}}, // Лес, золотой
+  {src: "shr/1028-3.mp4", color: "90,230,255", capture: {from: 4.567, to: 5.65}, cards: {from: 5.717, to: 6.067}, pick: {from: 6.133, to: 6.667}, slam: {from: 6.667, to: 7.267}}, // Купол, обычный
+  {src: "shr/1028-2.mp4", color: "255,200,70", capture: {from: 3.45, to: 4.75}, cards: {from: 4.817, to: 5.167}, pick: {from: 5.95, to: 6.433}, slam: {from: 6.433, to: 7.033}}, // Пустыня, золотой
 ];
 
 const FPS = 60;

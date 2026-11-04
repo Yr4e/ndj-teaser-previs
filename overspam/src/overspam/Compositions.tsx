@@ -11,7 +11,17 @@ import {
   Opener, OPENER_DEFAULTS, openerFrames,
 } from "./Trailer";
 import {Overtime, overtimeFrames} from "./Overtime";
-import {TitleOverlay, titleOverlayFrames, WorldsSplit, worldsSplitFrames} from "./TeaserInserts";
+import {BL_END_DEFAULTS, BLEnd, blEndFrames} from "./BLEnd";
+import {EndConcepts} from "./EndConcepts";
+import {EndPlay, endPlayFrames} from "./EndPlay";
+import {BuildTurbine, buildTurbineFrames} from "./BuildTurbine";
+import {BuildIdeas} from "./BuildIdeas";
+import {BossSalvo, bossSalvoFrames} from "./BossSalvo";
+import {BuildPile, buildPileFrames} from "./BuildPile";
+import {PlayTogether, playTogetherFrames} from "./PlayTogether";
+import {PileSimTest, VoxelCardLabels, VoxelInspector, VoxelStress, VoxelTest} from "./voxel";
+import {WORD_DEFAULTS, WordCards, wordCardsFrames, WordOverlay, wordOverlayFrames} from "./BLStyle";
+import {TitleOverlay, TitleOverlay3D, titleOverlay3DFrames, titleOverlayFrames, WorldsSplit, worldsSplitFrames} from "./TeaserInserts";
 import {BossLineup, bossLineupFrames, BossPath, bossPathFrames} from "./Bosses";
 import {Shrines, shrinesFrames} from "./Shrines";
 import {ChestsOpen, chestsOpenFrames} from "./ChestsOpen";
@@ -95,6 +105,31 @@ export const OverspamCompositions: React.FC = () => (
       defaultProps={{bpm: 168}}
       calculateMetadata={({props}) => ({durationInFrames: titleOverlayFrames(props)})}
     />
+    <Composition
+      id="OS-TitleOverlay3D"
+      component={TitleOverlay3D}
+      width={1920}
+      height={1080}
+      fps={60}
+      durationInFrames={titleOverlay3DFrames({bpm: 168})}
+      defaultProps={{bpm: 168}}
+      calculateMetadata={({props}) => ({durationInFrames: titleOverlay3DFrames(props)})}
+    />
+    <Composition id="OS-WordCards" component={WordCards} width={1920} height={1080} fps={60} durationInFrames={wordCardsFrames(WORD_DEFAULTS)} defaultProps={WORD_DEFAULTS} calculateMetadata={({props}) => ({durationInFrames: wordCardsFrames(props)})} />
+    <Composition id="OS-WordOverlay" component={WordOverlay} width={1920} height={1080} fps={60} durationInFrames={wordOverlayFrames(WORD_DEFAULTS)} defaultProps={WORD_DEFAULTS} calculateMetadata={({props}) => ({durationInFrames: wordOverlayFrames(props)})} />
+    <Composition id="OS-BLEnd" component={BLEnd} width={1920} height={1080} fps={60} durationInFrames={blEndFrames(BL_END_DEFAULTS)} defaultProps={BL_END_DEFAULTS} calculateMetadata={({props}) => ({durationInFrames: blEndFrames(props)})} />
+    <Composition id="OS-BuildTurbine" component={BuildTurbine} width={1920} height={1080} fps={60} durationInFrames={buildTurbineFrames} />
+    <Composition id="OS-PileSimTest" component={PileSimTest} width={1920} height={1080} fps={60} durationInFrames={300} />
+    <Composition id="OS-VoxelCardLabels" component={VoxelCardLabels} width={1920} height={1080} fps={60} durationInFrames={1} />
+    <Composition id="OS-VoxelInspector" component={VoxelInspector} width={1920} height={1080} fps={60} durationInFrames={1} />
+    <Composition id="OS-VoxelTest" component={VoxelTest} width={1920} height={1080} fps={60} durationInFrames={180} />
+    <Composition id="OS-VoxelStress" component={VoxelStress} width={1920} height={1080} fps={60} durationInFrames={120} />
+    <Composition id="OS-BuildIdeas" component={BuildIdeas} width={1920} height={1080} fps={60} durationInFrames={1} defaultProps={{variant: 1}} />
+    <Composition id="OS-BossSalvo" component={BossSalvo} width={1920} height={1080} fps={60} durationInFrames={bossSalvoFrames} />
+    <Composition id="OS-BuildPile" component={BuildPile} width={1920} height={1080} fps={60} durationInFrames={buildPileFrames} />
+    <Composition id="OS-PlayTogether" component={PlayTogether} width={1920} height={1080} fps={60} durationInFrames={playTogetherFrames} />
+    <Composition id="OS-EndConcepts" component={EndConcepts} width={1920} height={1080} fps={60} durationInFrames={1} defaultProps={{v: 1}} />
+    <Composition id="OS-EndPlay" component={EndPlay} width={1920} height={1080} fps={60} durationInFrames={endPlayFrames} />
     <Composition id="OS-Overtime" component={Overtime} width={1920} height={1080} fps={60} durationInFrames={overtimeFrames} />
     <Composition id="OS-BossPath" component={BossPath} width={1920} height={1080} fps={60} durationInFrames={bossPathFrames} />
     <Composition id="OS-BossLineup" component={BossLineup} width={1920} height={1080} fps={60} durationInFrames={bossLineupFrames} />

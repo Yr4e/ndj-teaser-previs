@@ -124,9 +124,10 @@ export const WorldsSplit: React.FC<{bpm: number; sfx: boolean}> = ({bpm, sfx}) =
 };
 
 /* ───────────── TitleOverlay: надпись OVERSPAM на дропе, прозрачный оверлей ─────────────
-   До удара буквы мигают пиксельным глитчем, на удар (DROP = 0,5 с) надпись схлопывается с перелётом,
-   красная/голубая копии сходятся, разлетаются пиксельные осколки, тряска. Держится HOLD долей, потом
-   буквы слева направо рассыпаются глитч-полосами. Владелец кладёт поверх кадров в CapCut. */
+   Заход резкий (правка владельца 2026-11-04): за 8 кадров до удара буквы вспыхивают слева направо.
+   На удар (DROP = 0,5 с) надпись схлопывается с перелётом, красная/голубая копии сходятся, разлетаются
+   пиксельные осколки, тряска. Держится HOLD долей, потом буквы слева направо подпрыгивают и падают
+   (не глитч, правка владельца). Владелец кладёт поверх кадров в CapCut. */
 const LOGO_W = 60;
 const LOGO_H = 14;
 // границы букв в логотипе 60×14 (столбцы с контуром между буквами)
@@ -135,7 +136,7 @@ const TS = 22; // масштаб пикселя логотипа
 const DROP = 30; // кадр удара
 const HOLD_BEATS = 6;
 
-export const titleOverlayFrames = (p: {bpm: number}) => Math.round(DROP + beatFrames(p.bpm, FPS) * HOLD_BEATS + 30);
+export const titleOverlayFrames = (p: {bpm: number}) => Math.round(DROP + beatFrames(p.bpm, FPS) * HOLD_BEATS + 44);
 
 const prand = (n: number) => {
   const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -204,31 +205,34 @@ export const TitleOverlay: React.FC<{bpm: number}> = ({bpm}) => {
       <div style={{position: "absolute", width: W * 1.3, height: H * 2.4, background: "radial-gradient(closest-side, rgba(255,150,70,0.55), rgba(255,80,60,0.18) 55%, transparent)", opacity: glow * glowOut, filter: "blur(10px)"}} />
       <div style={{position: "relative", width: W, height: H, transform: `translate(${shake}px, ${shakeY}px) scale(${scale})`}}>
         {LETTERS.map((_, i) => {
-          // до удара: буквы мигают по одной, полупрозрачно, со сдвигом на целые пиксели логотипа
+          const [lx0, lx1] = LETTERS[i];
+          const origin = `${((lx0 + lx1 + 1) / 2) * TS}px ${(LOGO_H / 2) * TS}px`;
+          // заход резкий: за 8 кадров до удара буквы вспыхивают слева направо по кадру на букву,
+          // сразу целиком, падают сверху на 2 пикселя логотипа, с красной и голубой копией и вспышкой яркости
           if (t < 0) {
-            const on = prand(Math.floor(frame / 3) * 13 + i * 7) > 0.55 - (frame / DROP) * 0.35;
-            if (!on || frame < i * 2) return null;
-            const jx = Math.round((prand(frame * 3 + i) - 0.5) * 4) * TS;
+            const a = frame - (DROP - 8 + i);
+            if (a < 0) return null;
+            const dy = Math.round(interpolate(a, [0, 2], [-2, 0], clamp)) * TS;
+            const sp = Math.round(interpolate(a, [0, 3], [2, 1], clamp)) * TS;
             return (
-              <React.Fragment key={i}>
-                <LetterSlice i={i} dx={jx + TS} tint="#ff3048" opacity={0.5} />
-                <LetterSlice i={i} dx={jx - TS} tint="#3cd2ff" opacity={0.5} />
-                <LetterSlice i={i} dx={jx} opacity={0.35 + 0.4 * (frame / DROP)} />
-              </React.Fragment>
+              <div key={i} style={{position: "absolute", inset: 0, transform: `translateY(${dy}px)`, filter: `brightness(${interpolate(a, [0, 2], [1.9, 1.15], clamp)})`}}>
+                <LetterSlice i={i} dx={sp} tint="#ff3048" opacity={0.7} />
+                <LetterSlice i={i} dx={-sp} tint="#3cd2ff" opacity={0.7} />
+                <LetterSlice i={i} />
+              </div>
             );
           }
-          // уход: буква рассыпается на 3 полосы, они разъезжаются и гаснут, слева направо
-          const ex = frame - (exitAt + i * 1.5);
+          // уход: слева направо каждая буква подпрыгивает и падает вниз с поворотом, гаснет в конце (без глитча)
+          const ex = frame - (exitAt + i * 2);
           if (ex >= 0) {
-            if (ex > 12) return null;
-            const k = ex / 12;
+            if (ex > 26) return null;
+            const fy = -16 * ex + 1.9 * ex * ex;
+            const rot = (prand(i * 5.7) - 0.5) * 2 * 2.2 * ex;
+            const fx = (prand(i * 3.1) - 0.5) * 6 * ex;
             return (
-              <React.Fragment key={i}>
-                {[0, 5, 10].map((top, s) => (
-                  <LetterSlice key={s} i={i} clipTop={top} clipH={s === 2 ? 4 : 5} dx={Math.round((prand(i * 9 + s) - 0.5) * 2 * k * 14) * TS} opacity={1 - k} />
-                ))}
-                <LetterSlice i={i} dx={Math.round(k * 3) * TS} tint="#3cd2ff" opacity={0.6 * (1 - k)} />
-              </React.Fragment>
+              <div key={i} style={{position: "absolute", inset: 0, transform: `translate(${fx}px, ${fy}px) rotate(${rot}deg)`, transformOrigin: origin, opacity: interpolate(ex, [16, 26], [1, 0], clamp)}}>
+                <LetterSlice i={i} />
+              </div>
             );
           }
           return (
@@ -251,6 +255,66 @@ export const TitleOverlay: React.FC<{bpm: number}> = ({bpm}) => {
           const c = ["#fffae8", "#ffc880", "#faac5c", "#ff8c3d", "#62162c"][k % 5];
           return <div key={k} style={{position: "absolute", width: sz, height: sz, background: c, transform: `translate(${x}px, ${y}px)`, opacity: interpolate(t, [0, 28, 40], [1, 0.8, 0], clamp)}} />;
         })}
+    </AbsoluteFill>
+  );
+};
+
+/* ───────────── TitleOverlay3D: надпись как корабль из варпа (правка владельца 2026-11-04) ─────────────
+   До удара плоская пиксельная надпись летит из точки к камере с ускорением и шлейфом. На удар (DROP)
+   резкая остановка и выдавливание в объём. Надпись смотрит прямо, камера сама медленно плывёт и даёт
+   слабый угол (−3,5° → +3,5°). Тёплое свечение, без блика. Уход: камера пролетает сквозь надпись в геймплей. */
+const L3 = 40; // слоёв толщины
+const DEPTH_PX = 120; // полная толщина, px
+export const titleOverlay3DFrames = (p: {bpm: number}) => Math.round(DROP + beatFrames(p.bpm, FPS) * HOLD_BEATS + 22);
+
+const LogoLayer: React.FC<{src: string; z: number; dim?: number; opacity?: number}> = ({src, z, dim = 1, opacity = 1}) => (
+  <Img
+    src={staticFile(src)}
+    style={{position: "absolute", left: 0, top: 0, width: LOGO_W * TS, height: LOGO_H * TS, transform: `translateZ(${z}px)`, filter: dim !== 1 ? `brightness(${dim})` : undefined, opacity, imageRendering: "pixelated"}}
+  />
+);
+
+export const TitleOverlay3D: React.FC<{bpm: number}> = ({bpm}) => {
+  const frame = useCurrentFrame();
+  const beat = beatFrames(bpm, FPS);
+  const exitAt = Math.round(DROP + beat * HOLD_BEATS);
+  const W = LOGO_W * TS;
+  const H = LOGO_H * TS;
+  const t = frame - DROP;
+  // разгон: из точки к камере с ускорением, лёгкий перелёт, резкая остановка
+  const u = Math.min(1, Math.max(0, frame / DROP));
+  const approach = 0.015 + 1.16 * Math.pow(u, 3.2);
+  const stop = t >= 0 ? spring({frame: t, fps: FPS, config: {damping: 18, stiffness: 420, mass: 0.6}, durationInFrames: 14}) : 0;
+  // уход: камера пролетает сквозь надпись в геймплей (правка владельца) — надпись разлетается на камеру, размывается и гаснет
+  const fly = Math.pow(interpolate(frame, [exitAt, exitAt + 16], [0, 1], clamp), 2.6);
+  const fade = interpolate(frame, [exitAt + 8, exitAt + 16], [1, 0], clamp);
+  const scale = t < 0 ? approach : (1.17 - 0.17 * stop) * interpolate(frame, [DROP, exitAt], [1, 1.03], clamp) * (1 + fly * 11);
+  // объём: толщина появляется на остановке, надпись доворачивается под угол
+  const depth = t < 0 ? 0 : spring({frame: t, fps: FPS, config: {damping: 14, stiffness: 200, mass: 0.7}, durationInFrames: 22});
+  // надпись смотрит прямо; камера сама медленно плывёт и даёт слабый угол, толщина чуть видна то слева, то справа
+  const drift = interpolate(frame, [DROP, exitAt], [0, 1], clamp);
+  const ry = t < 0 ? 0 : depth * interpolate(drift, [0, 1], [-3.5, 3.5], {easing: Easing.inOut(Easing.sin)}); // слабее (правка владельца)
+  const rx = t < 0 ? 0 : depth * interpolate(drift, [0, 1], [2, -1.2], {easing: Easing.inOut(Easing.sin)});
+  const glow = t < 0 ? u * 0.4 : interpolate(t, [0, 3, 30], [1, 1, 0.45], clamp) * fade;
+  // шлейф при разгоне и уходе: плоские копии позади, меньше и прозрачнее
+  const trail = t < 0 ? u : 0; // шлейф только на разгоне
+  const trailScales = [0.72, 0.5, 0.34];
+  return (
+    <AbsoluteFill style={{alignItems: "center", justifyContent: "center", perspective: 1600}}>
+      <div style={{position: "absolute", width: W * 1.25 * Math.max(scale, 0.05), height: H * 2.6 * Math.max(scale, 0.05), background: "radial-gradient(closest-side, rgba(255,170,90,0.6), rgba(255,90,60,0.18) 60%, transparent)", opacity: glow, filter: "blur(14px)"}} />
+      {t < 0 && trail > 0.05 &&
+        trailScales.map((k, i) => (
+          <Img key={i} src={staticFile("overspam/game/logo_x22.png")} style={{position: "absolute", width: W * scale * k, height: H * scale * k, opacity: 0.22 * trail * (1 - i * 0.28), filter: "blur(3px) brightness(1.6) saturate(0.6)", imageRendering: "pixelated"}} />
+        ))}
+      {/* фейд на обёртке: надпись гаснет целиком, задние слои не просвечивают */}
+      <div style={{position: "relative", width: W, height: H, opacity: fade, perspective: 1600, filter: fly > 0.01 ? `blur(${fly * 16}px)` : undefined}}>
+      <div style={{position: "relative", width: W, height: H, transformStyle: "preserve-3d", transform: `scale(${scale}) rotateX(${rx}deg) rotateY(${ry}deg)`}}>
+        {Array.from({length: L3}, (_, k) => L3 - k).map((k) => (
+          <LogoLayer key={k} src="overspam/game/logo_x22_side.png" z={(-k * DEPTH_PX * depth) / L3} dim={0.35 + 0.55 * (1 - k / L3)} />
+        ))}
+        <LogoLayer src="overspam/game/logo_x22.png" z={1} />
+      </div>
+      </div>
     </AbsoluteFill>
   );
 };

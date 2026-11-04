@@ -60,7 +60,7 @@ const load = () => {
   return loading;
 };
 
-export type PixelStyle = "logo" | "white" | "red" | "dim";
+export type PixelStyle = "logo" | "white" | "red" | "dim" | "black";
 
 const FILLS: Record<PixelStyle, string[]> = {
   // строки 1..7 глифа, цвета взяты из логотипа игры
@@ -68,9 +68,10 @@ const FILLS: Record<PixelStyle, string[]> = {
   white: ["#ffffff", "#ffffff", "#fffae8", "#fffae8", "#f6efe1", "#f6efe1", "#ffecc4"],
   red: ["#ffd2c4", "#ff8a7a", "#ff5a5a", "#f04048", "#e0303e", "#c82434", "#c82434"],
   dim: ["#9aa0b8", "#9aa0b8", "#8a90a8", "#8a90a8", "#7a8098", "#7a8098", "#7a8098"],
+  black: ["#0d0b10", "#0d0b10", "#0d0b10", "#0d0b10", "#0d0b10", "#0d0b10", "#0d0b10"],
 };
-const DEPTH: Record<PixelStyle, number> = {logo: 2, white: 1, red: 2, dim: 0};
-const DEPTH_COLOR: Record<PixelStyle, string> = {logo: "#62162c", white: "#3a3550", red: "#5a0e1e", dim: "#000"};
+const DEPTH: Record<PixelStyle, number> = {logo: 2, white: 1, red: 2, dim: 0, black: 0};
+const DEPTH_COLOR: Record<PixelStyle, string> = {logo: "#62162c", white: "#3a3550", red: "#5a0e1e", dim: "#000", black: "#000"};
 const OUTLINE = "#090911";
 
 /** Полосы под любой цвет: сверху светлее, к низу чистый цвет; толщина — тот же цвет, притемнённый */

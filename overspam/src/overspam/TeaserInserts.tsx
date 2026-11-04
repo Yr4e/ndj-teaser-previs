@@ -122,3 +122,135 @@ export const WorldsSplit: React.FC<{bpm: number; sfx: boolean}> = ({bpm, sfx}) =
     </AbsoluteFill>
   );
 };
+
+/* ───────────── TitleOverlay: надпись OVERSPAM на дропе, прозрачный оверлей ─────────────
+   До удара буквы мигают пиксельным глитчем, на удар (DROP = 0,5 с) надпись схлопывается с перелётом,
+   красная/голубая копии сходятся, разлетаются пиксельные осколки, тряска. Держится HOLD долей, потом
+   буквы слева направо рассыпаются глитч-полосами. Владелец кладёт поверх кадров в CapCut. */
+const LOGO_W = 60;
+const LOGO_H = 14;
+// границы букв в логотипе 60×14 (столбцы с контуром между буквами)
+const LETTERS = [[1, 8], [8, 15], [15, 22], [22, 29], [29, 36], [36, 43], [43, 50], [50, 58]];
+const TS = 22; // масштаб пикселя логотипа
+const DROP = 30; // кадр удара
+const HOLD_BEATS = 6;
+
+export const titleOverlayFrames = (p: {bpm: number}) => Math.round(DROP + beatFrames(p.bpm, FPS) * HOLD_BEATS + 30);
+
+const prand = (n: number) => {
+  const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x);
+};
+
+const LetterSlice: React.FC<{i: number; dx?: number; dy?: number; clipTop?: number; clipH?: number; tint?: string; opacity?: number}> = ({i, dx = 0, dy = 0, clipTop = 0, clipH = LOGO_H, tint, opacity = 1}) => {
+  const [x0, x1] = LETTERS[i];
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: x0 * TS + dx,
+        top: clipTop * TS + dy,
+        width: (x1 - x0 + 1) * TS,
+        height: clipH * TS,
+        overflow: "hidden",
+        opacity,
+        mixBlendMode: tint ? "screen" : undefined,
+      }}
+    >
+      {tint ? (
+        // цветная копия по форме букв: заливка цветом через маску логотипа
+        <div
+          style={{
+            position: "absolute",
+            left: -x0 * TS,
+            top: -clipTop * TS,
+            width: LOGO_W * TS,
+            height: LOGO_H * TS,
+            background: tint,
+            WebkitMaskImage: `url(${staticFile("overspam/game/60x14_logo.png")})`,
+            WebkitMaskSize: `${LOGO_W * TS}px ${LOGO_H * TS}px`,
+            WebkitMaskRepeat: "no-repeat",
+          }}
+        />
+      ) : (
+        <Img
+          src={staticFile("overspam/game/60x14_logo.png")}
+          style={{position: "absolute", left: -x0 * TS, top: -clipTop * TS, width: LOGO_W * TS, height: LOGO_H * TS, imageRendering: "pixelated"}}
+        />
+      )}
+    </div>
+  );
+};
+
+export const TitleOverlay: React.FC<{bpm: number}> = ({bpm}) => {
+  const frame = useCurrentFrame();
+  const beat = beatFrames(bpm, FPS);
+  const exitAt = Math.round(DROP + beat * HOLD_BEATS);
+  const t = frame - DROP;
+  const slam = t >= 0 ? spring({frame: t, fps: FPS, config: {damping: 11, stiffness: 320, mass: 0.6}, durationInFrames: 18}) : 0;
+  const scale = t >= 0 ? 1.32 - 0.32 * slam : 1;
+  const split = t >= 0 ? interpolate(t, [0, 10], [14, 0], clamp) : 0; // разъезд красной/голубой копий в пикселях экрана
+  const shake = t >= 0 && t < 12 ? Math.round((prand(frame) - 0.5) * 2 * (1 - t / 12) * 3) * 6 : 0;
+  const shakeY = t >= 0 && t < 12 ? Math.round((prand(frame + 50) - 0.5) * 2 * (1 - t / 12) * 2) * 6 : 0;
+  const sinceBeat = t >= 0 ? t % beat : 0;
+  const pulse = t >= 0 && frame < exitAt ? Math.exp(-sinceBeat / 6) : 0;
+  const glow = t >= 0 ? interpolate(t, [0, 3, 24], [0, 0.95, 0.35], clamp) + pulse * 0.18 : 0;
+  const glowOut = interpolate(frame, [exitAt, exitAt + 14], [1, 0], clamp);
+  const W = LOGO_W * TS;
+  const H = LOGO_H * TS;
+  return (
+    <AbsoluteFill style={{alignItems: "center", justifyContent: "center"}}>
+      {/* тёплое свечение за надписью */}
+      <div style={{position: "absolute", width: W * 1.3, height: H * 2.4, background: "radial-gradient(closest-side, rgba(255,150,70,0.55), rgba(255,80,60,0.18) 55%, transparent)", opacity: glow * glowOut, filter: "blur(10px)"}} />
+      <div style={{position: "relative", width: W, height: H, transform: `translate(${shake}px, ${shakeY}px) scale(${scale})`}}>
+        {LETTERS.map((_, i) => {
+          // до удара: буквы мигают по одной, полупрозрачно, со сдвигом на целые пиксели логотипа
+          if (t < 0) {
+            const on = prand(Math.floor(frame / 3) * 13 + i * 7) > 0.55 - (frame / DROP) * 0.35;
+            if (!on || frame < i * 2) return null;
+            const jx = Math.round((prand(frame * 3 + i) - 0.5) * 4) * TS;
+            return (
+              <React.Fragment key={i}>
+                <LetterSlice i={i} dx={jx + TS} tint="#ff3048" opacity={0.5} />
+                <LetterSlice i={i} dx={jx - TS} tint="#3cd2ff" opacity={0.5} />
+                <LetterSlice i={i} dx={jx} opacity={0.35 + 0.4 * (frame / DROP)} />
+              </React.Fragment>
+            );
+          }
+          // уход: буква рассыпается на 3 полосы, они разъезжаются и гаснут, слева направо
+          const ex = frame - (exitAt + i * 1.5);
+          if (ex >= 0) {
+            if (ex > 12) return null;
+            const k = ex / 12;
+            return (
+              <React.Fragment key={i}>
+                {[0, 5, 10].map((top, s) => (
+                  <LetterSlice key={s} i={i} clipTop={top} clipH={s === 2 ? 4 : 5} dx={Math.round((prand(i * 9 + s) - 0.5) * 2 * k * 14) * TS} opacity={1 - k} />
+                ))}
+                <LetterSlice i={i} dx={Math.round(k * 3) * TS} tint="#3cd2ff" opacity={0.6 * (1 - k)} />
+              </React.Fragment>
+            );
+          }
+          return (
+            <React.Fragment key={i}>
+              {split > 0.5 && <LetterSlice i={i} dx={split} tint="#ff3048" opacity={0.75} />}
+              {split > 0.5 && <LetterSlice i={i} dx={-split} tint="#3cd2ff" opacity={0.75} />}
+              <LetterSlice i={i} />
+            </React.Fragment>
+          );
+        })}
+      </div>
+      {/* пиксельные осколки на ударе */}
+      {t >= 0 && t < 40 &&
+        Array.from({length: 36}, (_, k) => {
+          const a = prand(k * 3.3) * Math.PI * 2;
+          const sp = 10 + prand(k * 7.1) * 22;
+          const sz = (1 + Math.floor(prand(k * 5.9) * 2)) * 14;
+          const x = Math.cos(a) * (W * 0.42 + sp * t);
+          const y = Math.sin(a) * (H * 0.55 + sp * t * 0.55) + 0.35 * t * t * 0.5;
+          const c = ["#fffae8", "#ffc880", "#faac5c", "#ff8c3d", "#62162c"][k % 5];
+          return <div key={k} style={{position: "absolute", width: sz, height: sz, background: c, transform: `translate(${x}px, ${y}px)`, opacity: interpolate(t, [0, 28, 40], [1, 0.8, 0], clamp)}} />;
+        })}
+    </AbsoluteFill>
+  );
+};

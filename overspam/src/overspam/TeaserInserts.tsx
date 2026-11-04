@@ -262,7 +262,7 @@ export const TitleOverlay: React.FC<{bpm: number}> = ({bpm}) => {
 /* ───────────── TitleOverlay3D: надпись как корабль из варпа (правка владельца 2026-11-04) ─────────────
    До удара плоская пиксельная надпись летит из точки к камере с ускорением и шлейфом. На удар (DROP)
    резкая остановка и выдавливание в объём. Надпись смотрит прямо, камера сама медленно плывёт и даёт
-   слабый угол (−6° → +6°). Тёплое свечение, по лицу пробегает блик. Уход плавным фейдом. Без осколков. */
+   слабый угол (−6° → +6°). Тёплое свечение, без блика (владелец убрал). Уход плавным фейдом. Без осколков. */
 const L3 = 40; // слоёв толщины
 const DEPTH_PX = 120; // полная толщина, px
 export const titleOverlay3DFrames = (p: {bpm: number}) => Math.round(DROP + beatFrames(p.bpm, FPS) * HOLD_BEATS + 22);
@@ -294,12 +294,6 @@ export const TitleOverlay3D: React.FC<{bpm: number}> = ({bpm}) => {
   const ry = t < 0 ? 0 : depth * interpolate(drift, [0, 1], [-6, 6], {easing: Easing.inOut(Easing.sin)});
   const rx = t < 0 ? 0 : depth * interpolate(drift, [0, 1], [3.5, -2], {easing: Easing.inOut(Easing.sin)});
   const glow = t < 0 ? u * 0.4 : interpolate(t, [0, 3, 30], [1, 1, 0.45], clamp) * fade;
-  // блик: светлая полоса пробегает по лицу дважды
-  const sweep = (a: number) => interpolate(frame, [a, a + 26], [-30, 130], clamp);
-  const shineA = DROP + 4;
-  const shineB = exitAt - 34;
-  const shinePos = frame < shineB - 2 ? sweep(shineA) : sweep(shineB);
-  const shineOn = (frame >= shineA && frame <= shineA + 26) || (frame >= shineB && frame <= shineB + 26);
   // шлейф при разгоне и уходе: плоские копии позади, меньше и прозрачнее
   const trail = t < 0 ? u : 0; // шлейф только на разгоне
   const trailScales = [0.72, 0.5, 0.34];
@@ -317,18 +311,6 @@ export const TitleOverlay3D: React.FC<{bpm: number}> = ({bpm}) => {
           <LogoLayer key={k} src="overspam/game/logo_x22_side.png" z={(-k * DEPTH_PX * depth) / L3} dim={0.35 + 0.55 * (1 - k / L3)} />
         ))}
         <LogoLayer src="overspam/game/logo_x22.png" z={1} />
-        {shineOn && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              transform: "translateZ(2px)",
-              background: `linear-gradient(105deg, transparent ${shinePos - 10}%, rgba(255,255,255,0.85) ${shinePos}%, transparent ${shinePos + 10}%)`,
-              WebkitMaskImage: `url(${staticFile("overspam/game/logo_x22.png")})`,
-              WebkitMaskSize: `${W}px ${H}px`,
-            }}
-          />
-        )}
       </div>
       </div>
     </AbsoluteFill>

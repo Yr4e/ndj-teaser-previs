@@ -36,6 +36,13 @@ for (const id of ids) {
     jobs.push({id, file: "shrines.mp4", props: base, alpha: false});
   } else if (id === "OS-ChestsOpen") {
     jobs.push({id, file: "chests-open.mp4", props: base, alpha: false});
+  } else if (id === "OS-BLEnd") {
+    // концовка по рефу Borderlands 4 Gameplay, со звуками ElevenLabs
+    jobs.push({id, file: "bl-end.mp4", props: {bpm: 168, sfx: true}, alpha: false});
+  } else if (id === "OS-WordCards") {
+    jobs.push({id, file: "words-play-together.mp4", props: {bpm: 168, lines: [["PLAY"], ["TOGETHER"]]}, alpha: false});
+  } else if (id === "OS-WordOverlay") {
+    jobs.push({id, file: "words-play-together-overlay.mov", props: {bpm: 168, lines: [["PLAY"], ["TOGETHER"]]}, alpha: true});
   } else if (id === "OS-TitleOverlay3D") {
     // объёмная надпись OVERSPAM на дроп: прозрачный оверлей, остановка на 0,5 с
     jobs.push({id, file: "title-overlay-3d.mov", props: {bpm: 168}, alpha: true});

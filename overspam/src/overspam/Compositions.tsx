@@ -11,6 +11,7 @@ import {
   Opener, OPENER_DEFAULTS, openerFrames,
 } from "./Trailer";
 import {Overtime, overtimeFrames} from "./Overtime";
+import {BL_END_DEFAULTS, BLEnd, blEndFrames, WORD_DEFAULTS, WordCards, wordCardsFrames, WordOverlay, wordOverlayFrames} from "./BLStyle";
 import {TitleOverlay, TitleOverlay3D, titleOverlay3DFrames, titleOverlayFrames, WorldsSplit, worldsSplitFrames} from "./TeaserInserts";
 import {BossLineup, bossLineupFrames, BossPath, bossPathFrames} from "./Bosses";
 import {Shrines, shrinesFrames} from "./Shrines";
@@ -105,6 +106,9 @@ export const OverspamCompositions: React.FC = () => (
       defaultProps={{bpm: 168}}
       calculateMetadata={({props}) => ({durationInFrames: titleOverlay3DFrames(props)})}
     />
+    <Composition id="OS-WordCards" component={WordCards} width={1920} height={1080} fps={60} durationInFrames={wordCardsFrames(WORD_DEFAULTS)} defaultProps={WORD_DEFAULTS} calculateMetadata={({props}) => ({durationInFrames: wordCardsFrames(props)})} />
+    <Composition id="OS-WordOverlay" component={WordOverlay} width={1920} height={1080} fps={60} durationInFrames={wordOverlayFrames(WORD_DEFAULTS)} defaultProps={WORD_DEFAULTS} calculateMetadata={({props}) => ({durationInFrames: wordOverlayFrames(props)})} />
+    <Composition id="OS-BLEnd" component={BLEnd} width={1920} height={1080} fps={60} durationInFrames={blEndFrames()} defaultProps={BL_END_DEFAULTS} />
     <Composition id="OS-Overtime" component={Overtime} width={1920} height={1080} fps={60} durationInFrames={overtimeFrames} />
     <Composition id="OS-BossPath" component={BossPath} width={1920} height={1080} fps={60} durationInFrames={bossPathFrames} />
     <Composition id="OS-BossLineup" component={BossLineup} width={1920} height={1080} fps={60} durationInFrames={bossLineupFrames} />

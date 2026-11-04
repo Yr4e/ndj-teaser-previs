@@ -53,6 +53,10 @@
     "BOSS ALTARS",
     "PORTALS"
   ],
+  "teaser": {
+    "bpm": 110,
+    "music": "D:/overspam-music/teaser_110_break.wav"
+  },
   "openerCuts": {
     "extend": 4
   },

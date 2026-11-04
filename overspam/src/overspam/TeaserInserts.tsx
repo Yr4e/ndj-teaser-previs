@@ -1,28 +1,27 @@
 import React from "react";
-import {AbsoluteFill, Audio, Img, interpolate, Sequence, spring, staticFile, useCurrentFrame} from "remotion";
+import {AbsoluteFill, Audio, Easing, Img, interpolate, Sequence, spring, staticFile, useCurrentFrame} from "remotion";
 import {WORLD_IMG, WORLDS} from "./data";
-import {beatFrames, LAND, SPAWN} from "./kit";
+import {beatFrames, LAND} from "./kit";
 import {PixelText} from "./PixelText";
 
 /* ───────────── Вставки полноценного тизера ─────────────
-   WorldsSplit: экран режется на 5 косых карт (набросок владельца), каждая влетает с поворотом в 3D
-   на свою полудолю, внутри картинка мира едет медленнее рамки (параллакс). На сильную долю после пятой —
-   удар и 5 WORLDS. Звуки из ElevenLabs владельца: public/sfx/el/. */
+   WorldsSplit: экран режется на 5 косых карт (набросок владельца). Карты въезжают вдоль наклона каждую
+   четверть доли, быстро и мягко (правка владельца 2026-11-04: «быстрее и плавнее»), встают с лёгким
+   поворотом для объёма, картинка мира внутри едет медленнее рамки (параллакс). Через долю — 5 WORLDS.
+   Звук: один цельный вжух на весь проход и один глубокий удар на надпись (ElevenLabs, public/sfx/el/). */
 const FPS = 60;
 const clamp = {extrapolateLeft: "clamp", extrapolateRight: "clamp"} as const;
 
 const K = 170; // наклон: верх карты сдвинут вправо относительно низа
 const GAP = 7; // половина щели между картами
-const LAND_DELAY = 8; // через сколько кадров после старта карта «приземляется» (пик звука)
-const SLAM_PEAK = [0.11, 0.07]; // атака удара внутри card_slam_1/2, с
-const TITLE_PEAK = 0; // title_hit бьёт сразу
-const START = 6;
+const IN = 12; // кадров на въезд карты
+const START = 4;
 
 const timing = (bpm: number) => {
-  const half = beatFrames(bpm, FPS) / 2;
-  const starts = WORLDS.map((_, i) => Math.round(START + i * half));
-  const title = Math.round(starts[4] + LAND_DELAY + 2 * half); // на сильную долю после пятой карты
-  return {starts, title, end: Math.round(title + beatFrames(bpm, FPS) * 2)};
+  const beat = beatFrames(bpm, FPS);
+  const starts = WORLDS.map((_, i) => Math.round(START + (i * beat) / 4));
+  const title = Math.round(START + beat * 1.5); // на долю после того, как встала последняя карта
+  return {starts, title, end: Math.round(title + beat * 1.75)};
 };
 export const worldsSplitFrames = (p: {bpm: number}) => timing(p.bpm).end;
 
@@ -34,12 +33,15 @@ const Panel: React.FC<{i: number; start: number; title: number}> = ({i, start, t
   const width = X(i + 1) - X(i) + K;
   const t = frame - start;
   if (t < 0) return null;
-  const s = spring({frame: t, fps: FPS, config: SPAWN, durationInFrames: 22});
-  const flash = interpolate(t, [LAND_DELAY - 2, LAND_DELAY, LAND_DELAY + 10], [0, 0.55, 0], clamp);
-  // объём: влёт с разворотом, потом медленный доворот (без покачивания)
-  const ry = interpolate(s, [0, 1], [-75, -9]) + interpolate(frame, [start, title + 120], [0, 5], clamp);
-  const rx = interpolate(s, [0, 1], [18, 0]);
-  const z = interpolate(s, [0, 1], [-500, 0]);
+  // мягкая посадка без перелёта: ease-out за IN кадров
+  const s = interpolate(t, [0, IN], [0, 1], {...clamp, easing: Easing.bezier(0.16, 1, 0.3, 1)});
+  const flash = interpolate(t, [0, 3, IN + 4], [0, 0.25, 0], clamp);
+  // въезд вдоль наклона: чётные сверху, нечётные снизу; объём — лёгкий доворот, потом медленный дрейф
+  const dir = i % 2 ? 1 : -1;
+  const slide = (1 - s) * 260 * dir;
+  const ry = interpolate(s, [0, 1], [-28, -8]) + interpolate(frame, [start, title + 120], [0, 4], clamp);
+  const rx = 0;
+  const z = (1 - s) * -120;
   const dim = interpolate(frame, [title - 4, title + 6], [1, 0.42], clamp);
   // параллакс: картинка едет против разворота и медленнее рамки
   const pan = interpolate(frame, [start, title + 120], [60, -60], clamp);
@@ -53,9 +55,9 @@ const Panel: React.FC<{i: number; start: number; title: number}> = ({i, start, t
         width,
         height: 1080,
         transformStyle: "preserve-3d",
-        transform: `translateZ(${z}px) rotateY(${ry}deg) rotateX(${rx}deg)`,
+        transform: `translate(${(-slide * K) / 1080}px, ${slide}px) translateZ(${z}px) rotateY(${ry}deg) rotateX(${rx}deg)`,
         transformOrigin: `${width / 2}px 540px`,
-        opacity: Math.min(1, t / 3),
+        opacity: Math.min(1, t / 4),
       }}
     >
       {/* толщина карты: тёмная подложка цвета мира, сдвинутая вглубь */}
@@ -85,15 +87,14 @@ export const WorldsSplit: React.FC<{bpm: number; sfx: boolean}> = ({bpm, sfx}) =
   const frame = useCurrentFrame();
   const {starts, title} = timing(bpm);
   const tt = frame - title;
-  const big = tt >= 0 ? spring({frame: tt, fps: FPS, config: SPAWN, durationInFrames: 20}) : 0;
-  const punch = tt >= 0 ? 0.035 * (1 - spring({frame: tt, fps: FPS, config: LAND, durationInFrames: 16})) : 0;
-  const shake = tt >= 0 && tt < 12 ? Math.round((1 - tt / 12) * 3) * 3 : 0;
+  const big = tt >= 0 ? spring({frame: tt, fps: FPS, config: LAND, durationInFrames: 16}) : 0;
+  const punch = tt >= 0 ? 0.025 * (1 - spring({frame: tt, fps: FPS, config: LAND, durationInFrames: 16})) : 0;
   return (
     <AbsoluteFill style={{background: "#07070d", overflow: "hidden"}}>
       <AbsoluteFill
         style={{
           perspective: 1700,
-          transform: `translate(${shake * Math.sin(tt * 2.9)}px, ${shake * Math.cos(tt * 3.3)}px) scale(${1.04 + punch + (frame / 400) * 0.03})`,
+          transform: `scale(${1.04 + punch + (frame / 400) * 0.03})`, // без тряски: удар держит звук и наезд
         }}
       >
         {WORLDS.map((_, i) => (
@@ -102,7 +103,7 @@ export const WorldsSplit: React.FC<{bpm: number; sfx: boolean}> = ({bpm, sfx}) =
       </AbsoluteFill>
       {tt >= 0 && (
         <AbsoluteFill style={{alignItems: "center", justifyContent: "center"}}>
-          <div style={{display: "flex", alignItems: "flex-end", gap: 60, transform: `scale(${1.25 - 0.25 * big})`, opacity: Math.min(1, tt / 3), filter: "drop-shadow(0 16px 0 rgba(0,0,0,0.5)) drop-shadow(0 0 40px rgba(0,0,0,0.7))"}}>
+          <div style={{display: "flex", alignItems: "flex-end", gap: 60, transform: `scale(${1.12 - 0.12 * big})`, opacity: Math.min(1, tt / 5), filter: `blur(${Math.max(0, 6 - tt)}px) drop-shadow(0 16px 0 rgba(0,0,0,0.5)) drop-shadow(0 0 40px rgba(0,0,0,0.7))`}}>
             <PixelText text="5" scale={26} style="logo" />
             <PixelText text="WORLDS" scale={15} style="white" css={{marginBottom: 14}} />
           </div>
@@ -110,13 +111,11 @@ export const WorldsSplit: React.FC<{bpm: number; sfx: boolean}> = ({bpm, sfx}) =
       )}
       {sfx && (
         <>
-          {starts.map((s, i) => (
-            <Sequence key={i} from={Math.max(0, s + LAND_DELAY - Math.round(SLAM_PEAK[i % 2] * FPS))} durationInFrames={40}>
-              <Audio src={staticFile(`sfx/el/card_slam_${(i % 2) + 1}.mp3`)} volume={0.55 + i * 0.05} />
-            </Sequence>
-          ))}
-          <Sequence from={title - Math.round(TITLE_PEAK * FPS)} durationInFrames={100}>
-            <Audio src={staticFile("sfx/el/title_hit.mp3")} volume={0.9} />
+          <Sequence from={Math.max(0, starts[0] - 2)} durationInFrames={110}>
+            <Audio src={staticFile("sfx/el/cards_swoosh.mp3")} volume={(f) => 0.5 * interpolate(f, [80, 108], [1, 0], clamp)} />
+          </Sequence>
+          <Sequence from={title} durationInFrames={160}>
+            <Audio src={staticFile("sfx/el/deep_hit.mp3")} volume={(f) => 0.85 * interpolate(f, [120, 158], [1, 0], clamp)} />
           </Sequence>
         </>
       )}

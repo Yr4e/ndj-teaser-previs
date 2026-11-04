@@ -73,6 +73,14 @@ const DEPTH: Record<PixelStyle, number> = {logo: 2, white: 1, red: 2, dim: 0};
 const DEPTH_COLOR: Record<PixelStyle, string> = {logo: "#62162c", white: "#3a3550", red: "#5a0e1e", dim: "#000"};
 const OUTLINE = "#090911";
 
+/** Полосы под любой цвет: сверху светлее, к низу чистый цвет; толщина — тот же цвет, притемнённый */
+const mix = (hex: string, to: number, k: number) => {
+  const n = parseInt(hex.slice(1), 16);
+  const ch = (sh: number) => Math.round(((n >> sh) & 255) * (1 - k) + to * k);
+  return `rgb(${ch(16)}, ${ch(8)}, ${ch(0)})`;
+};
+const colorFills = (hex: string) => [0.62, 0.45, 0.3, 0.18, 0.08, 0, 0].map((k) => mix(hex, 255, k));
+
 const measure = (text: string, spacing: number) => {
   let w = 0;
   for (const ch of text.toUpperCase()) {
@@ -97,8 +105,10 @@ export const PixelText: React.FC<{
   spacing?: number;
   /** Без обводки (для мелких подписей поверх тёмного) */
   noOutline?: boolean;
+  /** Свой цвет вместо стиля (#rrggbb): полосы и толщина строятся от него */
+  color?: string;
   css?: React.CSSProperties;
-}> = ({text, scale, style = "logo", spacing = 1, noOutline = false, css}) => {
+}> = ({text, scale, style = "logo", spacing = 1, noOutline = false, color, css}) => {
   const ref = useRef<HTMLCanvasElement>(null);
   const [handle] = useState(() => (glyphs ? null : delayRender("pixel font")));
   const [ready, setReady] = useState(!!glyphs);
@@ -111,7 +121,7 @@ export const PixelText: React.FC<{
     });
   }, [ready, handle]);
 
-  const depth = DEPTH[style];
+  const depth = color ? 2 : DEPTH[style];
   const pad = noOutline ? 0 : 1;
   const tw = ready ? measure(text, spacing) : 0;
   const W = tw + pad * 2;
@@ -166,7 +176,7 @@ export const PixelText: React.FC<{
     }
     // толщина снизу
     if (depth > 0) {
-      const dp = tint(DEPTH_COLOR[style]);
+      const dp = tint(color ? mix(color, 0, 0.62) : DEPTH_COLOR[style]);
       for (let d = 1; d <= depth; d++) ctx.drawImage(dp, 0, d);
     }
     // лицевая заливка полосами
@@ -174,14 +184,14 @@ export const PixelText: React.FC<{
     f.width = W;
     f.height = H;
     const fc = f.getContext("2d")!;
-    FILLS[style].forEach((col, i) => {
+    (color ? colorFills(color) : FILLS[style]).forEach((col, i) => {
       fc.fillStyle = col;
       fc.fillRect(0, pad + i, W, 1);
     });
     fc.globalCompositeOperation = "destination-in";
     fc.drawImage(m, 0, 0);
     ctx.drawImage(f, 0, 0);
-  }, [ready, text, style, spacing, noOutline, W, H, depth, pad]);
+  }, [ready, text, style, spacing, noOutline, color, W, H, depth, pad]);
 
   return (
     <canvas

@@ -36,6 +36,9 @@ for (const id of ids) {
     jobs.push({id, file: "shrines.mp4", props: base, alpha: false});
   } else if (id === "OS-ChestsOpen") {
     jobs.push({id, file: "chests-open.mp4", props: base, alpha: false});
+  } else if (id === "OS-TitleOverlay3D") {
+    // объёмная надпись OVERSPAM на дроп: прозрачный оверлей, остановка на 0,5 с
+    jobs.push({id, file: "title-overlay-3d.mov", props: {bpm: 168}, alpha: true});
   } else if (id === "OS-TitleOverlay") {
     // надпись OVERSPAM на дроп тизера: прозрачный оверлей, удар на 0,5 с
     jobs.push({id, file: "title-overlay.mov", props: {bpm: 168}, alpha: true});

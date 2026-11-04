@@ -11,7 +11,7 @@ import {
   Opener, OPENER_DEFAULTS, openerFrames,
 } from "./Trailer";
 import {Overtime, overtimeFrames} from "./Overtime";
-import {TitleOverlay, titleOverlayFrames, WorldsSplit, worldsSplitFrames} from "./TeaserInserts";
+import {TitleOverlay, TitleOverlay3D, titleOverlay3DFrames, titleOverlayFrames, WorldsSplit, worldsSplitFrames} from "./TeaserInserts";
 import {BossLineup, bossLineupFrames, BossPath, bossPathFrames} from "./Bosses";
 import {Shrines, shrinesFrames} from "./Shrines";
 import {ChestsOpen, chestsOpenFrames} from "./ChestsOpen";
@@ -94,6 +94,16 @@ export const OverspamCompositions: React.FC = () => (
       durationInFrames={titleOverlayFrames({bpm: 168})}
       defaultProps={{bpm: 168}}
       calculateMetadata={({props}) => ({durationInFrames: titleOverlayFrames(props)})}
+    />
+    <Composition
+      id="OS-TitleOverlay3D"
+      component={TitleOverlay3D}
+      width={1920}
+      height={1080}
+      fps={60}
+      durationInFrames={titleOverlay3DFrames({bpm: 168})}
+      defaultProps={{bpm: 168}}
+      calculateMetadata={({props}) => ({durationInFrames: titleOverlay3DFrames(props)})}
     />
     <Composition id="OS-Overtime" component={Overtime} width={1920} height={1080} fps={60} durationInFrames={overtimeFrames} />
     <Composition id="OS-BossPath" component={BossPath} width={1920} height={1080} fps={60} durationInFrames={bossPathFrames} />

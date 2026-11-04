@@ -11,6 +11,7 @@ import {
   Opener, OPENER_DEFAULTS, openerFrames,
 } from "./Trailer";
 import {Overtime, overtimeFrames} from "./Overtime";
+import {WorldsSplit, worldsSplitFrames} from "./TeaserInserts";
 import {BossLineup, bossLineupFrames, BossPath, bossPathFrames} from "./Bosses";
 import {Shrines, shrinesFrames} from "./Shrines";
 import {ChestsOpen, chestsOpenFrames} from "./ChestsOpen";
@@ -73,6 +74,16 @@ export const OverspamCompositions: React.FC = () => (
       durationInFrames={titleFrames(TITLE_DEFAULTS)}
       defaultProps={TITLE_DEFAULTS}
       calculateMetadata={({props}) => ({durationInFrames: titleFrames(props)})}
+    />
+    <Composition
+      id="OS-WorldsSplit"
+      component={WorldsSplit}
+      width={1920}
+      height={1080}
+      fps={60}
+      durationInFrames={worldsSplitFrames({bpm: 130})}
+      defaultProps={{bpm: 130, sfx: true}}
+      calculateMetadata={({props}) => ({durationInFrames: worldsSplitFrames(props)})}
     />
     <Composition id="OS-Overtime" component={Overtime} width={1920} height={1080} fps={60} durationInFrames={overtimeFrames} />
     <Composition id="OS-BossPath" component={BossPath} width={1920} height={1080} fps={60} durationInFrames={bossPathFrames} />

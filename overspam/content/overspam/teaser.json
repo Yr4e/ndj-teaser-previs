@@ -53,6 +53,9 @@
     "BOSS ALTARS",
     "PORTALS"
   ],
+  "openerCuts": {
+    "extend": 4
+  },
   "opener": {
     "flyby": {
       "src": "flyby/forest_1.mp4",

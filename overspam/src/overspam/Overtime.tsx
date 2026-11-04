@@ -23,11 +23,13 @@ const TIERS = [
   {name: "CATACLYSM", at: 300, color: "#ff524d"},
   {name: "APOCALYPSE", at: 480, color: "#e01a42"},
   {name: "OVERSPAM", at: 1200, color: "#ff38c7"},
-].map((tier, i) => ({...tier, t: ZERO + i * 2 * BEAT}));
+].map((tier, i) => ({...tier, t: ZERO + i * 3 * BEAT})); // по 3 доли на уровень: спокойнее
 // после SIM_START призраки лезут волнами с краёв, толкаются и к концу заливают весь кадр
-const SIM_START = 5.0;
-const FILL_DUR = 3.0; // за сколько секунд приходят все новые призраки
-const END = TIERS[4].t + 2.8;
+// порядок (правка владельца 2026-11-04): бледные заменяют всех мобов → бледные сползаются к центру →
+// поверх добавляются фиолетовые (с NIGHTMARE) → волна больших багровых (с CATACLYSM) → кадр залит
+const SIM_START = 4.0; // к этому моменту все мобы уже бледные призраки
+const FILL_END = 8.7; // последние призраки входят в кадр
+const END = TIERS[4].t + 2.0;
 export const overtimeFrames = f(END);
 
 const PINK = "#ff38c7";
@@ -38,7 +40,7 @@ type Ghost = "pale" | "purple" | "crimson";
 const CENTER = {x0: 300, x1: 1620, y0: 240, y1: 800};
 const TIER_ROW = {x0: 120, x1: 1800, y0: 690, y1: 800}; // плашки уровней шире таймера
 const HORDE_N = 24;
-const EXTRA_N = 9; // призраки, которые приходят сверх орды на поздних уровнях
+const EXTRA_N = 0; // все новые призраки приходят уже в толкотне
 const SPOTS = (() => {
   const out: {x: number; y: number; size: number}[] = [];
   for (let k = 0; out.length < HORDE_N + EXTRA_N && k < 20000; k++) {
@@ -74,51 +76,46 @@ const SPAWN_AT = SPOTS.slice(0, HORDE_N).map((_, i) => RUN + (ZERO - RUN - 0.15)
 const CONVERT_ORDER = SPOTS.slice(0, HORDE_N).map((_, i) => i).sort((a, b) => rand(a * 9.1) - rand(b * 9.1));
 const CONVERT_AT: number[] = [];
 CONVERT_ORDER.forEach((i, k) => {
-  CONVERT_AT[i] = TIERS[0].t + 0.12 + (SIM_START - 0.05 - TIERS[0].t - 0.12) * Math.pow(k / (HORDE_N - 1), 0.85);
+  CONVERT_AT[i] = TIERS[0].t + 0.1 + (SIM_START - 0.12 - TIERS[0].t - 0.1) * (k / (HORDE_N - 1));
 });
 const EXTRA_AT = Array.from({length: EXTRA_N}, (_, k) => TIERS[2].t + (SIM_START - 0.05 - TIERS[2].t) * (k / EXTRA_N));
 
-/** Какой призрак появляется в момент t: новые виды подключаются по уровням */
-const ghostAt = (t: number, seed: number): Ghost => {
-  const pool: Ghost[] = t >= TIERS[2].t ? ["pale", "purple", "crimson", "crimson"] : t >= TIERS[1].t ? ["pale", "purple"] : ["pale"];
-  return pool[Math.floor(rand(seed) * pool.length)];
-};
+/** Мобы превращаются только в бледных: бледный — призрак DEADLY. Фиолетовые и багровые приходят позже, в толкотне */
+const ghostAt = (_t: number, _seed: number): Ghost => "pale";
 
 const glowOf = (k: Ghost) => (k === "pale" ? "#bcd4ff" : k === "purple" ? "#c77aff" : "#ff524d");
 const tierAt = (t: number) => TIERS.reduce((acc, tier, i) => (t >= tier.t ? i : acc), 0);
-const pullAt = (t: number) => Math.min(1, (t - ZERO) / (END - ZERO)) * 0.035; // поле чуть сжимается к центру
-const growAt = (t: number) => 1 + 0.04 * tierAt(t); // призраки крупнее с каждым уровнем
+const pullAt = (_t: number) => 0; // к центру призраков ведёт толкотня, см. simulate()
+const growAt = (_t: number) => 1;
 
 /* ───────────── толкотня: мягкие круги, тянутся к центру, расталкивают друг друга ─────────────
    Считается один раз кадр за кадром (Verlet + разведение пересечений), результат кэшируется,
    поэтому любой кадр рендерится одинаково. */
 type Body = {kind: Ghost; r0: number; m: number; born: number; x: number; y: number; vx: number; vy: number};
-const NEW_N = 150;
 const SIM_F0 = f(SIM_START);
+const LAYER: Record<Ghost, number> = {pale: 0, purple: 1, crimson: 2}; // фиолетовые поверх бледных, багровые поверх всех
 const BODIES: Body[] = (() => {
   const out: Body[] = [];
-  const pull = pullAt(SIM_START), grow = growAt(SIM_START);
-  // все, кто уже на поле к SIM_START: бывшая орда и призраки сверх неё
-  SPOTS.forEach((sp, i) => {
-    const kind = i < HORDE_N ? ghostAt(CONVERT_AT[i], i) : ghostAt(EXTRA_AT[i - HORDE_N], 100 + i - HORDE_N);
-    const w = sp.size * (kind === "crimson" ? 1.2 : 1) * grow;
-    out.push({kind, r0: w * 0.4, m: kind === "crimson" ? 2 : 1, born: 0, x: sp.x + (960 - sp.x) * pull, y: sp.y + (560 - sp.y) * pull, vx: 0, vy: 0});
-  });
-  // новые: всё чаще, с четырёх сторон
-  for (let k = 0; k < NEW_N; k++) {
-    const born = f(SIM_START + FILL_DUR * Math.pow((k + 1) / NEW_N, 0.6));
-    const pool: Ghost[] = ["pale", "purple", "purple", "crimson"];
-    const kind = pool[Math.floor(rand(300 + k) * pool.length)];
-    const w = (95 + rand(k * 4.7) * 55) * (kind === "crimson" ? 1.2 : 1) * growAt(born / FPS);
+  // бледные на местах бывшей орды
+  SPOTS.forEach((sp) => out.push({kind: "pale", r0: sp.size * 0.4, m: 1, born: 0, x: sp.x, y: sp.y, vx: 0, vy: 0}));
+  const enter = (kind: Ghost, born: number, w: number, seed: number, speed: number) => {
     const r0 = w * 0.4;
-    const side = Math.floor(rand(k * 6.1) * 4);
-    const u = 0.08 + rand(k * 8.3) * 0.84;
+    const side = Math.floor(rand(seed * 6.1) * 4);
+    const u = 0.08 + rand(seed * 8.3) * 0.84;
     const x = side === 0 ? -r0 : side === 1 ? 1920 + r0 : u * 1920;
     const y = side === 2 ? -r0 : side === 3 ? 1080 + r0 : u * 1080;
-    const sp = 7 + rand(k * 2.9) * 6;
     const d = Math.hypot(960 - x, 540 - y);
-    out.push({kind, r0, m: kind === "crimson" ? 2 : 1, born, x, y, vx: ((960 - x) / d) * sp, vy: ((540 - y) / d) * sp});
-  }
+    out.push({kind, r0, m: kind === "crimson" ? 4 : 1, born, x, y, vx: ((960 - x) / d) * speed, vy: ((540 - y) / d) * speed});
+  };
+  // фиолетовые: с NIGHTMARE, ровным потоком до конца
+  const PURPLE_N = 95;
+  for (let k = 0; k < PURPLE_N; k++) enter("purple", f(TIERS[1].t + (FILL_END - TIERS[1].t) * Math.pow((k + 0.5) / PURPLE_N, 0.9)), 95 + rand(k * 4.7) * 55, 300 + k, 4 + rand(k * 2.9) * 2.5);
+  // багровые: одной волной на CATACLYSM, большие (в 2 раза) и тяжёлые
+  const CRIMSON_N = 16;
+  for (let k = 0; k < CRIMSON_N; k++) enter("crimson", f(TIERS[2].t + 1.1 * (k / CRIMSON_N)), (110 + rand(k * 3.3) * 30) * 2, 700 + k, 6 + rand(k * 1.7) * 2);
+  // добивка бледными под конец, чтобы не оставалось дыр
+  const LATE_N = 30;
+  for (let k = 0; k < LATE_N; k++) enter("pale", f(TIERS[3].t + (FILL_END - TIERS[3].t) * ((k + 0.5) / LATE_N)), 95 + rand(k * 5.9) * 55, 900 + k, 4 + rand(k * 3.7) * 2.5);
   return out;
 })();
 
@@ -135,16 +132,18 @@ const simulate = () => {
   const F1 = f(END);
   for (let fr = SIM_F0; fr <= F1; fr++) {
     const prog = (fr - SIM_F0) / (F1 - SIM_F0);
+    // тяга к центру: сначала еле-еле (бледные чуть сползаются), к OVERSPAM сильнее
+    const g = 0.08 + 0.3 * Math.min(1, Math.max(0, (fr / FPS - TIERS[2].t) / (TIERS[4].t - TIERS[2].t)));
     const alive: number[] = [];
     for (let i = 0; i < n; i++) if (BODIES[i].born <= fr) alive.push(i);
     const press = new Float32Array(n);
     for (const i of alive) {
-      r[i] = BODIES[i].r0 * (1 + 0.22 * prog);
-      const vx = (x[i] - px[i]) * 0.86, vy = (y[i] - py[i]) * 0.86;
+      r[i] = BODIES[i].r0 * (1 + 0.18 * prog);
+      const vx = (x[i] - px[i]) * 0.88, vy = (y[i] - py[i]) * 0.88;
       px[i] = x[i]; py[i] = y[i];
       const dx = 960 - x[i], dy = 540 - y[i], d = Math.hypot(dx, dy) || 1;
-      x[i] += vx + (dx / d) * 0.45;
-      y[i] += vy + (dy / d) * 0.45;
+      x[i] += vx + (dx / d) * g;
+      y[i] += vy + (dy / d) * g;
     }
     for (let it = 0; it < 4; it++) {
       for (let a = 0; a < alive.length; a++) {
@@ -378,7 +377,7 @@ export const Overtime: React.FC = () => {
         {sim &&
           BODIES.map((b, i) => ({b, i}))
             .filter(({b}) => b.born <= frame)
-            .sort((a, c) => sim.y[a.i] - sim.y[c.i])
+            .sort((a, c) => LAYER[a.b.kind] - LAYER[c.b.kind] || sim.y[a.i] - sim.y[c.i])
             .map(({b, i}) => {
               const w = sim.r[i] / 0.4;
               const h = (w * 413) / 472;

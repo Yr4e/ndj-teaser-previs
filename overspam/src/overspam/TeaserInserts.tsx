@@ -262,7 +262,7 @@ export const TitleOverlay: React.FC<{bpm: number}> = ({bpm}) => {
 /* ───────────── TitleOverlay3D: надпись как корабль из варпа (правка владельца 2026-11-04) ─────────────
    До удара плоская пиксельная надпись летит из точки к камере с ускорением и шлейфом. На удар (DROP)
    резкая остановка и выдавливание в объём. Надпись смотрит прямо, камера сама медленно плывёт и даёт
-   слабый угол (−6° → +6°). Тёплое свечение, без блика (владелец убрал). Уход плавным фейдом. Без осколков. */
+   слабый угол (−3,5° → +3,5°). Тёплое свечение, без блика. Уход: камера пролетает сквозь надпись в геймплей. */
 const L3 = 40; // слоёв толщины
 const DEPTH_PX = 120; // полная толщина, px
 export const titleOverlay3DFrames = (p: {bpm: number}) => Math.round(DROP + beatFrames(p.bpm, FPS) * HOLD_BEATS + 22);
@@ -285,14 +285,16 @@ export const TitleOverlay3D: React.FC<{bpm: number}> = ({bpm}) => {
   const u = Math.min(1, Math.max(0, frame / DROP));
   const approach = 0.015 + 1.16 * Math.pow(u, 3.2);
   const stop = t >= 0 ? spring({frame: t, fps: FPS, config: {damping: 18, stiffness: 420, mass: 0.6}, durationInFrames: 14}) : 0;
-  const fade = interpolate(frame, [exitAt, exitAt + 20], [1, 0], clamp); // уход плавным фейдом (правка владельца)
-  const scale = t < 0 ? approach : (1.17 - 0.17 * stop) * interpolate(frame, [DROP, exitAt + 20], [1, 1.04], clamp);
+  // уход: камера пролетает сквозь надпись в геймплей (правка владельца) — надпись разлетается на камеру, размывается и гаснет
+  const fly = Math.pow(interpolate(frame, [exitAt, exitAt + 16], [0, 1], clamp), 2.6);
+  const fade = interpolate(frame, [exitAt + 8, exitAt + 16], [1, 0], clamp);
+  const scale = t < 0 ? approach : (1.17 - 0.17 * stop) * interpolate(frame, [DROP, exitAt], [1, 1.03], clamp) * (1 + fly * 11);
   // объём: толщина появляется на остановке, надпись доворачивается под угол
   const depth = t < 0 ? 0 : spring({frame: t, fps: FPS, config: {damping: 14, stiffness: 200, mass: 0.7}, durationInFrames: 22});
   // надпись смотрит прямо; камера сама медленно плывёт и даёт слабый угол, толщина чуть видна то слева, то справа
-  const drift = interpolate(frame, [DROP, exitAt + 20], [0, 1], clamp);
-  const ry = t < 0 ? 0 : depth * interpolate(drift, [0, 1], [-6, 6], {easing: Easing.inOut(Easing.sin)});
-  const rx = t < 0 ? 0 : depth * interpolate(drift, [0, 1], [3.5, -2], {easing: Easing.inOut(Easing.sin)});
+  const drift = interpolate(frame, [DROP, exitAt], [0, 1], clamp);
+  const ry = t < 0 ? 0 : depth * interpolate(drift, [0, 1], [-3.5, 3.5], {easing: Easing.inOut(Easing.sin)}); // слабее (правка владельца)
+  const rx = t < 0 ? 0 : depth * interpolate(drift, [0, 1], [2, -1.2], {easing: Easing.inOut(Easing.sin)});
   const glow = t < 0 ? u * 0.4 : interpolate(t, [0, 3, 30], [1, 1, 0.45], clamp) * fade;
   // шлейф при разгоне и уходе: плоские копии позади, меньше и прозрачнее
   const trail = t < 0 ? u : 0; // шлейф только на разгоне
@@ -305,7 +307,7 @@ export const TitleOverlay3D: React.FC<{bpm: number}> = ({bpm}) => {
           <Img key={i} src={staticFile("overspam/game/logo_x22.png")} style={{position: "absolute", width: W * scale * k, height: H * scale * k, opacity: 0.22 * trail * (1 - i * 0.28), filter: "blur(3px) brightness(1.6) saturate(0.6)", imageRendering: "pixelated"}} />
         ))}
       {/* фейд на обёртке: надпись гаснет целиком, задние слои не просвечивают */}
-      <div style={{position: "relative", width: W, height: H, opacity: fade, perspective: 1600}}>
+      <div style={{position: "relative", width: W, height: H, opacity: fade, perspective: 1600, filter: fly > 0.01 ? `blur(${fly * 16}px)` : undefined}}>
       <div style={{position: "relative", width: W, height: H, transformStyle: "preserve-3d", transform: `scale(${scale}) rotateX(${rx}deg) rotateY(${ry}deg)`}}>
         {Array.from({length: L3}, (_, k) => L3 - k).map((k) => (
           <LogoLayer key={k} src="overspam/game/logo_x22_side.png" z={(-k * DEPTH_PX * depth) / L3} dim={0.35 + 0.55 * (1 - k / L3)} />

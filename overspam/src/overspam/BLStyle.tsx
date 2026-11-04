@@ -60,7 +60,7 @@ export const WordOverlay: React.FC<WordProps> = ({bpm, lines}) => {
 
 /* ───────────── Концовка ───────────── */
 export type BLEndProps = {bpm: number; line1: string; line2: string; button: string; sfx: boolean};
-export const BL_END_DEFAULTS: BLEndProps = {bpm: 168, line1: "COMING SOON", line2: "OVERSPAM.COM", button: "WISHLIST NOW", sfx: true};
+export const BL_END_DEFAULTS: BLEndProps = {bpm: 168, line1: "COMING DECEMBER 12", line2: "OVERSPAM.COM", button: "WISHLIST NOW", sfx: true};
 const T_LOGO = 0; // логотип на чёрном
 const T_FLY = 150; // пролёт сквозь логотип
 const T_RED = 176; // красная карточка
@@ -127,14 +127,14 @@ export const BLEnd: React.FC<BLEndProps> = ({line1, line2, button, sfx}) => {
         <AbsoluteFill style={{background: RED, clipPath: `inset(0 ${100 - wipe * 100}% 0 0)`}}>
           <Smoke />
           <AbsoluteFill style={{background: "radial-gradient(80% 70% at 50% 50%, transparent 50%, rgba(60,0,0,0.55))"}} />
-          {/* квадратный арт слева: герои и логотип */}
+          {/* квадратный арт слева: 7 героев плотной группой в два ряда и логотип */}
           <div
             style={{
               position: "absolute",
-              left: 150,
-              top: 230,
-              width: 560,
-              height: 560,
+              left: 120,
+              top: 190,
+              width: 700,
+              height: 700,
               transform: `translateY(${(1 - art) * 80}px) scale(${0.9 + 0.1 * art})`,
               opacity: art,
               overflow: "hidden",
@@ -142,23 +142,32 @@ export const BLEnd: React.FC<BLEndProps> = ({line1, line2, button, sfx}) => {
               boxShadow: "0 30px 60px rgba(0,0,0,0.45)",
             }}
           >
-            {[["glitch", 120, 360], ["brakka", 300, 440], ["grindbone", 450, 380]].map(([h, x, hgt]) => (
-              <Img key={h as string} src={staticFile(HERO_IMG(h as string))} style={{position: "absolute", left: (x as number) - ((hgt as number) * 0.75) / 2, bottom: -20, height: hgt as number, width: ((hgt as number) * 3) / 4}} />
+            {(
+              [
+                ["wizzle", 95, 470, 0.7], ["lunamoth", 250, 480, 0.7], ["junkpaw", 450, 460, 0.7], ["corvus", 610, 470, 0.7],
+                ["glitch", 150, 500, 1], ["brakka", 350, 600, 1], ["grindbone", 545, 520, 1],
+              ] as [string, number, number, number][]
+            ).map(([h, x, hgt, light], i) => (
+              <Img
+                key={h}
+                src={staticFile(HERO_IMG(h))}
+                style={{position: "absolute", left: x - (hgt * 0.75) / 2, bottom: light < 1 ? 90 : -30, height: hgt, width: (hgt * 3) / 4, zIndex: i, filter: `brightness(${light}) drop-shadow(0 12px 16px rgba(0,0,0,0.5))`}}
+              />
             ))}
-            <div style={{position: "absolute", left: 24, top: 22}}>
-              <Img src={staticFile("overspam/game/logo_x22.png")} style={{...LOGO(6), imageRendering: "pixelated"}} />
+            <div style={{position: "absolute", left: 26, top: 24, zIndex: 20}}>
+              <Img src={staticFile("overspam/game/logo_x22.png")} style={{...LOGO(7), imageRendering: "pixelated"}} />
             </div>
           </div>
-          {/* текст справа */}
-          <div style={{position: "absolute", left: 790, top: 390, display: "flex", flexDirection: "column", gap: 26}}>
-            {frame >= T_TYPE && <PixelText text={typed(line1, T_TYPE) || " "} scale={11} style="white" spacing={2} />}
-            {frame >= T_TYPE + 12 && <PixelText text={typed(line2, T_TYPE + 12) || " "} scale={6} style="white" spacing={2} />}
+          {/* текст справа: дата белым, сайт чёрным той же ширины (блок как в рефе) */}
+          <div style={{position: "absolute", left: 880, top: 400, display: "flex", flexDirection: "column", alignItems: "center", gap: 30}}>
+            {frame >= T_TYPE && <PixelText text={typed(line1, T_TYPE) || " "} scale={8} style="white" spacing={1} />}
+            {frame >= T_TYPE + 12 && <PixelText text={typed(line2, T_TYPE + 12) || " "} scale={12} style="black" noOutline spacing={1} />}
           </div>
           {/* кнопка и площадки */}
           <div style={{position: "absolute", right: 70, bottom: 60, transform: `scale(${btn})`, background: "#000", padding: "18px 30px"}}>
             <PixelText text={button} scale={4} style="white" noOutline spacing={2} />
           </div>
-          <div style={{position: "absolute", left: 150, bottom: 70, display: "flex", gap: 30, alignItems: "center", opacity: interpolate(frame, [T_TYPE + 20, T_TYPE + 34], [0, 0.9], clamp)}}>
+          <div style={{position: "absolute", left: 120, bottom: 70, display: "flex", gap: 30, alignItems: "center", opacity: interpolate(frame, [T_TYPE + 20, T_TYPE + 34], [0, 0.9], clamp)}}>
             {["steam", "epicgames"].map((s) => (
               <Img key={s} src={staticFile(`overspam/stores/${s}.svg`)} style={{width: 44, height: 44}} />
             ))}

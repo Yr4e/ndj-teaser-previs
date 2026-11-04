@@ -24,7 +24,10 @@ const TIERS = [
   {name: "APOCALYPSE", at: 480, color: "#e01a42"},
   {name: "OVERSPAM", at: 1200, color: "#ff38c7"},
 ].map((tier, i) => ({...tier, t: ZERO + i * 2 * BEAT}));
-const END = TIERS[4].t + 1.6;
+// после SIM_START призраки лезут волнами с краёв, толкаются и к концу заливают весь кадр
+const SIM_START = 5.0;
+const FILL_DUR = 3.0; // за сколько секунд приходят все новые призраки
+const END = TIERS[4].t + 2.8;
 export const overtimeFrames = f(END);
 
 const PINK = "#ff38c7";
@@ -71,14 +74,109 @@ const SPAWN_AT = SPOTS.slice(0, HORDE_N).map((_, i) => RUN + (ZERO - RUN - 0.15)
 const CONVERT_ORDER = SPOTS.slice(0, HORDE_N).map((_, i) => i).sort((a, b) => rand(a * 9.1) - rand(b * 9.1));
 const CONVERT_AT: number[] = [];
 CONVERT_ORDER.forEach((i, k) => {
-  CONVERT_AT[i] = TIERS[0].t + 0.12 + (TIERS[4].t - TIERS[0].t - 0.05) * Math.pow(k / (HORDE_N - 1), 0.85);
+  CONVERT_AT[i] = TIERS[0].t + 0.12 + (SIM_START - 0.05 - TIERS[0].t - 0.12) * Math.pow(k / (HORDE_N - 1), 0.85);
 });
-const EXTRA_AT = Array.from({length: EXTRA_N}, (_, k) => TIERS[2].t + (TIERS[4].t + 0.6 - TIERS[2].t) * (k / EXTRA_N));
+const EXTRA_AT = Array.from({length: EXTRA_N}, (_, k) => TIERS[2].t + (SIM_START - 0.05 - TIERS[2].t) * (k / EXTRA_N));
 
 /** Какой призрак появляется в момент t: новые виды подключаются по уровням */
 const ghostAt = (t: number, seed: number): Ghost => {
   const pool: Ghost[] = t >= TIERS[2].t ? ["pale", "purple", "crimson", "crimson"] : t >= TIERS[1].t ? ["pale", "purple"] : ["pale"];
   return pool[Math.floor(rand(seed) * pool.length)];
+};
+
+const glowOf = (k: Ghost) => (k === "pale" ? "#bcd4ff" : k === "purple" ? "#c77aff" : "#ff524d");
+const tierAt = (t: number) => TIERS.reduce((acc, tier, i) => (t >= tier.t ? i : acc), 0);
+const pullAt = (t: number) => Math.min(1, (t - ZERO) / (END - ZERO)) * 0.035; // поле чуть сжимается к центру
+const growAt = (t: number) => 1 + 0.04 * tierAt(t); // призраки крупнее с каждым уровнем
+
+/* ───────────── толкотня: мягкие круги, тянутся к центру, расталкивают друг друга ─────────────
+   Считается один раз кадр за кадром (Verlet + разведение пересечений), результат кэшируется,
+   поэтому любой кадр рендерится одинаково. */
+type Body = {kind: Ghost; r0: number; m: number; born: number; x: number; y: number; vx: number; vy: number};
+const NEW_N = 150;
+const SIM_F0 = f(SIM_START);
+const BODIES: Body[] = (() => {
+  const out: Body[] = [];
+  const pull = pullAt(SIM_START), grow = growAt(SIM_START);
+  // все, кто уже на поле к SIM_START: бывшая орда и призраки сверх неё
+  SPOTS.forEach((sp, i) => {
+    const kind = i < HORDE_N ? ghostAt(CONVERT_AT[i], i) : ghostAt(EXTRA_AT[i - HORDE_N], 100 + i - HORDE_N);
+    const w = sp.size * (kind === "crimson" ? 1.2 : 1) * grow;
+    out.push({kind, r0: w * 0.4, m: kind === "crimson" ? 2 : 1, born: 0, x: sp.x + (960 - sp.x) * pull, y: sp.y + (560 - sp.y) * pull, vx: 0, vy: 0});
+  });
+  // новые: всё чаще, с четырёх сторон
+  for (let k = 0; k < NEW_N; k++) {
+    const born = f(SIM_START + FILL_DUR * Math.pow((k + 1) / NEW_N, 0.6));
+    const pool: Ghost[] = ["pale", "purple", "purple", "crimson"];
+    const kind = pool[Math.floor(rand(300 + k) * pool.length)];
+    const w = (95 + rand(k * 4.7) * 55) * (kind === "crimson" ? 1.2 : 1) * growAt(born / FPS);
+    const r0 = w * 0.4;
+    const side = Math.floor(rand(k * 6.1) * 4);
+    const u = 0.08 + rand(k * 8.3) * 0.84;
+    const x = side === 0 ? -r0 : side === 1 ? 1920 + r0 : u * 1920;
+    const y = side === 2 ? -r0 : side === 3 ? 1080 + r0 : u * 1080;
+    const sp = 7 + rand(k * 2.9) * 6;
+    const d = Math.hypot(960 - x, 540 - y);
+    out.push({kind, r0, m: kind === "crimson" ? 2 : 1, born, x, y, vx: ((960 - x) / d) * sp, vy: ((540 - y) / d) * sp});
+  }
+  return out;
+})();
+
+type SimFrame = {x: Float32Array; y: Float32Array; r: Float32Array; press: Float32Array};
+let SIM: SimFrame[] | null = null;
+const simulate = () => {
+  if (SIM) return SIM;
+  const n = BODIES.length;
+  const x = new Float64Array(n), y = new Float64Array(n), px = new Float64Array(n), py = new Float64Array(n), r = new Float64Array(n);
+  BODIES.forEach((b, i) => {
+    x[i] = b.x; y[i] = b.y; px[i] = b.x - b.vx; py[i] = b.y - b.vy;
+  });
+  const frames: SimFrame[] = [];
+  const F1 = f(END);
+  for (let fr = SIM_F0; fr <= F1; fr++) {
+    const prog = (fr - SIM_F0) / (F1 - SIM_F0);
+    const alive: number[] = [];
+    for (let i = 0; i < n; i++) if (BODIES[i].born <= fr) alive.push(i);
+    const press = new Float32Array(n);
+    for (const i of alive) {
+      r[i] = BODIES[i].r0 * (1 + 0.22 * prog);
+      const vx = (x[i] - px[i]) * 0.86, vy = (y[i] - py[i]) * 0.86;
+      px[i] = x[i]; py[i] = y[i];
+      const dx = 960 - x[i], dy = 540 - y[i], d = Math.hypot(dx, dy) || 1;
+      x[i] += vx + (dx / d) * 0.45;
+      y[i] += vy + (dy / d) * 0.45;
+    }
+    for (let it = 0; it < 4; it++) {
+      for (let a = 0; a < alive.length; a++) {
+        const i = alive[a];
+        for (let b = a + 1; b < alive.length; b++) {
+          const j = alive[b];
+          const dx = x[j] - x[i], dy = y[j] - y[i];
+          const min = r[i] + r[j];
+          if (Math.abs(dx) > min || Math.abs(dy) > min) continue;
+          const d = Math.hypot(dx, dy) || 0.01;
+          if (d >= min) continue;
+          const ov = min - d, nx = dx / d, ny = dy / d;
+          const mi = BODIES[i].m, mj = BODIES[j].m, c = ov * 0.8;
+          x[i] -= nx * c * (mj / (mi + mj)); y[i] -= ny * c * (mj / (mi + mj));
+          x[j] += nx * c * (mi / (mi + mj)); y[j] += ny * c * (mi / (mi + mj));
+          if (it === 0) {
+            press[i] += ov / r[i];
+            press[j] += ov / r[j];
+          }
+        }
+        // стенки: кто уже вошёл в кадр, не вылетает обратно
+        if (fr - BODIES[i].born > 25) {
+          const m = r[i] * 0.55;
+          x[i] = Math.min(1920 - m, Math.max(m, x[i]));
+          y[i] = Math.min(1080 - m, Math.max(m, y[i]));
+        }
+      }
+    }
+    frames.push({x: Float32Array.from(x), y: Float32Array.from(y), r: Float32Array.from(r), press});
+  }
+  SIM = frames;
+  return SIM;
 };
 
 const mmss = (sec: number, plus = false) => {
@@ -153,8 +251,9 @@ export const Overtime: React.FC = () => {
   const pulse = over ? 0.5 + 0.5 * Math.sin((t - ZERO) * Math.PI * 2 / BEAT) : 0;
   const vignette = over ? interpolate(frame - hitF, [0, 4, 30], [0, 0.6, 0.32], clamp) + pulse * 0.1 + 0.04 * tierIdx : p * 0.2;
   const vColor = over ? PINK : "#ff3048"; // овертайм всегда в розово-пурпурном, цвет уровня только на плашке и таймере
-  const pull = over ? Math.min(1, (t - ZERO) / (END - ZERO)) * 0.035 : 0; // поле чуть сжимается к центру
-  const grow = over ? 1 + 0.04 * tierIdx : 1; // призраки крупнее с каждым уровнем
+  const pull = over ? pullAt(t) : 0;
+  const grow = over ? growAt(t) : 1;
+  const sim = t >= SIM_START ? simulate()[frame - SIM_F0] : null;
 
   return (
     <AbsoluteFill style={{background: "radial-gradient(110% 90% at 50% 50%, #12121d, #050508)", overflow: "hidden"}}>
@@ -162,7 +261,7 @@ export const Overtime: React.FC = () => {
       <AbsoluteFill style={{opacity: overIn, background: "radial-gradient(70% 60% at 50% 48%, rgba(42,6,38,0.95), rgba(7,7,13,0) 75%), linear-gradient(to right, rgba(7,7,13,0.6), rgba(42,6,38,0.55) 50%, rgba(7,7,13,0.6))"}} />
       <AbsoluteFill style={{transform: `translate(${shake * Math.sin(shakeT * 2.9)}px, ${shake * Math.cos(shakeT * 3.4)}px) scale(${1 + bump + p * 0.04})`}}>
         {/* орда, потом призраки на тех же местах */}
-        {SPOTS.slice(0, HORDE_N).map((s, i) => {
+        {!sim && SPOTS.slice(0, HORDE_N).map((s, i) => {
           const at = f(SPAWN_AT[i]);
           if (frame < at) return null;
           const x = s.x + (960 - s.x) * pull;
@@ -201,7 +300,7 @@ export const Overtime: React.FC = () => {
           );
         })}
         {/* призраки сверх орды: их всё больше на поздних уровнях */}
-        {SPOTS.slice(HORDE_N).map((s, k) => {
+        {!sim && SPOTS.slice(HORDE_N).map((s, k) => {
           const at = f(EXTRA_AT[k]);
           if (frame < at) return null;
           const kind = ghostAt(EXTRA_AT[k], 100 + k);
@@ -275,6 +374,32 @@ export const Overtime: React.FC = () => {
             )}
           </div>
         </AbsoluteFill>
+        {/* толкотня поверх всего: к концу призраки заливают таймер и плашки */}
+        {sim &&
+          BODIES.map((b, i) => ({b, i}))
+            .filter(({b}) => b.born <= frame)
+            .sort((a, c) => sim.y[a.i] - sim.y[c.i])
+            .map(({b, i}) => {
+              const w = sim.r[i] / 0.4;
+              const h = (w * 413) / 472;
+              const sq = Math.min(0.16, sim.press[i] * 0.22);
+              const pop = b.born > 0 ? interpolate(frame - b.born, [0, 10], [0.6, 1], {...clamp, easing: Easing.out(Easing.back(2))}) : 1;
+              return (
+                <Img
+                  key={`s${i}`}
+                  src={staticFile(`overspam/ghosts/${b.kind}.png`)}
+                  style={{
+                    position: "absolute",
+                    left: sim.x[i] - w / 2,
+                    top: sim.y[i] - h / 2,
+                    width: w,
+                    height: h,
+                    transform: `scale(${pop * (1 + sq)}, ${pop * (1 - sq * 0.8)}) scaleX(${sim.x[i] > 960 ? -1 : 1})`,
+                    filter: `drop-shadow(0 0 10px ${glowOf(b.kind)})`,
+                  }}
+                />
+              );
+            })}
       </AbsoluteFill>
       {/* виньетка цвета текущего уровня, пульс на каждую долю */}
       <AbsoluteFill style={{boxShadow: `inset 0 0 260px 60px ${vColor}${Math.round(Math.min(1, vignette) * 255).toString(16).padStart(2, "0")}`}} />
